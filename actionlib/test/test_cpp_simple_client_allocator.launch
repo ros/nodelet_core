@@ -1,3 +1,0 @@
-<launch>
-  <test test-name="test_cpp_simple_client_allocator" pkg="actionlib" type="simple_client_allocator_test"/>
-</launch>

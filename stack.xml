@@ -1,14 +1,14 @@
 <stack>
-  <description brief="common code for personal robots">
-    This stack contains tools built on top of ROS core which are
-    commonly used throughout the ROS ecosystem.
+  <description brief="Nodelet core">
+    Nodelets library and tools.  Nodelets are a plugin architecture for roscpp that enable
+    dynamic loading of multiple 'nodelets' into a single ROS node instance.
   </description>
   <author>Maintained by Tully Foote tfoote@willowgarage.com</author>
-  <license>LGPL,ZLib,Boost Software License (Poco),Mozilla Public License Version 1.1,BSD,MIT</license>  
+  <license>BSD</license>
   <review status="doc reviewed" notes="2009-10-07"/>
-  <url>http://ros.org/wiki/common</url>
-  <depend stack="common_msgs" /> <!-- actionlib_msgs -->
-  <depend stack="ros" /> <!-- rosbuild, roslib -->
-  <depend stack="ros_comm" /> <!-- rosconsole, roscpp, message_filters, std_msgs, rostest, rospy -->
+  <url>http://ros.org/wiki/nodelet_core</url>
+  <depend stack="common" /> <!-- bondcpp, pluginlib -->
+  <depend stack="ros" />
+  <depend stack="ros_comm" /> <!-- std_msgs, rostest, rospy, roscpp, message_filters -->
 
 </stack>

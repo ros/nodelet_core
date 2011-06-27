@@ -1,3 +1,0 @@
-<launch>
-  <test test-name="test_goal_id_generator" pkg="actionlib" type="test_server_components.py" />
-</launch>
