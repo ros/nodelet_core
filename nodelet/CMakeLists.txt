@@ -24,8 +24,9 @@ rosbuild_gensrv()
 rosbuild_add_boost_directories()
 
 rosbuild_add_executable(nodelet src/nodelet.cpp)
-target_link_libraries (nodelet nodeletlib uuid)
+target_link_libraries (nodelet nodeletlib uuid tinyxml)
 rosbuild_link_boost (nodelet filesystem system)
 
 rosbuild_add_library(nodeletlib src/nodelet_class.cpp src/loader.cpp src/callback_queue.cpp src/callback_queue_manager.cpp)
 rosbuild_link_boost(nodeletlib thread)
+target_link_libraries (nodeletlib tinyxml)
