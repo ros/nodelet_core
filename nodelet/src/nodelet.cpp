@@ -70,12 +70,14 @@ class NodeletArgumentParsing
     std::string default_name_;
     std::string manager_;
     std::vector<std::string> local_args_;
-
+    bool is_bond_enabled_;
+  
   public:
     //NodeletArgumentParsing() { };
     bool
       parseArgs(int argc, char** argv)
     {
+      is_bond_enabled_ = true;
       std::vector<std::string> non_ros_args;
       ros::removeROSArgs (argc, argv, non_ros_args);
       size_t used_args = 0;
@@ -90,6 +92,15 @@ class NodeletArgumentParsing
         type_ = non_ros_args[2];
         manager_ = non_ros_args[3];
         used_args = 4;
+
+        if (non_ros_args.size() > used_args)
+        {
+          if (non_ros_args[used_args] == "--no-bond")
+          {
+            is_bond_enabled_ = false;
+            ++used_args;
+          }
+        }
       }
 
       if (non_ros_args.size() > 2)
@@ -125,6 +136,7 @@ class NodeletArgumentParsing
     std::string getType () const    { return (type_);    }
     std::string getName () const    { return (name_);    }
     std::string getManager() const  { return (manager_); }
+    bool isBondEnabled() const { return is_bond_enabled_; }
 
     std::vector<std::string> getMyArgv () const {return local_args_;};
     std::string getDefaultName()
@@ -223,7 +235,7 @@ void print_usage(int argc, char** argv)
   for (int i = 0; i < argc; i++)
     printf("%s ", argv[i]);
   printf("\nnodelet usage:\n");
-  printf("nodelet load pkg/Type manager - Launch a nodelet of type pkg/Type on manager manager\n");
+  printf("nodelet load pkg/Type manager [--no-bond]  - Launch a nodelet of type pkg/Type on manager manager\n");
   printf("nodelet standalone pkg/Type   - Launch a nodelet of type pkg/Type in a standalone node\n");
   printf("nodelet unload name manager   - Unload a nodelet a nodelet by name from manager\n");
   printf("nodelet manager               - Launch a nodelet manager node\n");
@@ -280,30 +292,39 @@ int
     std::string name = ros::this_node::getName ();
     std::string type = arg_parser.getType();
     std::string manager = arg_parser.getManager();
-    std::string bond_id = name + "_" + genId();
+    std::string bond_id;
+    if (arg_parser.isBondEnabled())
+      bond_id = name + "_" + genId();
     bond::Bond bond(manager + "/bond", bond_id);
     ni.loadNodelet (name, type, manager, arg_parser.getMyArgv(), bond_id);
     signal (SIGINT, nodeletLoaderSigIntHandler);
-    bond.start();
+    if (arg_parser.isBondEnabled())
+      bond.start();
     // Spin our own loop
     while (nh.ok ())
     {
       ros::spinOnce();
       if (request_shutdown)
       {
-        bond.breakBond();
-        // Waits for the manager to acknowledge the bond breaking.
-        for (int i = 0; i < 10; ++i)
+        if (arg_parser.isBondEnabled())
         {
-          ros::spinOnce();
-          if (bond.waitUntilBroken(ros::Duration(0.1)))
-            break;
+          bond.breakBond();
+          // Waits for the manager to acknowledge the bond breaking.
+          for (int i = 0; i < 10; ++i)
+          {
+            ros::spinOnce();
+            if (bond.waitUntilBroken(ros::Duration(0.1)))
+              break;
+          }
         }
-        //ni.unloadNodelet (name, manager);
+        else
+        {
+          ni.unloadNodelet (name, manager);
+        }
         ros::shutdown ();
         break;
       }
-      else if (bond.isBroken())
+      else if (arg_parser.isBondEnabled() && bond.isBroken())
       {
         ros::shutdown();
         break;
