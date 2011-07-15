@@ -1,0 +1,8 @@
+^nodelet/build
+^nodelet/bin
+^nodelet/lib
+^nodelet/src/nodelet/srv
+^nodelet/srv_gen
+^nodelet_topic_tools/build
+^test_nodelet/build
+^test_nodelet/lib
