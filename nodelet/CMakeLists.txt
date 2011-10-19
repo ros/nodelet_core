@@ -11,6 +11,14 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
 rosbuild_init()
 
+# Nodelet is known not to build and run correctly on 
+# OS X Lion 10.7.x using the llvm.  Use gcc-4.2 instead.
+# See: https://code.ros.org/trac/ros-pkg/ticket/5144
+IF(${CMAKE_SYSTEM} MATCHES "Darwin-11.*")
+  set(CMAKE_CXX_COMPILER "/usr/bin/g++-4.2")
+  set(CMAKE_C_COMPILER "/usr/bin/gcc-4.2")
+ENDIF(${CMAKE_SYSTEM} MATCHES "Darwin-11.*")
+
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
@@ -29,4 +37,10 @@ rosbuild_link_boost (nodelet filesystem system)
 
 rosbuild_add_library(nodeletlib src/nodelet_class.cpp src/loader.cpp src/callback_queue.cpp src/callback_queue_manager.cpp)
 rosbuild_link_boost(nodeletlib thread)
+
+# See: https://code.ros.org/trac/ros-pkg/ticket/5144
+if(APPLE)
+  set_target_properties(nodeletlib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+endif(APPLE)
+
 target_link_libraries (nodeletlib)
