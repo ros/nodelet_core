@@ -50,11 +50,11 @@ CallbackQueueManager::CallbackQueueManager(uint32_t num_worker_threads)
   tg_.create_thread(boost::bind(&CallbackQueueManager::managerThread, this));
 
   size_t num_threads = getNumWorkerThreads();
-  thread_info_.resize(num_threads);
-  //thread_info_.reserve(num_threads);
+  // NOTE: changed from thread_info_.resize because then all threads shared one queue_mutex, queue_cond!
+  thread_info_.reserve(num_threads);
   for (size_t i = 0; i < num_threads; ++i)
   {
-    //thread_info_.push_back(ThreadInfo());
+    thread_info_.push_back(ThreadInfo());
     tg_.create_thread(boost::bind(&CallbackQueueManager::workerThread, this, &thread_info_[i]));
   }
 }
