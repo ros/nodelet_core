@@ -31,6 +31,9 @@ rosbuild_gensrv()
 
 rosbuild_add_boost_directories()
 
+# Debug only, collects stats on how callbacks are doled out to worker threads
+#add_definitions(-DNODELET_QUEUE_DEBUG)
+
 rosbuild_add_executable(nodelet src/nodelet.cpp)
 target_link_libraries (nodelet nodeletlib uuid)
 rosbuild_link_boost (nodelet filesystem system)

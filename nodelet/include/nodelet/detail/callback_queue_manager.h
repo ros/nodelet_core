@@ -120,6 +120,21 @@ private:
     std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> > queue;
     uint32_t calling;
 
+#ifdef NODELET_QUEUE_DEBUG
+    struct Record
+    {
+      Record(double stamp, uint32_t tasks, bool threaded)
+        : stamp(stamp), tasks(tasks), threaded(threaded)
+      {}
+      
+      double stamp;
+      uint32_t tasks;
+      bool threaded;
+    };
+
+    std::vector<Record> history;
+#endif
+    /// @todo Just remove padding?
     uint8_t pad[sizeof(128 - sizeof(V_Queue) - sizeof(uint32_t) - 2 * sizeof(boost::shared_ptr<void>))];
   };
   // TODO: Once the allocators package moves mainstream, align to cache-line boundary

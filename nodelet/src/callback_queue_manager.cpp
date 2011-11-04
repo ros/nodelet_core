@@ -51,8 +51,10 @@ CallbackQueueManager::CallbackQueueManager(uint32_t num_worker_threads)
 
   size_t num_threads = getNumWorkerThreads();
   thread_info_.resize(num_threads);
+  //thread_info_.reserve(num_threads);
   for (size_t i = 0; i < num_threads; ++i)
   {
+    //thread_info_.push_back(ThreadInfo());
     tg_.create_thread(boost::bind(&CallbackQueueManager::workerThread, this, &thread_info_[i]));
   }
 }
@@ -73,6 +75,25 @@ CallbackQueueManager::~CallbackQueueManager()
   }
 
   tg_.join_all();
+
+#ifdef NODELET_QUEUE_DEBUG
+  // Write out task assignment histories for each thread
+  typedef ThreadInfo::Record Record;
+  for (size_t i = 0; i < num_threads; ++i)
+  {
+    char filename[128];
+    sprintf(filename, "thread_history_%d.txt", (int)i);
+    FILE* file = fopen(filename, "w");
+    fprintf(file, "# timestamps tasks threaded\n");
+    const std::vector<Record>& history = thread_info_[i].history;
+    for (int j = 0; j < (int)history.size(); ++j)
+    {
+      Record r = history[j];
+      fprintf(file, "%.6f %u %d\n", r.stamp, r.tasks, (int)r.threaded);
+    }
+    fclose(file);
+  }
+#endif
 }
 
 uint32_t CallbackQueueManager::getNumWorkerThreads()
@@ -178,29 +199,41 @@ void CallbackQueueManager::managerThread()
             ti = getSmallestQueue();
             boost::mutex::scoped_lock lock(*ti->queue_mutex);
             ti->queue.push_back(std::make_pair(queue, info));
+#ifdef NODELET_QUEUE_DEBUG
+            double stamp = ros::WallTime::now().toSec();
+            uint32_t tasks = ti->queue.size() + ti->calling;
+            ti->history.push_back(ThreadInfo::Record(stamp, tasks, true));
+#endif
           }
           else
           {
             // If this queue is non-thread-safe and has no in-progress calls happening, we add it to the thread with the last
             // work queued.  If the queue already has calls in-progress we add it to the thread it's already being called from
+            /// @todo More fine-grained locking here
+            //{
+              boost::mutex::scoped_lock lock(info->st_mutex);
 
-            boost::mutex::scoped_lock lock(info->st_mutex);
+              ++info->in_thread;
 
-            ++info->in_thread;
+              if (info->in_thread > 1)
+              {
+                ti = &thread_info_[info->thread_index];
+              }
+              else
+              {
+                ti = getSmallestQueue();
+                info->thread_index = ti - &thread_info_.front();
+              }
+            //}
 
-            if (info->in_thread > 1)
-            {
-              ti = &thread_info_[info->thread_index];
-              boost::mutex::scoped_lock lock(*ti->queue_mutex);
-              ti->queue.push_back(std::make_pair(queue, info));
-            }
-            else
-            {
-              ti = getSmallestQueue();
-              info->thread_index = ti - &thread_info_.front();
-              boost::mutex::scoped_lock lock(*ti->queue_mutex);
-              ti->queue.push_back(std::make_pair(queue, info));
-            }
+            /// @todo Can pull these outside if-else
+            boost::mutex::scoped_lock lock2(*ti->queue_mutex);
+            ti->queue.push_back(std::make_pair(queue, info));
+#ifdef NODELET_QUEUE_DEBUG
+            double stamp = ros::WallTime::now().toSec();
+            uint32_t tasks = ti->queue.size() + ti->calling;
+            ti->history.push_back(ThreadInfo::Record(stamp, tasks, false));
+#endif
           }
 
           ti->queue_cond->notify_all();
