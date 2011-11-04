@@ -51,10 +51,11 @@ CallbackQueueManager::CallbackQueueManager(uint32_t num_worker_threads)
 
   size_t num_threads = getNumWorkerThreads();
   // NOTE: changed from thread_info_.resize because then all threads shared one queue_mutex, queue_cond!
-  thread_info_.reserve(num_threads);
+  thread_info_.reset( new ThreadInfo[num_threads] );
+  //thread_info_.reserve(num_threads);
   for (size_t i = 0; i < num_threads; ++i)
   {
-    thread_info_.push_back(ThreadInfo());
+    //thread_info_.push_back(ThreadInfo());
     tg_.create_thread(boost::bind(&CallbackQueueManager::workerThread, this, &thread_info_[i]));
   }
 }
@@ -134,14 +135,11 @@ CallbackQueueManager::ThreadInfo* CallbackQueueManager::getSmallestQueue()
 {
   size_t smallest = std::numeric_limits<size_t>::max();
   uint32_t smallest_index = 0xffffffff;
-  V_ThreadInfo::iterator it = thread_info_.begin();
-  V_ThreadInfo::iterator end = thread_info_.end();
-  for (; it != end; ++it)
+  for (unsigned i = 0; i < num_worker_threads_; ++i)
   {
-    ThreadInfo& ti = *it;
-    boost::mutex::scoped_lock lock(*ti.queue_mutex);
+    ThreadInfo& ti = thread_info_[i];
 
-    size_t size = ti.queue.size() + ti.calling;
+    size_t size = ti.calling;
     if (size == 0)
     {
       return &ti;
@@ -150,7 +148,7 @@ CallbackQueueManager::ThreadInfo* CallbackQueueManager::getSmallestQueue()
     if (size < smallest)
     {
       smallest = size;
-      smallest_index = it - thread_info_.begin();
+      smallest_index = i;
     }
   }
 
@@ -208,7 +206,7 @@ void CallbackQueueManager::managerThread()
             if (info->in_thread == 0)
             {
               ti = getSmallestQueue();
-              info->thread_index = ti - &thread_info_.front();
+              info->thread_index = ti - thread_info_.get();
             }
             else
             {
@@ -221,9 +219,10 @@ void CallbackQueueManager::managerThread()
           {
             boost::mutex::scoped_lock lock(*ti->queue_mutex);
             ti->queue.push_back(std::make_pair(queue, info));
+            ++ti->calling;
 #ifdef NODELET_QUEUE_DEBUG
             double stamp = ros::WallTime::now().toSec();
-            uint32_t tasks = ti->queue.size() + ti->calling;
+            uint32_t tasks = ti->calling;
             ti->history.push_back(ThreadInfo::Record(stamp, tasks, true));
 #endif
           }
@@ -246,8 +245,6 @@ void CallbackQueueManager::workerThread(ThreadInfo* info)
     {
       boost::mutex::scoped_lock lock(*info->queue_mutex);
 
-      info->calling = 0;
-
       while (info->queue.empty() && running_)
       {
         info->queue_cond->wait(lock);
@@ -258,7 +255,6 @@ void CallbackQueueManager::workerThread(ThreadInfo* info)
         return;
       }
 
-      info->calling += info->queue.size();
       info->queue.swap(local_queues);
     }
 
@@ -272,6 +268,7 @@ void CallbackQueueManager::workerThread(ThreadInfo* info)
       {
         callbackAdded(queue);
       }
+      --info->calling;
 
       if (!qi->threaded)
       {
