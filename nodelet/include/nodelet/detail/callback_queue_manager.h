@@ -134,8 +134,11 @@ private:
 
     std::vector<Record> history;
 #endif
-    /// @todo Just remove padding?
-    uint8_t pad[sizeof(128 - sizeof(V_Queue) - sizeof(uint32_t) - 2 * sizeof(boost::shared_ptr<void>))];
+
+    // Pad sizeof(ThreadInfo) to be a multiple of 64 (cache line size) to avoid false sharing.
+    // This still doesn't guarantee ThreadInfo is actually allocated on a cache line boundary though.
+    static const int ACTUAL_SIZE = 2*sizeof(boost::shared_ptr<void>) + sizeof(V_Queue) + sizeof(uint32_t);
+    uint8_t pad[((ACTUAL_SIZE + 63) & ~63) - ACTUAL_SIZE];
   };
   // TODO: Once the allocators package moves mainstream, align to cache-line boundary
   typedef std::vector<ThreadInfo> V_ThreadInfo;

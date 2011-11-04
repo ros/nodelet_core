@@ -33,7 +33,7 @@
 
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition_variable.hpp>
-
+#include <boost/type_traits/alignment_of.hpp>
 #include <boost/bind.hpp>
 
 #include <ros/assert.h>
