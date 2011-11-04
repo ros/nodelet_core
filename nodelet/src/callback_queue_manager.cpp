@@ -197,42 +197,34 @@ void CallbackQueueManager::managerThread()
           {
             // If this queue is thread-safe we immediately add it to the thread with the least work queued
             ti = getSmallestQueue();
+          }
+          else
+          {
+            // If this queue is non-thread-safe and has no in-progress calls happening, we add it to the
+            // thread with the least work queued.  If the queue already has calls in-progress we add it
+            // to the thread it's already being called from
+            boost::mutex::scoped_lock lock(info->st_mutex);
+
+            if (info->in_thread == 0)
+            {
+              ti = getSmallestQueue();
+              info->thread_index = ti - &thread_info_.front();
+            }
+            else
+            {
+              ti = &thread_info_[info->thread_index];
+            }
+
+            ++info->in_thread;
+          }
+
+          {
             boost::mutex::scoped_lock lock(*ti->queue_mutex);
             ti->queue.push_back(std::make_pair(queue, info));
 #ifdef NODELET_QUEUE_DEBUG
             double stamp = ros::WallTime::now().toSec();
             uint32_t tasks = ti->queue.size() + ti->calling;
             ti->history.push_back(ThreadInfo::Record(stamp, tasks, true));
-#endif
-          }
-          else
-          {
-            // If this queue is non-thread-safe and has no in-progress calls happening, we add it to the thread with the last
-            // work queued.  If the queue already has calls in-progress we add it to the thread it's already being called from
-            /// @todo More fine-grained locking here
-            //{
-              boost::mutex::scoped_lock lock(info->st_mutex);
-
-              ++info->in_thread;
-
-              if (info->in_thread > 1)
-              {
-                ti = &thread_info_[info->thread_index];
-              }
-              else
-              {
-                ti = getSmallestQueue();
-                info->thread_index = ti - &thread_info_.front();
-              }
-            //}
-
-            /// @todo Can pull these outside if-else
-            boost::mutex::scoped_lock lock2(*ti->queue_mutex);
-            ti->queue.push_back(std::make_pair(queue, info));
-#ifdef NODELET_QUEUE_DEBUG
-            double stamp = ros::WallTime::now().toSec();
-            uint32_t tasks = ti->queue.size() + ti->calling;
-            ti->history.push_back(ThreadInfo::Record(stamp, tasks, false));
 #endif
           }
 
