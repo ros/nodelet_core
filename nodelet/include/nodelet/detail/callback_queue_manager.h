@@ -31,7 +31,6 @@
 #define NODELET_CALLBACK_QUEUE_MANAGER_H
 
 #include <boost/shared_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
 #include <boost/thread/mutex.hpp>
@@ -112,15 +111,12 @@ private:
   struct ThreadInfo
   {
     ThreadInfo()
-    : queue_mutex(new boost::mutex)
-    , queue_cond(new boost::condition_variable)
-    , calling(0)
+    : calling(0)
     {}
 
     /// @todo SRSW lockfree queue
-    /// @todo These don't even need to be scoped_ptr
-    boost::scoped_ptr<boost::mutex> queue_mutex;
-    boost::scoped_ptr<boost::condition_variable> queue_cond;
+    boost::mutex queue_mutex;
+    boost::condition_variable queue_cond;
     std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> > queue;
     boost::detail::atomic_count calling;
 
@@ -141,9 +137,12 @@ private:
 
     // Pad sizeof(ThreadInfo) to be a multiple of 64 (cache line size) to avoid false sharing.
     // This still doesn't guarantee ThreadInfo is actually allocated on a cache line boundary though.
-    /// @todo Update padding
-    //static const int ACTUAL_SIZE = 2*sizeof(boost::scoped_ptr<void>) + sizeof(V_Queue) + sizeof(uint32_t);
-    //uint8_t pad[((ACTUAL_SIZE + 63) & ~63) - ACTUAL_SIZE];
+    static const int ACTUAL_SIZE =
+      sizeof(boost::mutex) +
+      sizeof(boost::condition_variable) +
+      sizeof(std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> >) +
+      sizeof(boost::detail::atomic_count);
+    uint8_t pad[((ACTUAL_SIZE + 63) & ~63) - ACTUAL_SIZE];
   };
   /// @todo Use cache-aligned allocator for thread_info_
   typedef boost::scoped_array<ThreadInfo> V_ThreadInfo;

@@ -50,12 +50,9 @@ CallbackQueueManager::CallbackQueueManager(uint32_t num_worker_threads)
   tg_.create_thread(boost::bind(&CallbackQueueManager::managerThread, this));
 
   size_t num_threads = getNumWorkerThreads();
-  // NOTE: changed from thread_info_.resize because then all threads shared one queue_mutex, queue_cond!
   thread_info_.reset( new ThreadInfo[num_threads] );
-  //thread_info_.reserve(num_threads);
   for (size_t i = 0; i < num_threads; ++i)
   {
-    //thread_info_.push_back(ThreadInfo());
     tg_.create_thread(boost::bind(&CallbackQueueManager::workerThread, this, &thread_info_[i]));
   }
 }
@@ -71,8 +68,8 @@ CallbackQueueManager::~CallbackQueueManager()
   size_t num_threads = getNumWorkerThreads();
   for (size_t i = 0; i < num_threads; ++i)
   {
-    boost::mutex::scoped_lock lock(*thread_info_[i].queue_mutex);
-    thread_info_[i].queue_cond->notify_all();
+    boost::mutex::scoped_lock lock(thread_info_[i].queue_mutex);
+    thread_info_[i].queue_cond.notify_all();
   }
 
   tg_.join_all();
@@ -217,7 +214,7 @@ void CallbackQueueManager::managerThread()
           }
 
           {
-            boost::mutex::scoped_lock lock(*ti->queue_mutex);
+            boost::mutex::scoped_lock lock(ti->queue_mutex);
             ti->queue.push_back(std::make_pair(queue, info));
             ++ti->calling;
 #ifdef NODELET_QUEUE_DEBUG
@@ -227,7 +224,7 @@ void CallbackQueueManager::managerThread()
 #endif
           }
 
-          ti->queue_cond->notify_all();
+          ti->queue_cond.notify_all();
         }
       }
     }
@@ -243,11 +240,11 @@ void CallbackQueueManager::workerThread(ThreadInfo* info)
   while (running_)
   {
     {
-      boost::mutex::scoped_lock lock(*info->queue_mutex);
+      boost::mutex::scoped_lock lock(info->queue_mutex);
 
       while (info->queue.empty() && running_)
       {
-        info->queue_cond->wait(lock);
+        info->queue_cond.wait(lock);
       }
 
       if (!running_)
