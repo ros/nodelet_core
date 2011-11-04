@@ -32,3 +32,6 @@ rosbuild_add_executable(test_console test/test_console.cpp)
 rosbuild_add_gtest_build_flags(test_console)
 
 rosbuild_add_rostest(test/test_console.launch)
+
+# Not a real test. Tries to measure overhead of CallbackQueueManager.
+rosbuild_add_executable(benchmark src/benchmark.cpp)
