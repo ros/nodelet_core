@@ -59,21 +59,8 @@ CallbackQueueManager::CallbackQueueManager(uint32_t num_worker_threads)
 
 CallbackQueueManager::~CallbackQueueManager()
 {
-  running_ = false;
-  {
-    boost::mutex::scoped_lock lock(waiting_mutex_);
-    waiting_cond_.notify_all();
-  }
-
-  size_t num_threads = getNumWorkerThreads();
-  for (size_t i = 0; i < num_threads; ++i)
-  {
-    boost::mutex::scoped_lock lock(thread_info_[i].queue_mutex);
-    thread_info_[i].queue_cond.notify_all();
-  }
-
-  tg_.join_all();
-
+  stop();
+  
 #ifdef NODELET_QUEUE_DEBUG
   // Write out task assignment histories for each thread
   typedef ThreadInfo::Record Record;
@@ -92,6 +79,24 @@ CallbackQueueManager::~CallbackQueueManager()
     fclose(file);
   }
 #endif
+}
+
+void CallbackQueueManager::stop()
+{
+  running_ = false;
+  {
+    boost::mutex::scoped_lock lock(waiting_mutex_);
+    waiting_cond_.notify_all();
+  }
+
+  size_t num_threads = getNumWorkerThreads();
+  for (size_t i = 0; i < num_threads; ++i)
+  {
+    boost::mutex::scoped_lock lock(thread_info_[i].queue_mutex);
+    thread_info_[i].queue_cond.notify_all();
+  }
+
+  tg_.join_all();
 }
 
 uint32_t CallbackQueueManager::getNumWorkerThreads()

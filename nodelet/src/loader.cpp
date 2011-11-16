@@ -64,7 +64,7 @@ public:
 
 private:
   bool serviceLoad(nodelet::NodeletLoad::Request &req,
-                                  nodelet::NodeletLoad::Response &res)
+                   nodelet::NodeletLoad::Response &res)
   {
     // build map
     M_string remappings;
@@ -74,10 +74,8 @@ private:
     }
     else
     {
-      //      std::cerr<< "remapping";
       for (size_t i = 0; i < req.remap_source_args.size(); ++i)
       {
-        //std::cerr<< req.remap_source_args[i] << ":=" << req.remap_target_args[i] << std::endl;
         remappings[ros::names::resolve(req.remap_source_args[i])] = ros::names::resolve(req.remap_target_args[i]);
         ROS_DEBUG("%s:%s\n", ros::names::resolve(req.remap_source_args[i]).c_str(), remappings[ros::names::resolve(req.remap_source_args[i])].c_str());
       }
@@ -97,7 +95,7 @@ private:
   }
 
   bool serviceUnload(nodelet::NodeletUnload::Request &req,
-                                    nodelet::NodeletUnload::Response &res)
+                     nodelet::NodeletUnload::Response &res)
   {
     res.success = parent_->unload(req.name);
     if (!res.success)
@@ -166,8 +164,16 @@ void Loader::constructorImplementation(bool provide_ros_api, ros::NodeHandle ser
 
 Loader::~Loader()
 {
-  clear();
+  services_.reset();
 
+  // About the awkward ordering here:
+  // We have to make callback_manager_ flush all callbacks and stop the worker threads BEFORE
+  // destroying the nodelets. Otherwise the worker threads may act on nodelet data as/after
+  // it's destroyed. But we have to destroy callback_manager_ after the nodelets, because the
+  // nodelet destructor tries to remove its queues from the callback manager.
+  callback_manager_->stop();
+  nodelets_.clear();
+  callback_manager_.reset();
 }
 
 bool Loader::load(const std::string &name, const std::string& type, const ros::M_string& remappings, const std::vector<std::string> & my_argv, boost::shared_ptr<bond::Bond> bond)
@@ -224,6 +230,8 @@ bool Loader::unload (const std::string & name)
 /** \brief Clear all nodelets from this chain */
 bool Loader::clear ()
 {
+  /// @todo This isn't really safe - can result in worker threads for outstanding callbacks
+  /// operating on nodelet data as/after it's destroyed.
   boost::mutex::scoped_lock lock (lock_);
   nodelets_.clear ();
   return (true);

@@ -70,6 +70,8 @@ public:
 
   uint32_t getNumWorkerThreads();
 
+  void stop();
+
 private:
   void managerThread();
   struct ThreadInfo;
