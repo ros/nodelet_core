@@ -29,6 +29,7 @@
 
 #include <nodelet/loader.h>
 #include <nodelet/nodelet.h>
+#include <nodelet/detail/callback_queue.h>
 #include <nodelet/detail/callback_queue_manager.h>
 #include <pluginlib/class_loader.h>
 
@@ -197,6 +198,9 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
     nodelets_[name] = p;
     ROS_DEBUG("Done loading nodelet %s", name.c_str());
 
+    /// @todo Pass callback queues to p->init directly
+    p->st_callback_queue_.reset(new detail::CallbackQueue(callback_manager_.get(), p));
+    p->mt_callback_queue_.reset(new detail::CallbackQueue(callback_manager_.get(), p));
     p->init(name, remappings, my_argv, callback_manager_.get(), bond);
 
     if (bond)
@@ -219,6 +223,7 @@ bool Loader::unload (const std::string & name)
   M_stringToNodelet::iterator it = nodelets_.find (name);
   if (it != nodelets_.end ())
   {
+    it->second->disable();
     nodelets_.erase (it);
     ROS_DEBUG ("Done unloading nodelet %s", name.c_str ());
     return (true);

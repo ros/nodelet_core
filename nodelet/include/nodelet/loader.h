@@ -74,7 +74,7 @@ typedef boost::shared_ptr<CallbackQueueManager> CallbackQueueManagerPtr;
 class Loader
 {
 public:
-  /** \brief Construct the nodelet loader with optional ros API at defautl location of NodeHandle("~")*/
+  /** \brief Construct the nodelet loader with optional ros API at default location of NodeHandle("~")*/
   Loader(bool provide_ros_api = true);
   /** \brief Construct the nodelet loader with optional ros API in namespace of passed NodeHandle */
   Loader(ros::NodeHandle server_nh);

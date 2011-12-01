@@ -167,7 +167,10 @@ private:
   boost::shared_ptr<bond::Bond> bond_;
 
   // Method to be overridden by subclass when starting up.
-  virtual void onInit () = 0;
+  virtual void onInit() = 0;
+
+  // Disable callback queues for this nodelet
+  void disable();
 
   // Public API used for launching
 public:
@@ -179,9 +182,13 @@ public:
    * \param remapping_args The remapping args in a map for the nodelet
    * \param my_args The commandline arguments for this nodelet stripped of special arguments such as ROS arguments
    */
-  void init (const std::string& name, const M_string& remapping_args, const V_string& my_argv, detail::CallbackQueueManager* callback_manager, boost::shared_ptr<bond::Bond> bond);
+  void init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
+            detail::CallbackQueueManager* callback_manager, boost::shared_ptr<bond::Bond> bond);
 
   virtual ~Nodelet();
+
+  /// @todo Fix interface so friending Loader isn't necessary
+  friend class Loader;
 };
 
 }

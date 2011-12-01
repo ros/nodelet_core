@@ -46,12 +46,12 @@ Nodelet::Nodelet ()
 Nodelet::~Nodelet ()
 {
   bond_.reset();
+}
 
-  if (inited_)
-  {
-    callback_manager_->removeQueue(st_callback_queue_);
-    callback_manager_->removeQueue(mt_callback_queue_);
-  }
+void Nodelet::disable()
+{
+  st_callback_queue_->disable();
+  mt_callback_queue_->disable();
 }
 
 ros::CallbackQueueInterface& Nodelet::getSTCallbackQueue () const
@@ -111,7 +111,8 @@ ros::NodeHandle& Nodelet::getMTPrivateNodeHandle() const
   return *mt_private_nh_;
 }
 
-void Nodelet::init(const std::string& name, const M_string& remapping_args, const V_string& my_argv, detail::CallbackQueueManager* callback_manager, boost::shared_ptr<bond::Bond> bond)
+void Nodelet::init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
+                   detail::CallbackQueueManager* callback_manager, boost::shared_ptr<bond::Bond> bond)
 {
   if (inited_)
   {
@@ -121,9 +122,11 @@ void Nodelet::init(const std::string& name, const M_string& remapping_args, cons
   bond_ = bond;
 
   callback_manager_ = callback_manager;
-  st_callback_queue_.reset(new detail::CallbackQueue(callback_manager));
-  mt_callback_queue_.reset(new detail::CallbackQueue(callback_manager));
-
+  // NOTE: Creation of st_callback_queue_ and mt_callback_queue_ moved to Loader::load() as part
+  // of thread-safety fixes for unloading nodets - CallbackQueue needs a WPtr to this nodelet, which
+  // we can't provide from here.
+  
+  /// @todo Move all detail:: stuff out of Nodelet, and init it with 2 ros::CallbackQueueInterface*.
   callback_manager->addQueue(st_callback_queue_, false);
   callback_manager->addQueue(mt_callback_queue_, true);
 

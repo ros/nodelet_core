@@ -37,9 +37,10 @@ namespace nodelet
 namespace detail
 {
 
-CallbackQueue::CallbackQueue(CallbackQueueManager* parent)
+CallbackQueue::CallbackQueue(CallbackQueueManager* parent, const NodeletWPtr& nodelet)
 : parent_(parent)
 , queue_(new ros::CallbackQueue)
+, nodelet_(nodelet)
 {
 }
 
@@ -52,8 +53,11 @@ CallbackQueue::~CallbackQueue()
 
 void CallbackQueue::addCallback(const ros::CallbackInterfacePtr& cb, uint64_t owner_id)
 {
-  queue_->addCallback(cb, owner_id);
-  parent_->callbackAdded(shared_from_this());
+  if (queue_->isEnabled())
+  {
+    queue_->addCallback(cb, owner_id);
+    parent_->callbackAdded(shared_from_this());
+  }
 }
 
 void CallbackQueue::removeByID(uint64_t owner_id)
@@ -63,7 +67,18 @@ void CallbackQueue::removeByID(uint64_t owner_id)
 
 uint32_t CallbackQueue::callOne()
 {
-  return queue_->callOne();
+  // Don't try to call the callback after its nodelet has been destroyed!
+  boost::shared_ptr<Nodelet> p = nodelet_.lock();
+  if (p)
+    return queue_->callOne();
+  else
+    return ros::CallbackQueue::Disabled;
+}
+
+void CallbackQueue::disable()
+{
+  parent_->removeQueue(shared_from_this());
+  queue_->disable();
 }
 
 } // namespace detail

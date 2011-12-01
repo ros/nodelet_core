@@ -40,6 +40,10 @@ class CallbackQueue;
 
 namespace nodelet
 {
+
+class Nodelet;
+typedef boost::weak_ptr<Nodelet> NodeletWPtr;
+
 namespace detail
 {
 
@@ -48,7 +52,7 @@ class CallbackQueueManager;
 class CallbackQueue : public ros::CallbackQueueInterface, public boost::enable_shared_from_this<CallbackQueue>
 {
 public:
-  CallbackQueue(CallbackQueueManager* parent);
+  CallbackQueue(CallbackQueueManager* parent, const NodeletWPtr& nodelet);
   ~CallbackQueue();
 
   virtual void addCallback(const ros::CallbackInterfacePtr& callback, uint64_t owner_id = 0);
@@ -56,9 +60,12 @@ public:
 
   uint32_t callOne();
 
+  void disable();
+
 private:
   CallbackQueueManager* parent_;
   ros::CallbackQueue* queue_;
+  NodeletWPtr nodelet_;
 };
 
 } // namespace detail
