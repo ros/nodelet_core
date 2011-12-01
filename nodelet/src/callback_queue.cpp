@@ -70,11 +70,16 @@ void CallbackQueue::removeByID(uint64_t owner_id)
 uint32_t CallbackQueue::callOne()
 {
   // Don't try to call the callback after its nodelet has been destroyed!
-  ros::VoidConstPtr p = tracked_object_.lock();
-  if (!has_tracked_object_ || p)
-    return queue_->callOne();
-  else
-    return ros::CallbackQueue::Disabled;
+  ros::VoidConstPtr tracker;
+  if (has_tracked_object_)
+  {
+    tracker = tracked_object_.lock();
+
+    if (!tracker)
+      return ros::CallbackQueue::Disabled;
+  }
+  
+  return queue_->callOne();
 }
 
 void CallbackQueue::disable()
