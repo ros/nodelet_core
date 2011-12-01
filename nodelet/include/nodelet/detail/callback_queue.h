@@ -41,18 +41,17 @@ class CallbackQueue;
 namespace nodelet
 {
 
-class Nodelet;
-typedef boost::weak_ptr<Nodelet> NodeletWPtr;
-
 namespace detail
 {
 
 class CallbackQueueManager;
 
-class CallbackQueue : public ros::CallbackQueueInterface, public boost::enable_shared_from_this<CallbackQueue>
+class CallbackQueue : public ros::CallbackQueueInterface,
+                      public boost::enable_shared_from_this<CallbackQueue>
 {
 public:
-  CallbackQueue(CallbackQueueManager* parent, const NodeletWPtr& nodelet);
+  CallbackQueue(CallbackQueueManager* parent,
+                const ros::VoidConstPtr& tracked_object = ros::VoidConstPtr());
   ~CallbackQueue();
 
   virtual void addCallback(const ros::CallbackInterfacePtr& callback, uint64_t owner_id = 0);
@@ -65,7 +64,8 @@ public:
 private:
   CallbackQueueManager* parent_;
   ros::CallbackQueue* queue_;
-  NodeletWPtr nodelet_;
+  ros::VoidConstWPtr tracked_object_;
+  bool has_tracked_object_;
 };
 
 } // namespace detail

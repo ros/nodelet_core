@@ -37,10 +37,12 @@ namespace nodelet
 namespace detail
 {
 
-CallbackQueue::CallbackQueue(CallbackQueueManager* parent, const NodeletWPtr& nodelet)
+CallbackQueue::CallbackQueue(CallbackQueueManager* parent,
+                             const ros::VoidConstPtr& tracked_object)
 : parent_(parent)
 , queue_(new ros::CallbackQueue)
-, nodelet_(nodelet)
+, tracked_object_(tracked_object)
+, has_tracked_object_(tracked_object)
 {
 }
 
@@ -68,8 +70,8 @@ void CallbackQueue::removeByID(uint64_t owner_id)
 uint32_t CallbackQueue::callOne()
 {
   // Don't try to call the callback after its nodelet has been destroyed!
-  boost::shared_ptr<Nodelet> p = nodelet_.lock();
-  if (p)
+  ros::VoidConstPtr p = tracked_object_.lock();
+  if (!has_tracked_object_ || p)
     return queue_->callOne();
   else
     return ros::CallbackQueue::Disabled;
