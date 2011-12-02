@@ -162,8 +162,12 @@ class NodeletInterface
       std::string service_name = manager + "/unload_nodelet";
       // Check if the service exists and is available
       if (!ros::service::exists (service_name, true))
-        return (false);       // exit here as it doesn't make sense to wait until the manager starts,
-                              // as there's probably no nodelet already loaded to unload
+      {
+        // Probably the manager has shut down already, which is fine
+        ROS_WARN("Couldn't find service %s, perhaps the manager is already shut down",
+                 service_name.c_str());
+        return (false);
+      }
 
       ros::ServiceClient client = n_.serviceClient<nodelet::NodeletUnload> (service_name);
       //client.waitForExistence ();
@@ -173,7 +177,9 @@ class NodeletInterface
       srv.request.name = name;
       if (!client.call (srv))
       {
-        //ROS_ERROR ("Failed to call service!");
+        // Maybe service shut down in the meantime, which isn't an error
+        if (ros::service::exists(service_name, false))
+          ROS_FATAL("Service call failed!");
         return (false);
       }
       return (true);
@@ -220,7 +226,7 @@ class NodeletInterface
       srv.request.bond_id = bond_id;
       if (!client.call (srv))
       {
-        //ROS_ERROR ("Failed to call service!");
+        ROS_FATAL("Service call failed!");
         return false;
       }
       return true;
@@ -296,7 +302,9 @@ int
     if (arg_parser.isBondEnabled())
       bond_id = name + "_" + genId();
     bond::Bond bond(manager + "/bond", bond_id);
-    ni.loadNodelet (name, type, manager, arg_parser.getMyArgv(), bond_id);
+    if (!ni.loadNodelet(name, type, manager, arg_parser.getMyArgv(), bond_id))
+      return -1;
+    
     signal (SIGINT, nodeletLoaderSigIntHandler);
     if (arg_parser.isBondEnabled())
       bond.start();
@@ -338,7 +346,8 @@ int
     std::string name = arg_parser.getName ();
     std::string manager = arg_parser.getManager();
     NodeletInterface ni;
-    ni.unloadNodelet (name, manager);
+    if (!ni.unloadNodelet(name, manager))
+      return -1;
   }
   else
   {
