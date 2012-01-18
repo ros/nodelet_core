@@ -1,0 +1,11 @@
+<launch>
+  <node pkg="nodelet" name="nodelet_manager" type="nodelet" args="manager"/>
+
+  <node pkg="nodelet" name="nodelet_throttle" type="nodelet" 
+	args="load nodelet_topic_tools/NodeletThrottleString nodelet_manager">
+    <remap from="topic_in"  to="string_in"/>
+    <remap from="topic_out" to="string_out"/>
+  </node>
+
+  <test pkg="nodelet_topic_tools" test-name="test_throttle" type="test_throttle.py"/>
+</launch>

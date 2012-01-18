@@ -1,0 +1,7 @@
+<library path="lib/libtest_nodelet_topic_tools">
+  <class name="nodelet_topic_tools/NodeletThrottleString" type="nodelet_topic_tools::NodeletThrottleString" base_class_type="nodelet::Nodelet">
+    <description>
+      Throttle strings in nodelet (testing only).
+    </description>
+  </class>
+</library>
