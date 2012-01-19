@@ -46,6 +46,7 @@
 #include <uuid/uuid.h>
 
 #include <ros/ros.h>
+#include <ros/xmlrpc_manager.h>
 #include <bondcpp/bond.h>
 #include "nodelet/loader.h"
 #include "nodelet/NodeletList.h"
@@ -250,10 +251,28 @@ void print_usage(int argc, char** argv)
 
 sig_atomic_t volatile request_shutdown = 0;
 
-void
-  nodeletLoaderSigIntHandler (int sig)
+void nodeletLoaderSigIntHandler(int sig)
 {
   request_shutdown = 1;
+}
+
+// Shutdown can be triggered externally by an XML-RPC call, this is how "rosnode kill"
+// works. When shutting down a "nodelet load" we always want to unload the nodelet
+// before shutting down our ROS comm channels, so we override the default roscpp
+// handler for a "shutdown" XML-RPC call.
+void shutdownCallback(XmlRpc::XmlRpcValue& params, XmlRpc::XmlRpcValue& result)
+{
+  int num_params = 0;
+  if (params.getType() == XmlRpc::XmlRpcValue::TypeArray)
+    num_params = params.size();
+  if (num_params > 1)
+  {
+    std::string reason = params[1];
+    ROS_WARN("Shutdown request received. Reason: [%s]", reason.c_str());
+    request_shutdown = 1;
+  }
+
+  result = ros::xmlrpc::responseInt(1, "", 0);
 }
 
 /* ---[ */
@@ -304,41 +323,31 @@ int
     bond::Bond bond(manager + "/bond", bond_id);
     if (!ni.loadNodelet(name, type, manager, arg_parser.getMyArgv(), bond_id))
       return -1;
+
+    // Override default exit handlers for roscpp
+    signal(SIGINT, nodeletLoaderSigIntHandler);
+    ros::XMLRPCManager::instance()->unbind("shutdown");
+    ros::XMLRPCManager::instance()->bind("shutdown", shutdownCallback);
     
-    signal (SIGINT, nodeletLoaderSigIntHandler);
     if (arg_parser.isBondEnabled())
       bond.start();
     // Spin our own loop
-    while (nh.ok ())
+    while (!request_shutdown)
     {
       ros::spinOnce();
-      if (request_shutdown)
+      if (arg_parser.isBondEnabled() && bond.isBroken())
       {
-        if (arg_parser.isBondEnabled())
-        {
-          bond.breakBond();
-          // Waits for the manager to acknowledge the bond breaking.
-          for (int i = 0; i < 10; ++i)
-          {
-            ros::spinOnce();
-            if (bond.waitUntilBroken(ros::Duration(0.1)))
-              break;
-          }
-        }
-        else
-        {
-          ni.unloadNodelet (name, manager);
-        }
-        ros::shutdown ();
-        break;
-      }
-      else if (arg_parser.isBondEnabled() && bond.isBroken())
-      {
-        ros::shutdown();
-        break;
+        ROS_INFO("Bond broken, exiting");
+        goto shutdown;
       }
       usleep(100000);
     }
+    // Attempt to unload the nodelet before shutting down ROS
+    ni.unloadNodelet(name, manager);
+    if (arg_parser.isBondEnabled())
+      bond.breakBond();
+  shutdown:
+    ros::shutdown();
   }
   else if (command == "unload")
   {
