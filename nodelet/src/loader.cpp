@@ -141,17 +141,9 @@ Loader::Loader(ros::NodeHandle server_nh)
 
 void Loader::constructorImplementation(bool provide_ros_api, ros::NodeHandle server_nh)
 {
-  std::string lib_string = "";
-  std::vector<std::string> libs = loader_->getDeclaredClasses();
-  for (size_t i = 0 ; i < libs.size(); ++i)
-  {
-    lib_string = lib_string + std::string(", ") + libs[i];
-  }
-
   if (provide_ros_api)
   {
     services_.reset(new detail::LoaderROS(this, server_nh));
-    ROS_DEBUG("In nodelet::Loader found the following libs: %s", lib_string.c_str());
     int num_threads_param;
     if (server_nh.getParam ("num_worker_threads", num_threads_param))
     {
