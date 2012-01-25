@@ -41,11 +41,15 @@
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
-#include <bondcpp/bond.h>
 
 namespace ros
 {
 class NodeHandle;
+}
+
+namespace bond
+{
+class Bond;
 }
 
 namespace nodelet
@@ -82,7 +86,8 @@ public:
   
   ~Loader();
 
-  bool load(const std::string& name, const std::string& type, const M_string& remappings, const V_string& my_argv, boost::shared_ptr<bond::Bond> bond = boost::shared_ptr<bond::Bond>((bond::Bond*)NULL));
+  bool load(const std::string& name, const std::string& type, const M_string& remappings, const V_string& my_argv,
+            const boost::shared_ptr<bond::Bond>& bond = boost::shared_ptr<bond::Bond>());
   bool unload(const std::string& name);
 
   /** \brief Clear all nodelets from this loader */

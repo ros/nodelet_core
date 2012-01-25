@@ -32,16 +32,13 @@
 #include <nodelet/detail/callback_queue.h>
 #include <nodelet/detail/callback_queue_manager.h>
 #include <pluginlib/class_loader.h>
+#include <bondcpp/bond.h>
 
 #include <ros/ros.h>
 #include <ros/callback_queue.h>
 #include <nodelet/NodeletLoad.h>
 #include <nodelet/NodeletList.h>
 #include <nodelet/NodeletUnload.h>
-
-#include <sstream>
-#include <map>
-#include <boost/shared_ptr.hpp>
 
 namespace nodelet
 {
@@ -180,7 +177,8 @@ Loader::~Loader()
   callback_manager_.reset();
 }
 
-bool Loader::load(const std::string &name, const std::string& type, const ros::M_string& remappings, const std::vector<std::string> & my_argv, boost::shared_ptr<bond::Bond> bond)
+bool Loader::load(const std::string &name, const std::string& type, const ros::M_string& remappings,
+                  const std::vector<std::string> & my_argv, const boost::shared_ptr<bond::Bond>& bond)
 {
   boost::mutex::scoped_lock lock (lock_);
   if (nodelets_.count(name) > 0)

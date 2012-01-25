@@ -112,7 +112,7 @@ ros::NodeHandle& Nodelet::getMTPrivateNodeHandle() const
 }
 
 void Nodelet::init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
-                   detail::CallbackQueueManager* callback_manager, boost::shared_ptr<bond::Bond> bond)
+                   detail::CallbackQueueManager* callback_manager, const boost::shared_ptr<bond::Bond>& bond)
 {
   if (inited_)
   {

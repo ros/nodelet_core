@@ -183,7 +183,7 @@ public:
    * \param my_args The commandline arguments for this nodelet stripped of special arguments such as ROS arguments
    */
   void init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
-            detail::CallbackQueueManager* callback_manager, boost::shared_ptr<bond::Bond> bond);
+            detail::CallbackQueueManager* callback_manager, const boost::shared_ptr<bond::Bond>& bond);
 
   virtual ~Nodelet();
 
