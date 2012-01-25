@@ -47,6 +47,9 @@ CallbackQueueManager::CallbackQueueManager(uint32_t num_worker_threads)
 : running_(true),
   num_worker_threads_(num_worker_threads)
 {
+  if (num_worker_threads_ == 0)
+    num_worker_threads_ = boost::thread::hardware_concurrency();
+  
   tg_.create_thread(boost::bind(&CallbackQueueManager::managerThread, this));
 
   size_t num_threads = getNumWorkerThreads();

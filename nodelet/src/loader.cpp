@@ -110,7 +110,6 @@ private:
   bool serviceList(nodelet::NodeletList::Request &req,
                    nodelet::NodeletList::Response &res)
   {
-
     res.nodelets = parent_->listLoadedNodelets();
     return true;
   }
@@ -128,31 +127,43 @@ private:
 } // namespace detail
 
 Loader::Loader(bool provide_ros_api)
-: loader_(new pluginlib::ClassLoader<Nodelet>("nodelet", "nodelet::Nodelet"))
 {
-  constructorImplementation(provide_ros_api, ros::NodeHandle("~"));
+  useDefaultLoader();
+  if (provide_ros_api)
+    advertiseRosApi(ros::NodeHandle("~"));
+  else
+    callback_manager_.reset(new detail::CallbackQueueManager);
 }
 
 Loader::Loader(ros::NodeHandle server_nh)
-  : loader_(new pluginlib::ClassLoader<Nodelet>("nodelet", "nodelet::Nodelet"))
 {
-  constructorImplementation(true, server_nh);
+  useDefaultLoader();
+  advertiseRosApi(server_nh);
 }
 
-void Loader::constructorImplementation(bool provide_ros_api, ros::NodeHandle server_nh)
+Loader::Loader(const boost::function<Nodelet* (const std::string& lookup_name)>& create_instance)
+  : create_instance_(create_instance)
+  , callback_manager_(new detail::CallbackQueueManager)
 {
-  if (provide_ros_api)
-  {
-    services_.reset(new detail::LoaderROS(this, server_nh));
-    int num_threads_param;
-    if (server_nh.getParam ("num_worker_threads", num_threads_param))
-    {
-      callback_manager_ = detail::CallbackQueueManagerPtr (new detail::CallbackQueueManager (num_threads_param));
-      ROS_INFO("Initializing nodelet with %d worker threads.", num_threads_param);
-    }
-  }
-  if (!callback_manager_)
-    callback_manager_ = detail::CallbackQueueManagerPtr (new detail::CallbackQueueManager);
+}
+
+void Loader::useDefaultLoader()
+{
+  // Under normal circumstances, we use pluginlib to load any registered nodelet
+  typedef pluginlib::ClassLoader<Nodelet> Loader;
+  boost::shared_ptr<Loader> loader(new Loader("nodelet", "nodelet::Nodelet"));
+  // create_instance_ is self-contained; it owns a copy of the loader shared_ptr
+  create_instance_ = boost::bind(&Loader::createClassInstance, loader, _1, true);
+}
+
+void Loader::advertiseRosApi(ros::NodeHandle server_nh)
+{
+  int num_threads_param;
+  server_nh.param("num_worker_threads", num_threads_param, 0);
+  callback_manager_.reset(new detail::CallbackQueueManager(num_threads_param));
+  ROS_INFO("Initializing nodelet with %d worker threads.", (int)callback_manager_->getNumWorkerThreads());
+    
+  services_.reset(new detail::LoaderROS(this, server_nh));
 }
 
 Loader::~Loader()
@@ -178,14 +189,11 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
     return false;
   }
 
-  //\TODO store type in string format too, or provide accessors from pluginlib
   try
   {
-    NodeletPtr p(loader_->createClassInstance(type));
+    NodeletPtr p(create_instance_(type));
     if (!p)
-    {
       return false;
-    }
 
     nodelets_[name] = p;
     ROS_DEBUG("Done loading nodelet %s", name.c_str());
@@ -201,7 +209,7 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
     ROS_DEBUG("Done initing nodelet %s", name.c_str());
     return true;
   }
-  catch (pluginlib::PluginlibException& e)
+  catch (std::runtime_error& e)
   {
     ROS_ERROR("Failed to load nodelet [%s] of type [%s]: %s", name.c_str(), type.c_str(), e.what());
   }

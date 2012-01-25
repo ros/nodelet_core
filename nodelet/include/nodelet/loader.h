@@ -38,14 +38,10 @@
 
 #include <map>
 #include <vector>
+#include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <bondcpp/bond.h>
-
-namespace pluginlib
-{
-template<typename T> class ClassLoader;
-}
 
 namespace ros
 {
@@ -78,6 +74,11 @@ public:
   Loader(bool provide_ros_api = true);
   /** \brief Construct the nodelet loader with optional ros API in namespace of passed NodeHandle */
   Loader(ros::NodeHandle server_nh);
+  /**
+   * \brief Construct the nodelet loader without ros API, using non-standard factory function to
+   * create nodelet instances
+   */
+  Loader(const boost::function<Nodelet* (const std::string& lookup_name)>& create_instance);
   
   ~Loader();
 
@@ -90,7 +91,8 @@ public:
   /**\brief List the names of all loaded nodelets */
   std::vector<std::string> listLoadedNodelets();
 private:
-  void constructorImplementation(bool provide_ros_api, ros::NodeHandle server_nh);
+  void useDefaultLoader();
+  void advertiseRosApi(ros::NodeHandle server_nh);
 
   boost::mutex lock_;  ///<! A lock to protect internal integrity.  Every external method should lock it for safety.
   detail::LoaderROSPtr services_;
@@ -98,9 +100,7 @@ private:
   typedef std::map<std::string, NodeletPtr> M_stringToNodelet;
   M_stringToNodelet nodelets_; ///<! A map of name to pointers of currently constructed nodelets
 
-  typedef boost::shared_ptr<pluginlib::ClassLoader<Nodelet> > ClassLoaderPtr;
-  ClassLoaderPtr loader_;
-
+  boost::function<Nodelet* (const std::string& lookup_name)> create_instance_;
   detail::CallbackQueueManagerPtr callback_manager_;
 };
 

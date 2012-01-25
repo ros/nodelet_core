@@ -61,7 +61,12 @@ typedef boost::shared_ptr<CallbackQueue> CallbackQueuePtr;
 class CallbackQueueManager
 {
 public:
-  CallbackQueueManager(uint32_t num_worker_threads=boost::thread::hardware_concurrency());
+  /**
+   * \brief Constructor
+   *
+   * By default, uses the number of hardware threads available on the current system.
+   */
+  CallbackQueueManager(uint32_t num_worker_threads = 0);
   ~CallbackQueueManager();
 
   void addQueue(const CallbackQueuePtr& queue, bool threaded);
