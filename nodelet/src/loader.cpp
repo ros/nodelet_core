@@ -167,17 +167,6 @@ void Loader::advertiseRosApi(ros::NodeHandle server_nh)
 
 Loader::~Loader()
 {
-  /// @todo Clean this up
-  services_.reset();
-
-  // About the awkward ordering here:
-  // We have to make callback_manager_ flush all callbacks and stop the worker threads BEFORE
-  // destroying the nodelets. Otherwise the worker threads may act on nodelet data as/after
-  // it's destroyed. But we have to destroy callback_manager_ after the nodelets, because the
-  // nodelet destructor tries to remove its queues from the callback manager.
-  callback_manager_->stop();
-  nodelets_.clear();
-  callback_manager_.reset();
 }
 
 // Ensures that Nodelets are loaded and unloaded correctly
@@ -260,8 +249,6 @@ bool Loader::unload (const std::string & name)
 /** \brief Clear all nodelets from this chain */
 bool Loader::clear ()
 {
-  /// @todo This isn't really safe - can result in worker threads for outstanding callbacks
-  /// operating on nodelet data as/after it's destroyed.
   boost::mutex::scoped_lock lock (lock_);
   nodelets_.clear();
   return (true);

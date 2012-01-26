@@ -104,17 +104,14 @@ private:
   detail::LoaderROSPtr services_;
 
   /// @todo Hide rest of this in some PIMPL struct to allow ABI-compatible fixes
+  boost::function<Nodelet* (const std::string& lookup_name)> create_instance_;
+  detail::CallbackQueueManagerPtr callback_manager_; // Must outlive nodelets_
+
   struct NodeletRecord;
   typedef boost::ptr_map<std::string, NodeletRecord> M_stringToNodelet;
-  //typedef std::map<std::string, NodeletRecord> M_stringToNodelet;
   M_stringToNodelet nodelets_; ///<! A map of name to pointers of currently constructed nodelets
-
-  boost::function<Nodelet* (const std::string& lookup_name)> create_instance_;
-  detail::CallbackQueueManagerPtr callback_manager_;
 };
 
-
-};
+} // namespace nodelet
 
 #endif //#ifndef NODELET_LOADER_H
-
