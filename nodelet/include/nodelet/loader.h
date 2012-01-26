@@ -39,8 +39,7 @@
 #include <map>
 #include <vector>
 #include <boost/function.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
-#include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 
 namespace ros
@@ -51,18 +50,8 @@ class NodeHandle;
 namespace nodelet
 {
 class Nodelet;
-typedef boost::shared_ptr<Nodelet> NodeletPtr;
 typedef std::map<std::string, std::string> M_string;
 typedef std::vector<std::string> V_string;
-
-namespace detail
-{
-class LoaderROS;
-typedef boost::shared_ptr<LoaderROS> LoaderROSPtr;
-class CallbackQueueManager;
-typedef boost::shared_ptr<CallbackQueueManager> CallbackQueueManagerPtr;
-} // namespace detail
-
 
 /** \brief A class which will construct and sequentially call Nodelets according to xml
  * This is the primary way in which users are expected to interact with Nodelets
@@ -73,7 +62,7 @@ public:
   /** \brief Construct the nodelet loader with optional ros API at default location of NodeHandle("~")*/
   Loader(bool provide_ros_api = true);
   /** \brief Construct the nodelet loader with optional ros API in namespace of passed NodeHandle */
-  Loader(ros::NodeHandle server_nh);
+  Loader(const ros::NodeHandle& server_nh);
   /**
    * \brief Construct the nodelet loader without ros API, using non-standard factory function to
    * create nodelet instances
@@ -96,19 +85,9 @@ public:
   std::vector<std::string> listLoadedNodelets();
   
 private:
-  void useDefaultLoader();
-  void advertiseRosApi(ros::NodeHandle server_nh);
-
-  boost::mutex lock_;  ///<! A lock to protect internal integrity.  Every external method should lock it for safety.
-  detail::LoaderROSPtr services_;
-
-  /// @todo Hide rest of this in some PIMPL struct to allow ABI-compatible fixes
-  boost::function<Nodelet* (const std::string& lookup_name)> create_instance_;
-  detail::CallbackQueueManagerPtr callback_manager_; // Must outlive nodelets_
-
-  struct NodeletRecord;
-  typedef boost::ptr_map<std::string, NodeletRecord> M_stringToNodelet;
-  M_stringToNodelet nodelets_; ///<! A map of name to pointers of currently constructed nodelets
+  boost::mutex lock_; ///<! Public methods must lock this to preserve internal integrity.
+  struct Impl;
+  boost::scoped_ptr<Impl> impl_;
 };
 
 } // namespace nodelet
