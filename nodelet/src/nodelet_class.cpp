@@ -43,15 +43,8 @@ Nodelet::Nodelet ()
 {
 }
 
-Nodelet::~Nodelet ()
+Nodelet::~Nodelet()
 {
-  bond_.reset();
-}
-
-void Nodelet::disable()
-{
-  st_callback_queue_->disable();
-  mt_callback_queue_->disable();
 }
 
 ros::CallbackQueueInterface& Nodelet::getSTCallbackQueue () const
@@ -61,7 +54,7 @@ ros::CallbackQueueInterface& Nodelet::getSTCallbackQueue () const
     throw UninitializedException("getSTCallbackQueue");
   }
 
-  return *st_callback_queue_;
+  return *nh_->getCallbackQueue();
 }
 
 ros::CallbackQueueInterface& Nodelet::getMTCallbackQueue () const
@@ -71,7 +64,7 @@ ros::CallbackQueueInterface& Nodelet::getMTCallbackQueue () const
     throw UninitializedException("getMTCallbackQueue");
   }
 
-  return *mt_callback_queue_;
+  return *mt_nh_->getCallbackQueue();
 }
 
 ros::NodeHandle& Nodelet::getNodeHandle() const
@@ -112,37 +105,29 @@ ros::NodeHandle& Nodelet::getMTPrivateNodeHandle() const
 }
 
 void Nodelet::init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
-                   detail::CallbackQueueManager* callback_manager, boost::shared_ptr<bond::Bond> bond)
+                   ros::CallbackQueueInterface* st_queue, ros::CallbackQueueInterface* mt_queue)
 {
   if (inited_)
   {
     throw MultipleInitializationException();
   }
 
-  bond_ = bond;
-
-  callback_manager_ = callback_manager;
-  // NOTE: Creation of st_callback_queue_ and mt_callback_queue_ moved to Loader::load() as part
-  // of thread-safety fixes for unloading nodets - CallbackQueue needs a WPtr to this nodelet, which
-  // we can't provide from here.
-  
-  /// @todo Move all detail:: stuff out of Nodelet, and init it with 2 ros::CallbackQueueInterface*.
-  callback_manager->addQueue(st_callback_queue_, false);
-  callback_manager->addQueue(mt_callback_queue_, true);
-
   nodelet_name_ = name;
   my_argv_ = my_argv;
 
+  // Set up NodeHandles with correct namespaces
   private_nh_.reset(new ros::NodeHandle(name, remapping_args));
-  private_nh_->setCallbackQueue(st_callback_queue_.get());
   nh_.reset(new ros::NodeHandle(ros::names::parentNamespace(name), remapping_args));
-  nh_->setCallbackQueue(st_callback_queue_.get());
-
+  mt_private_nh_.reset(new ros::NodeHandle(name, remapping_args));
   mt_nh_.reset(new ros::NodeHandle(ros::names::parentNamespace(name), remapping_args));
-  mt_nh_->setCallbackQueue(mt_callback_queue_.get());
-  mt_private_nh_.reset(new ros::NodeHandle (name, remapping_args));
-  mt_private_nh_->setCallbackQueue(mt_callback_queue_.get());
 
+  // Use the provided callback queues (or the global queue if they're NULL).
+  // This allows Loader and CallbackQueueManager to spread nodelets over multiple threads.
+  private_nh_->setCallbackQueue(st_queue);
+  nh_->setCallbackQueue(st_queue);
+  mt_private_nh_->setCallbackQueue(mt_queue);
+  mt_nh_->setCallbackQueue(mt_queue);
+  
   NODELET_DEBUG ("Nodelet initializing");
   inited_ = true;
   this->onInit ();

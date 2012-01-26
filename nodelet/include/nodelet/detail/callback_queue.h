@@ -30,7 +30,8 @@
 #ifndef NODELET_CALLBACK_QUEUE_H
 #define NODELET_CALLBACK_QUEUE_H
 
-#include "ros/callback_queue_interface.h"
+#include <ros/callback_queue.h>
+#include <ros/callback_queue_interface.h>
 #include <boost/enable_shared_from_this.hpp>
 
 namespace ros
@@ -59,11 +60,9 @@ public:
 
   uint32_t callOne();
 
-  void disable();
-
 private:
   CallbackQueueManager* parent_;
-  ros::CallbackQueue* queue_;
+  ros::CallbackQueue queue_;
   ros::VoidConstWPtr tracked_object_;
   bool has_tracked_object_;
 };
