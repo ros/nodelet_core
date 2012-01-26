@@ -43,6 +43,27 @@
 #include <boost/ptr_container/ptr_map.hpp>
 #include <boost/utility.hpp>
 
+/*
+Between Loader, Nodelet, CallbackQueue and CallbackQueueManager, who owns what?
+
+Loader contains the CallbackQueueManager. Loader and CallbackQueueManager share
+ownership of the CallbackQueues. Loader is primary owner of the Nodelets, but
+each CallbackQueue has weak ownership of its associated Nodelet.
+
+Loader ensures that the CallbackQueues associated with a Nodelet outlive that
+Nodelet. CallbackQueueManager ensures that CallbackQueues continue to survive as
+long as they have pending callbacks. 
+
+CallbackQueue holds a weak_ptr to its associated Nodelet, which it attempts to
+lock before invoking any callback. So any lingering callbacks processed after a
+Nodelet is destroyed are safely discarded, and then the CallbackQueue expires.
+
+When Loader unloads a Nodelet, it calls CallbackQueueManager::removeQueue() for
+the associated CallbackQueues, which prevents them from adding any more callbacks
+to CallbackQueueManager. Otherwise a Nodelet that is continuously executing
+callbacks might persist in a "zombie" state after being unloaded.
+ */
+
 namespace nodelet
 {
 
@@ -130,8 +151,8 @@ private:
   M_stringToBond bond_map_;
 };
 
-// Makes sure that a nodelet's queues outlive the nodelet
-struct NodeletRecord : boost::noncopyable
+// Owns a Nodelet and its callback queues
+struct ManagedNodelet : boost::noncopyable
 {
   detail::CallbackQueuePtr st_queue;
   detail::CallbackQueuePtr mt_queue;
@@ -139,17 +160,19 @@ struct NodeletRecord : boost::noncopyable
   detail::CallbackQueueManager* callback_manager;
 
   /// @todo Maybe addQueue/removeQueue should be done by CallbackQueue
-  NodeletRecord(const NodeletPtr& nodelet, detail::CallbackQueueManager* cqm)
+  ManagedNodelet(const NodeletPtr& nodelet, detail::CallbackQueueManager* cqm)
     : st_queue(new detail::CallbackQueue(cqm, nodelet))
     , mt_queue(new detail::CallbackQueue(cqm, nodelet))
     , nodelet(nodelet)
     , callback_manager(cqm)
   {
+    // NOTE: Can't do this in CallbackQueue constructor because the shared_ptr to
+    // it doesn't exist then.
     callback_manager->addQueue(st_queue, false);
     callback_manager->addQueue(mt_queue, true);
   }
 
-  ~NodeletRecord()
+  ~ManagedNodelet()
   {
     callback_manager->removeQueue(st_queue);
     callback_manager->removeQueue(mt_queue);
@@ -163,7 +186,7 @@ struct Loader::Impl
   boost::function<Nodelet* (const std::string& lookup_name)> create_instance_;
   boost::shared_ptr<detail::CallbackQueueManager> callback_manager_; // Must outlive nodelets_
 
-  typedef boost::ptr_map<std::string, NodeletRecord> M_stringToNodelet;
+  typedef boost::ptr_map<std::string, ManagedNodelet> M_stringToNodelet;
   M_stringToNodelet nodelets_; ///<! A map of name to currently constructed nodelets
 
   Impl()
@@ -234,9 +257,9 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
       return false;
     ROS_DEBUG("Done loading nodelet %s", name.c_str());
 
-    NodeletRecord* record = new NodeletRecord(p, impl_->callback_manager_.get());
-    impl_->nodelets_.insert(const_cast<std::string&>(name), record); // record now owned by boost::ptr_map
-    p->init(name, remappings, my_argv, record->st_queue.get(), record->mt_queue.get());
+    ManagedNodelet* mn = new ManagedNodelet(p, impl_->callback_manager_.get());
+    impl_->nodelets_.insert(const_cast<std::string&>(name), mn); // mn now owned by boost::ptr_map
+    p->init(name, remappings, my_argv, mn->st_queue.get(), mn->mt_queue.get());
     /// @todo Can we delay processing the queues until Nodelet::onInit() returns?
 
     ROS_DEBUG("Done initing nodelet %s", name.c_str());
