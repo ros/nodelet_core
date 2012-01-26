@@ -78,11 +78,5 @@ uint32_t CallbackQueue::callOne()
   return queue_.callOne();
 }
 
-void CallbackQueue::disable()
-{
-  parent_->removeQueue(shared_from_this());
-  queue_.disable();
-}
-
 } // namespace detail
 } // namespace nodelet

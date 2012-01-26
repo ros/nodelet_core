@@ -178,6 +178,7 @@ struct Loader::NodeletRecord : boost::noncopyable
   NodeletPtr nodelet; // destroyed before the queues
   detail::CallbackQueueManager* callback_manager;
 
+  /// @todo Maybe addQueue/removeQueue should be done by CallbackQueue
   NodeletRecord(const NodeletPtr& nodelet, const boost::shared_ptr<bond::Bond>& bond,
                 detail::CallbackQueueManager* cqm)
     : bond(bond)

@@ -60,8 +60,6 @@ public:
 
   uint32_t callOne();
 
-  void disable();
-
 private:
   CallbackQueueManager* parent_;
   ros::CallbackQueue queue_;
