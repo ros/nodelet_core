@@ -48,11 +48,6 @@ namespace ros
 class NodeHandle;
 }
 
-namespace bond
-{
-class Bond;
-}
-
 namespace nodelet
 {
 class Nodelet;
@@ -87,8 +82,11 @@ public:
   
   ~Loader();
 
-  bool load(const std::string& name, const std::string& type, const M_string& remappings, const V_string& my_argv,
-            const boost::shared_ptr<bond::Bond>& bond = boost::shared_ptr<bond::Bond>());
+  /** \brief Load a nodelet */
+  bool load(const std::string& name, const std::string& type, const M_string& remappings,
+            const V_string& my_argv);
+
+  /** \brief Unload a nodelet */
   bool unload(const std::string& name);
 
   /** \brief Clear all nodelets from this loader */
@@ -96,6 +94,7 @@ public:
 
   /**\brief List the names of all loaded nodelets */
   std::vector<std::string> listLoadedNodelets();
+  
 private:
   void useDefaultLoader();
   void advertiseRosApi(ros::NodeHandle server_nh);

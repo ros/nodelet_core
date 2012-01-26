@@ -81,16 +81,17 @@ private:
       }
     }
 
-    boost::shared_ptr<bond::Bond> bond;
-    if (!req.bond_id.empty())
-    {
-      bond.reset(new bond::Bond(nh_.getNamespace() + "/bond", req.bond_id));
-      bond->setCallbackQueue(&bond_callback_queue_);
-    }
+    res.success = parent_->load(req.name, req.type, remappings, req.my_argv);
 
-    res.success = parent_->load(req.name, req.type, remappings, req.my_argv, bond);
-    if (bond)
+    // If requested, create bond to sister process
+    if (res.success && !req.bond_id.empty())
+    {
+      bond::Bond* bond = new bond::Bond(nh_.getNamespace() + "/bond", req.bond_id);
+      bond_map_.insert(req.name, bond);
+      bond->setCallbackQueue(&bond_callback_queue_);
+      bond->setBrokenCallback(boost::bind(&Loader::unload, parent_, req.name));
       bond->start();
+    }
     return res.success;
   }
 
@@ -102,6 +103,8 @@ private:
     {
       ROS_ERROR("Failed to find nodelet with name '%s' to unload.", req.name.c_str());
     }
+    // Break the bond, if there is one
+    bond_map_.erase(req.name);
 
     return res.success;
   }
@@ -118,10 +121,11 @@ private:
   ros::ServiceServer load_server_;
   ros::ServiceServer unload_server_;
   ros::ServiceServer list_server_;
-
   
   ros::CallbackQueue bond_callback_queue_;
   ros::AsyncSpinner bond_spinner_;
+  typedef boost::ptr_map<std::string, bond::Bond> M_stringToBond;
+  M_stringToBond bond_map_;
 };
 } // namespace detail
 
@@ -172,17 +176,14 @@ Loader::~Loader()
 // Ensures that Nodelets are loaded and unloaded correctly
 struct Loader::NodeletRecord : boost::noncopyable
 {
-  boost::shared_ptr<bond::Bond> bond; // destroyed last
   detail::CallbackQueuePtr st_queue;
   detail::CallbackQueuePtr mt_queue;
   NodeletPtr nodelet; // destroyed before the queues
   detail::CallbackQueueManager* callback_manager;
 
   /// @todo Maybe addQueue/removeQueue should be done by CallbackQueue
-  NodeletRecord(const NodeletPtr& nodelet, const boost::shared_ptr<bond::Bond>& bond,
-                detail::CallbackQueueManager* cqm)
-    : bond(bond)
-    , st_queue(new detail::CallbackQueue(cqm, nodelet))
+  NodeletRecord(const NodeletPtr& nodelet, detail::CallbackQueueManager* cqm)
+    : st_queue(new detail::CallbackQueue(cqm, nodelet))
     , mt_queue(new detail::CallbackQueue(cqm, nodelet))
     , nodelet(nodelet)
     , callback_manager(cqm)
@@ -199,7 +200,7 @@ struct Loader::NodeletRecord : boost::noncopyable
 };
 
 bool Loader::load(const std::string &name, const std::string& type, const ros::M_string& remappings,
-                  const std::vector<std::string> & my_argv, const boost::shared_ptr<bond::Bond>& bond)
+                  const std::vector<std::string> & my_argv)
 {
   boost::mutex::scoped_lock lock (lock_);
   if (nodelets_.count(name) > 0)
@@ -215,12 +216,9 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
       return false;
     ROS_DEBUG("Done loading nodelet %s", name.c_str());
 
-    NodeletRecord* record = new NodeletRecord(p, bond, callback_manager_.get());
+    NodeletRecord* record = new NodeletRecord(p, callback_manager_.get());
     nodelets_.insert(const_cast<std::string&>(name), record); // record now owned by boost::ptr_map
     p->init(name, remappings, my_argv, record->st_queue.get(), record->mt_queue.get());
-
-    if (bond)
-      bond->setBrokenCallback(boost::bind(&Loader::unload, this, name));
 
     ROS_DEBUG("Done initing nodelet %s", name.c_str());
     return true;
