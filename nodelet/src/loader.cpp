@@ -40,6 +40,8 @@
 #include <nodelet/NodeletList.h>
 #include <nodelet/NodeletUnload.h>
 
+#include <boost/utility.hpp>
+
 namespace nodelet
 {
 
@@ -165,6 +167,7 @@ void Loader::advertiseRosApi(ros::NodeHandle server_nh)
 
 Loader::~Loader()
 {
+  /// @todo Clean this up
   services_.reset();
 
   // About the awkward ordering here:
@@ -176,6 +179,34 @@ Loader::~Loader()
   nodelets_.clear();
   callback_manager_.reset();
 }
+
+// Ensures that Nodelets are loaded and unloaded correctly
+struct Loader::NodeletRecord : boost::noncopyable
+{
+  boost::shared_ptr<bond::Bond> bond; // destroyed last
+  detail::CallbackQueuePtr st_queue;
+  detail::CallbackQueuePtr mt_queue;
+  NodeletPtr nodelet; // destroyed before the queues
+  detail::CallbackQueueManager* callback_manager;
+
+  NodeletRecord(const NodeletPtr& nodelet, const boost::shared_ptr<bond::Bond>& bond,
+                detail::CallbackQueueManager* cqm)
+    : bond(bond)
+    , st_queue(new detail::CallbackQueue(cqm, nodelet))
+    , mt_queue(new detail::CallbackQueue(cqm, nodelet))
+    , nodelet(nodelet)
+    , callback_manager(cqm)
+  {
+    callback_manager->addQueue(st_queue, false);
+    callback_manager->addQueue(mt_queue, true);
+  }
+
+  ~NodeletRecord()
+  {
+    callback_manager->removeQueue(st_queue);
+    callback_manager->removeQueue(mt_queue);
+  }
+};
 
 bool Loader::load(const std::string &name, const std::string& type, const ros::M_string& remappings,
                   const std::vector<std::string> & my_argv, const boost::shared_ptr<bond::Bond>& bond)
@@ -192,14 +223,11 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
     NodeletPtr p(create_instance_(type));
     if (!p)
       return false;
-
-    nodelets_[name] = p;
     ROS_DEBUG("Done loading nodelet %s", name.c_str());
 
-    /// @todo Pass callback queues to p->init directly
-    p->st_callback_queue_.reset(new detail::CallbackQueue(callback_manager_.get(), p));
-    p->mt_callback_queue_.reset(new detail::CallbackQueue(callback_manager_.get(), p));
-    p->init(name, remappings, my_argv, callback_manager_.get(), bond);
+    NodeletRecord* record = new NodeletRecord(p, bond, callback_manager_.get());
+    nodelets_.insert(const_cast<std::string&>(name), record); // record now owned by boost::ptr_map
+    p->init(name, remappings, my_argv, record->st_queue.get(), record->mt_queue.get());
 
     if (bond)
       bond->setBrokenCallback(boost::bind(&Loader::unload, this, name));
@@ -218,11 +246,10 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
 bool Loader::unload (const std::string & name)
 {
   boost::mutex::scoped_lock lock (lock_);
-  M_stringToNodelet::iterator it = nodelets_.find (name);
-  if (it != nodelets_.end ())
+  M_stringToNodelet::iterator it = nodelets_.find(name);
+  if (it != nodelets_.end())
   {
-    it->second->disable();
-    nodelets_.erase (it);
+    nodelets_.erase(it);
     ROS_DEBUG ("Done unloading nodelet %s", name.c_str ());
     return (true);
   }
@@ -236,7 +263,7 @@ bool Loader::clear ()
   /// @todo This isn't really safe - can result in worker threads for outstanding callbacks
   /// operating on nodelet data as/after it's destroyed.
   boost::mutex::scoped_lock lock (lock_);
-  nodelets_.clear ();
+  nodelets_.clear();
   return (true);
 };
 
@@ -245,7 +272,7 @@ std::vector<std::string> Loader::listLoadedNodelets()
 {
   boost::mutex::scoped_lock lock (lock_);
   std::vector<std::string> output;
-  std::map< std::string, boost::shared_ptr<Nodelet> >::iterator it = nodelets_.begin();
+  M_stringToNodelet::iterator it = nodelets_.begin();
   for (; it != nodelets_.end(); ++it)
   {
     output.push_back(it->first);

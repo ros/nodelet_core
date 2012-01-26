@@ -38,14 +38,11 @@
 
 #include <ros/console.h>
 #include <boost/shared_ptr.hpp>
-#include <bondcpp/bond.h>
 
 namespace ros
 {
 class NodeHandle;
-class CallbackQueue;
 class CallbackQueueInterface;
-class AsyncSpinner;
 }
 
 #define NODELET_DEBUG(...) ROS_DEBUG_NAMED(getName(), __VA_ARGS__)
@@ -109,13 +106,6 @@ typedef boost::shared_ptr<ros::NodeHandle> NodeHandlePtr;
 typedef std::map<std::string, std::string> M_string;
 typedef std::vector<std::string> V_string;
 
-namespace detail
-{
-class CallbackQueueManager;
-class CallbackQueue;
-typedef boost::shared_ptr<CallbackQueue> CallbackQueuePtr;
-}
-
 class UninitializedException : public Exception
 {
 public:
@@ -154,23 +144,14 @@ private:
 
   std::string nodelet_name_;
 
-  detail::CallbackQueuePtr mt_callback_queue_;
-  detail::CallbackQueuePtr st_callback_queue_;
-  detail::CallbackQueueManager* callback_manager_;
-
   NodeHandlePtr nh_;
   NodeHandlePtr private_nh_;
   NodeHandlePtr mt_nh_;
   NodeHandlePtr mt_private_nh_;
   V_string my_argv_;
 
-  boost::shared_ptr<bond::Bond> bond_;
-
   // Method to be overridden by subclass when starting up.
   virtual void onInit() = 0;
-
-  // Disable callback queues for this nodelet
-  void disable();
 
   // Public API used for launching
 public:
@@ -180,15 +161,13 @@ public:
   /**\brief Init function called at startup
    * \param name The name of the nodelet
    * \param remapping_args The remapping args in a map for the nodelet
-   * \param my_args The commandline arguments for this nodelet stripped of special arguments such as ROS arguments
+   * \param my_argv The commandline arguments for this nodelet stripped of special arguments such as ROS arguments
    */
   void init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
-            detail::CallbackQueueManager* callback_manager, const boost::shared_ptr<bond::Bond>& bond);
+            ros::CallbackQueueInterface* st_queue = NULL,
+            ros::CallbackQueueInterface* mt_queue = NULL);
 
   virtual ~Nodelet();
-
-  /// @todo Fix interface so friending Loader isn't necessary
-  friend class Loader;
 };
 
 }

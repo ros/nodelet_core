@@ -40,7 +40,6 @@ namespace detail
 CallbackQueue::CallbackQueue(CallbackQueueManager* parent,
                              const ros::VoidConstPtr& tracked_object)
 : parent_(parent)
-, queue_(new ros::CallbackQueue)
 , tracked_object_(tracked_object)
 , has_tracked_object_(tracked_object)
 {
@@ -48,23 +47,20 @@ CallbackQueue::CallbackQueue(CallbackQueueManager* parent,
 
 CallbackQueue::~CallbackQueue()
 {
-  queue_->disable();
-  queue_->clear();
-  delete queue_;
 }
 
 void CallbackQueue::addCallback(const ros::CallbackInterfacePtr& cb, uint64_t owner_id)
 {
-  if (queue_->isEnabled())
+  if (queue_.isEnabled())
   {
-    queue_->addCallback(cb, owner_id);
+    queue_.addCallback(cb, owner_id);
     parent_->callbackAdded(shared_from_this());
   }
 }
 
 void CallbackQueue::removeByID(uint64_t owner_id)
 {
-  queue_->removeByID(owner_id);
+  queue_.removeByID(owner_id);
 }
 
 uint32_t CallbackQueue::callOne()
@@ -79,13 +75,13 @@ uint32_t CallbackQueue::callOne()
       return ros::CallbackQueue::Disabled;
   }
   
-  return queue_->callOne();
+  return queue_.callOne();
 }
 
 void CallbackQueue::disable()
 {
   parent_->removeQueue(shared_from_this());
-  queue_->disable();
+  queue_.disable();
 }
 
 } // namespace detail

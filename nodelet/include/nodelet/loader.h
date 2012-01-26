@@ -39,6 +39,7 @@
 #include <map>
 #include <vector>
 #include <boost/function.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 
@@ -102,7 +103,10 @@ private:
   boost::mutex lock_;  ///<! A lock to protect internal integrity.  Every external method should lock it for safety.
   detail::LoaderROSPtr services_;
 
-  typedef std::map<std::string, NodeletPtr> M_stringToNodelet;
+  /// @todo Hide rest of this in some PIMPL struct to allow ABI-compatible fixes
+  struct NodeletRecord;
+  typedef boost::ptr_map<std::string, NodeletRecord> M_stringToNodelet;
+  //typedef std::map<std::string, NodeletRecord> M_stringToNodelet;
   M_stringToNodelet nodelets_; ///<! A map of name to pointers of currently constructed nodelets
 
   boost::function<Nodelet* (const std::string& lookup_name)> create_instance_;
