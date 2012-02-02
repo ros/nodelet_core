@@ -183,7 +183,7 @@ struct Loader::Impl
 {
   boost::shared_ptr<LoaderROS> services_;
 
-  boost::function<Nodelet* (const std::string& lookup_name)> create_instance_;
+  boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)> create_instance_;
   boost::shared_ptr<detail::CallbackQueueManager> callback_manager_; // Must outlive nodelets_
 
   typedef boost::ptr_map<std::string, ManagedNodelet> M_stringToNodelet;
@@ -195,10 +195,10 @@ struct Loader::Impl
     typedef pluginlib::ClassLoader<Nodelet> Loader;
     boost::shared_ptr<Loader> loader(new Loader("nodelet", "nodelet::Nodelet"));
     // create_instance_ is self-contained; it owns a copy of the loader shared_ptr
-    create_instance_ = boost::bind(&Loader::createClassInstance, loader, _1, true);    
+    create_instance_ = boost::bind(&Loader::createInstance, loader, _1);
   }
 
-  Impl(const boost::function<Nodelet* (const std::string& lookup_name)>& create_instance)
+  Impl(const boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)>& create_instance)
     : create_instance_(create_instance)
   {
   }
@@ -230,7 +230,7 @@ Loader::Loader(const ros::NodeHandle& server_nh)
   impl_->advertiseRosApi(this, server_nh);
 }
 
-Loader::Loader(const boost::function<Nodelet* (const std::string& lookup_name)>& create_instance)
+Loader::Loader(const boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)>& create_instance)
   : impl_(new Impl(create_instance))
 {
   impl_->callback_manager_.reset(new detail::CallbackQueueManager);

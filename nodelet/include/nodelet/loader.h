@@ -40,6 +40,7 @@
 #include <vector>
 #include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 
 namespace ros
@@ -67,7 +68,7 @@ public:
    * \brief Construct the nodelet loader without ros API, using non-standard factory function to
    * create nodelet instances
    */
-  Loader(const boost::function<Nodelet* (const std::string& lookup_name)>& create_instance);
+  Loader(const boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)>& create_instance);
   
   ~Loader();
 
