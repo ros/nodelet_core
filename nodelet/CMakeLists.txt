@@ -12,12 +12,18 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 rosbuild_init()
 
 # Nodelet is known not to build and run correctly on 
-# OS X Lion 10.7.x using the llvm.  Use gcc-4.2 instead.
+# OS X Lion 10.7.x using the llvm.  Use gcc-4.2 instead (if available).
 # See: https://code.ros.org/trac/ros-pkg/ticket/5144
-IF(${CMAKE_SYSTEM} MATCHES "Darwin-11.*")
-  set(CMAKE_CXX_COMPILER "/usr/bin/g++-4.2")
-  set(CMAKE_C_COMPILER "/usr/bin/gcc-4.2")
-ENDIF(${CMAKE_SYSTEM} MATCHES "Darwin-11.*")
+if(${CMAKE_SYSTEM} MATCHES "Darwin-11.*")
+  if(EXISTS "/usr/bin/g++-4.2" AND EXISTS "/usr/bin/gcc-4.2")
+    set(CMAKE_CXX_COMPILER /usr/bin/g++-4.2)
+    set(CMAKE_C_COMPILER /usr/bin/gcc-4.2)
+  else()
+    # If there is no g++-4.2 or gcc-4.2 use clang++ and clang
+    set(CMAKE_CXX_COMPILER /usr/bin/clang++)
+    set(CMAKE_C_COMPILER /usr/bin/clang)
+  endif()
+endif()
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
