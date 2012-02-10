@@ -195,7 +195,7 @@ struct Loader::Impl
     typedef pluginlib::ClassLoader<Nodelet> Loader;
     boost::shared_ptr<Loader> loader(new Loader("nodelet", "nodelet::Nodelet"));
     // create_instance_ is self-contained; it owns a copy of the loader shared_ptr
-    create_instance_ = boost::bind(&Loader::createManagedInstance, loader, _1);
+    create_instance_ = boost::bind(&Loader::createInstance, loader, _1);
   }
 
   Impl(const boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)>& create_instance)
