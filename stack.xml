@@ -3,7 +3,7 @@
     Nodelets library and tools.  Nodelets are a plugin architecture for roscpp that enable
     dynamic loading of multiple 'nodelets' into a single ROS node instance.
   </description>
-  <author>Maintained by Tully Foote tfoote@willowgarage.com</author>
+  <author>Maintained by Dirk Thomas dthomas@willowgarage.com</author>
   <license>BSD</license>  
   <review status="doc reviewed" notes="2009-10-07"/>
   <url>http://ros.org/wiki/nodelet_core</url>
