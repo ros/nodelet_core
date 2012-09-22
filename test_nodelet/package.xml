@@ -1,0 +1,30 @@
+<package>
+  <name>test_nodelet</name>
+  <version>1.7.0</version>
+  <description brief="test_nodelet">
+
+    A package for nodelet unit tests
+
+  </description>
+  <author>Tully Foote</author>
+  <maintainer email="tfoote@willowgarage.com">Tully Foote</maintainer>
+  <license>BSD</license>
+
+  <url>http://ros.org/wiki/test_nodelet</url>
+
+  <build_depend>nodelet</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>rostest</build_depend>
+  <build_depend>std_msgs</build_depend>
+
+  <run_depend>nodelet</run_depend>
+  <run_depend>pluginlib</run_depend>
+  <run_depend>rostest</run_depend>
+  <run_depend>std_msgs</run_depend>
+  
+  <export>
+    <nodelet plugin="${prefix}/test_nodelet.xml"/>
+  </export>
+</package>
+
+
