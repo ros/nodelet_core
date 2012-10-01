@@ -17,15 +17,20 @@
   <url>http://ros.org/wiki/nodelet</url>
 
   <build_depend>bondcpp</build_depend>
+  <build_depend>boost</build_depend>
+  <build_depend>genmsg</build_depend>
   <build_depend>langs-dev</build_depend>
   <build_depend>pluginlib</build_depend>
+  <build_depend>rosconcole</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
+  <build_depend>tinyxml</build_depend>
+  <build_depend>uuid</build_depend>
 
+  <run_depend>bondcpp</run_depend>
+  <run_depend>boost</run_depend>
   <run_depend>langs</run_depend>
+  <run_depend>rosconcole</run_depend>
+  <run_depend>tinyxml</run_depend>
   <run_depend>uuid</run_depend>
-
-  <export>
-    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lnodeletlib -luuid"/>
-  </export>
 </package>
