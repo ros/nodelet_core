@@ -5,9 +5,9 @@ find_package(catkin REQUIRED)
 
 find_package(Boost REQUIRED)
 find_package(catkin REQUIRED bondcpp rosconsole roscpp)
-catkin_package(INCLUDE_DIRS include
+catkin_package(DEPENDS bondcpp Boost rosconsole roscpp
+               INCLUDE_DIRS include
                LIBRARIES nodeletlib
-               DEPENDS Boost bondcpp rosconsole roscpp
 )
 
 # Nodelet is known not to build and run correctly on 
