@@ -1,0 +1,24 @@
+<package>
+  <name>nodelet_core</name>
+  <version>1.7.1</version>
+  <description>Nodelet Core Metapackage</description>
+  <maintainer email="tfoote@willowgarage.com">Tully Foote</maintainer>
+  <license>BSD</license>
+  
+  <url type="website">http://www.ros.org/wiki/nodelet_core</url>
+  <url type="bugtracker">https://code.ros.org/trac/ros-pkg/query?component=common&amp;status=assigned&amp;status=new&amp;status=reopened</url>
+  <url type="repository">https://github.com/ros/nodelet_core</url>
+  
+  <author>Tully Foote</author>
+  
+  <!-- Old stack contents -->
+  <run_depend>nodelet</run_depend>
+  <run_depend>nodelet_topic_tools</run_depend>
+  <run_depend>test_nodelet</run_depend>
+
+
+  <export>
+    <metapackage/>
+  </export>
+
+</package>
