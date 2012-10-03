@@ -14,8 +14,6 @@
   <!-- Old stack contents -->
   <run_depend>nodelet</run_depend>
   <run_depend>nodelet_topic_tools</run_depend>
-  <run_depend>test_nodelet</run_depend>
-
 
   <export>
     <metapackage/>
