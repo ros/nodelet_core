@@ -1,6 +1,6 @@
 <package>
   <name>nodelet_topic_tools</name>
-  <version>1.7.1</version>
+  <version>1.7.2</version>
   <description brief="nodelet_topic_tools">
     This package contains common nodelet tools such as a mux, demux and throttle.
   </description>
