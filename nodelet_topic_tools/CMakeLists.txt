@@ -23,6 +23,6 @@ add_dependencies(test_nodelet_topic_tools ${PROJECT_NAME}_gencfg)
 add_rostest(test/test_nodelet_throttle.launch)
 
 # install the useful stuff
-install(DIRECTORY include/{PROJECT_NAME}/
+install(DIRECTORY include/${PROJECT_NAME}/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
