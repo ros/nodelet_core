@@ -1,6 +1,6 @@
 <package>
   <name>nodelet</name>
-  <version>1.7.3</version>
+  <version>1.7.4</version>
   <description brief="nodelet base class and wrappers">
     The nodelet package is designed to provide a way to run multiple
     algorithms in the same process with zero copy transport between
