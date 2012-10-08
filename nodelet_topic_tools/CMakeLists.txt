@@ -1,14 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(nodelet_topic_tools)
 
-find_package(catkin REQUIRED)
-
-find_package(catkin REQUIRED dynamic_reconfigure message_filters nodelet pluginlib roscpp)
+find_package(catkin REQUIRED COMPONENTS dynamic_reconfigure message_filters nodelet pluginlib roscpp rostest)
 catkin_package(INCLUDE_DIRS include
                DEPENDS dynamic_reconfigure message_filters nodelet pluginlib roscpp
 )
-
-find_package(catkin REQUIRED dynamic_reconfigure nodelet rostest)
 
 # Dynamic reconfigure
 generate_cfg(cfg/NodeletThrottle.cfg)

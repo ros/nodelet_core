@@ -5,7 +5,7 @@ find_package(catkin REQUIRED)
 catkin_package()
 
 find_package(Boost REQUIRED thread)
-find_package(catkin REQUIRED nodelet rostest)
+find_package(catkin REQUIRED nodelet pluginlib rostest)
 include_directories(SYSTEM ${BOOST_INCLUDE_DIRS}
                            ${catkin_INCLUDE_DIRS}
 )
