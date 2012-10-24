@@ -7,7 +7,7 @@ catkin_package(INCLUDE_DIRS include
 )
 
 # Dynamic reconfigure
-generate_cfg(cfg/NodeletThrottle.cfg)
+generate_dynamic_reconfigure_options(cfg/NodeletThrottle.cfg)
 
 # build the tool
 include_directories(SYSTEM ${catkin_INCLUDE_DIRS})
