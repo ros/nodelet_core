@@ -1,20 +1,21 @@
 <package>
   <name>nodelet</name>
   <version>1.7.5</version>
-  <description brief="nodelet base class and wrappers">
+  <description>
     The nodelet package is designed to provide a way to run multiple
     algorithms in the same process with zero copy transport between
-    algorithms.  
-    
+    algorithms.
+
     This package provides both the nodelet base class needed for
     implementing a nodelet, as well as the NodeletLoader class used
     for instantiating nodelets.
   </description>
-  <author>Tully Foote</author>
-  <author>Radu Bogdan Rusu</author>
   <maintainer email="tfoote@willowgarage.com">Tully Foote</maintainer>
   <license>BSD</license>
+
   <url>http://ros.org/wiki/nodelet</url>
+  <author>Tully Foote</author>
+  <author>Radu Bogdan Rusu</author>
 
   <build_depend>bondcpp</build_depend>
   <build_depend>boost</build_depend>
