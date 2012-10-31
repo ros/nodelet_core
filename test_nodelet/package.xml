@@ -1,6 +1,6 @@
 <package>
   <name>test_nodelet</name>
-  <version>1.7.5</version>
+  <version>1.7.6</version>
   <description>
     A package for nodelet unit tests
   </description>
