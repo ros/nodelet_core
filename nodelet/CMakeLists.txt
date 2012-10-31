@@ -1,15 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(nodelet)
 
-find_package(catkin REQUIRED)
-
-find_package(Boost REQUIRED)
-find_package(catkin REQUIRED bondcpp rosconsole roscpp)
-catkin_package(DEPENDS bondcpp Boost rosconsole roscpp
-               INCLUDE_DIRS include
-               LIBRARIES nodeletlib
-)
-
 # Nodelet is known not to build and run correctly on 
 # OS X Lion 10.7.x using the llvm.  Use gcc-4.2 instead (if available).
 # See: https://code.ros.org/trac/ros-pkg/ticket/5144
@@ -36,6 +27,11 @@ include_directories(include)
 add_service_files(DIRECTORY srv FILES NodeletList.srv  NodeletLoad.srv  NodeletUnload.srv)
 
 generate_messages(DEPENDENCIES std_msgs)
+
+catkin_package(DEPENDS bondcpp Boost rosconsole roscpp
+               INCLUDE_DIRS include
+               LIBRARIES nodeletlib
+)
 
 # Debug only, collects stats on how callbacks are doled out to worker threads
 #add_definitions(-DNODELET_QUEUE_DEBUG)
