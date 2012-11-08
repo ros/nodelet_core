@@ -28,9 +28,11 @@ add_service_files(DIRECTORY srv FILES NodeletList.srv  NodeletLoad.srv  NodeletU
 
 generate_messages(DEPENDENCIES std_msgs)
 
-catkin_package(DEPENDS bondcpp Boost rosconsole roscpp
-               INCLUDE_DIRS include
-               LIBRARIES nodeletlib
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES nodeletlib
+  CATKIN_DEPENDS bondcpp rosconsole roscpp
+  DEPENDS Boost
 )
 
 # Debug only, collects stats on how callbacks are doled out to worker threads
