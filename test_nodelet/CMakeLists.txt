@@ -21,8 +21,10 @@ add_rostest(test_loader.launch)
 
 catkin_add_gtest(test_callback_queue_manager src/test_callback_queue_manager.cpp)
 target_link_libraries(test_callback_queue_manager ${BOOST_LIBRARIES} ${catkin_LIBRARIES})
-catkin_add_gtest(test_console test/test_console.cpp)
-target_link_libraries(test_console ${catkin_LIBRARIES})
+
+add_executable(test_console EXCLUDE_FROM_ALL test/test_console.cpp)
+target_link_libraries(test_console ${catkin_LIBRARIES} ${GTEST_LIBRARIES})
+add_dependencies(tests test_console)
 
 add_rostest(test/test_console.launch)
 
