@@ -11,6 +11,8 @@
   <author>Radu Bogdan Rusu</author>
   <author>Tully Foote</author>
 
+  <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>message_filters</build_depend>
   <build_depend>nodelet</build_depend>

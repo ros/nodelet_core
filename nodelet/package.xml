@@ -17,6 +17,8 @@
   <author>Tully Foote</author>
   <author>Radu Bogdan Rusu</author>
 
+  <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>bondcpp</build_depend>
   <build_depend>boost</build_depend>
   <build_depend>message_generation</build_depend>

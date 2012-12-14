@@ -10,6 +10,8 @@
   <url>http://ros.org/wiki/test_nodelet</url>
   <author>Tully Foote</author>
 
+  <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>nodelet</build_depend>
   <build_depend>pluginlib</build_depend>
   <build_depend>rostest</build_depend>
