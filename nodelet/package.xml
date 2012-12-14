@@ -19,8 +19,7 @@
 
   <build_depend>bondcpp</build_depend>
   <build_depend>boost</build_depend>
-  <build_depend>genmsg</build_depend>
-  <build_depend>langs-dev</build_depend>
+  <build_depend>message_generation</build_depend>
   <build_depend>pluginlib</build_depend>
   <build_depend>rosconsole</build_depend>
   <build_depend>roscpp</build_depend>
@@ -30,7 +29,7 @@
 
   <run_depend>bondcpp</run_depend>
   <run_depend>boost</run_depend>
-  <run_depend>langs</run_depend>
+  <run_depend>message_runtime</run_depend>
   <run_depend>rosconsole</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>tinyxml</run_depend>

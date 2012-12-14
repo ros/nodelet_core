@@ -17,7 +17,7 @@ endif()
 
 # Find common packages
 find_package(Boost)
-find_package(catkin REQUIRED bondcpp genmsg pluginlib rosconsole roscpp std_msgs)
+find_package(catkin REQUIRED bondcpp message_generation pluginlib rosconsole roscpp std_msgs)
 include_directories(SYSTEM ${catkin_INCLUDE_DIRS}
                            ${BOOST_INCLUDE_DIRS}
 )
@@ -31,7 +31,7 @@ generate_messages(DEPENDENCIES std_msgs)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES nodeletlib
-  CATKIN_DEPENDS bondcpp rosconsole roscpp
+  CATKIN_DEPENDS bondcpp message_runtime rosconsole roscpp
   DEPENDS Boost
 )
 
