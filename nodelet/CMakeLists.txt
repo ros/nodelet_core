@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.3)
 project(nodelet)
 
 # Nodelet is known not to build and run correctly on 
