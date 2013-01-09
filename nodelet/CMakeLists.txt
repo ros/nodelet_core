@@ -30,7 +30,7 @@ generate_messages(DEPENDENCIES std_msgs)
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES nodeletlib
+  LIBRARIES nodeletlib uuid
   CATKIN_DEPENDS bondcpp message_runtime rosconsole roscpp std_msgs
   DEPENDS Boost
 )
@@ -39,16 +39,11 @@ catkin_package(
 #add_definitions(-DNODELET_QUEUE_DEBUG)
 
 add_library(nodeletlib src/nodelet_class.cpp src/loader.cpp src/callback_queue.cpp src/callback_queue_manager.cpp)
-target_link_libraries(nodeletlib ${BOOST_LIBRARIES}
-                                 ${catkin_LIBRARIES}
-)
+target_link_libraries(nodeletlib ${catkin_LIBRARIES} ${BOOST_LIBRARIES})
 add_dependencies(nodeletlib ${PROJECT_NAME}_gencpp)
 
 add_executable(nodelet src/nodelet.cpp)
-target_link_libraries(nodelet ${BOOST_LIBRARIES}
-                              ${catkin_LIBRARIES}
-                              nodeletlib
-)
+target_link_libraries(nodelet nodeletlib uuid ${catkin_LIBRARIES} ${BOOST_LIBRARIES})
 
 # See: https://code.ros.org/trac/ros-pkg/ticket/5144
 if(APPLE)
