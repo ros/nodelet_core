@@ -4,7 +4,7 @@
   <description>
     A package for nodelet unit tests
   </description>
-  <maintainer email="tfoote@willowgarage.com">Tully Foote</maintainer>
+  <maintainer email="tfoote@osrfoundation.org">Tully Foote</maintainer>
   <license>BSD</license>
 
   <url>http://ros.org/wiki/test_nodelet</url>
