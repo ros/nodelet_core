@@ -40,7 +40,7 @@ catkin_package(
 
 add_library(nodeletlib src/nodelet_class.cpp src/loader.cpp src/callback_queue.cpp src/callback_queue_manager.cpp)
 target_link_libraries(nodeletlib ${catkin_LIBRARIES} ${BOOST_LIBRARIES})
-add_dependencies(nodeletlib ${PROJECT_NAME}_gencpp)
+add_dependencies(nodeletlib ${nodelet_EXPORTED_TARGETS})
 
 add_executable(nodelet src/nodelet.cpp)
 target_link_libraries(nodelet nodeletlib uuid ${catkin_LIBRARIES} ${BOOST_LIBRARIES})

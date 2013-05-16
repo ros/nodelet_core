@@ -10,6 +10,6 @@ catkin_package(
 include_directories(SYSTEM ${catkin_INCLUDE_DIRS})
 add_library(test_nodelet_topic_tools test/string_nodelet_throttle.cpp)
 target_link_libraries(test_nodelet_topic_tools ${catkin_LIBRARIES})
-add_dependencies(test_nodelet_topic_tools nodelet_topic_tools_gencfg)
+add_dependencies(test_nodelet_topic_tools ${nodelet_topic_tools_EXPORTED_TARGETS})
 
 add_rostest(test/test_nodelet_throttle.launch)
