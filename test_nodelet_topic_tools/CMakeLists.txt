@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
+
+if(NOT CATKIN_ENABLE_TESTING)
+  return()
+endif()
+
 project(test_nodelet_topic_tools)
 
 find_package(catkin REQUIRED COMPONENTS message_filters nodelet nodelet_topic_tools pluginlib roscpp rostest)
