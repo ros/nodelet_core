@@ -31,7 +31,7 @@ generate_messages(DEPENDENCIES std_msgs)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES nodeletlib uuid
-  CATKIN_DEPENDS bondcpp message_runtime rosconsole roscpp std_msgs
+  CATKIN_DEPENDS bondcpp message_runtime pluginlib rosconsole roscpp std_msgs
   DEPENDS Boost
 )
 
