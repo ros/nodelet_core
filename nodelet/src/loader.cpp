@@ -112,7 +112,7 @@ private:
       bond::Bond* bond = new bond::Bond(nh_.getNamespace() + "/bond", req.bond_id);
       bond_map_.insert(req.name, bond);
       bond->setCallbackQueue(&bond_callback_queue_);
-      bond->setBrokenCallback(boost::bind(&Loader::unload, parent_, req.name));
+      bond->setBrokenCallback(boost::bind(&LoaderROS::unload, this, req.name));
       bond->start();
     }
     return res.success;
@@ -121,15 +121,22 @@ private:
   bool serviceUnload(nodelet::NodeletUnload::Request &req,
                      nodelet::NodeletUnload::Response &res)
   {
-    res.success = parent_->unload(req.name);
-    if (!res.success)
-    {
-      ROS_ERROR("Failed to find nodelet with name '%s' to unload.", req.name.c_str());
-    }
-    // Break the bond, if there is one
-    bond_map_.erase(req.name);
-
+    res.success = unload(req.name);
     return res.success;
+  }
+
+  bool unload(const std::string& name)
+  {
+    bool success = parent_->unload(name);
+    if (!success)
+    {
+      ROS_ERROR("Failed to find nodelet with name '%s' to unload.", name.c_str());
+    }
+
+    // Break the bond, if there is one
+    bond_map_.erase(name);
+
+    return success;
   }
 
   bool serviceList(nodelet::NodeletList::Request &req,
