@@ -2,6 +2,9 @@
 Changelog for package nodelet_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.8.0 (2013-07-11)
 ------------------
 * update email in package.xml

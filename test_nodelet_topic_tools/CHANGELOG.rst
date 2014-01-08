@@ -2,6 +2,9 @@
 Changelog for package test_nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.8.0 (2013-07-11)
 ------------------
 * check for CATKIN_ENABLE_TESTING
