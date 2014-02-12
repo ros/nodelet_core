@@ -304,7 +304,9 @@ int
     ros::M_string remappings; //Remappings are already applied by ROS no need to generate them.
     std::string nodelet_name = ros::this_node::getName ();
     std::string nodelet_type = arg_parser.getType();
-    n.load(nodelet_name, nodelet_type, remappings, arg_parser.getMyArgv());
+    if(!n.load(nodelet_name, nodelet_type, remappings, arg_parser.getMyArgv()))
+      return -1;
+
     ROS_DEBUG("Successfully loaded nodelet of type '%s' into name '%s'\n", nodelet_name.c_str(), nodelet_name.c_str());
 
     ros::spin();
