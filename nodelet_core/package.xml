@@ -2,7 +2,7 @@
   <name>nodelet_core</name>
   <version>1.8.2</version>
   <description>Nodelet Core Metapackage</description>
-  <maintainer email="tfoote@osrfoundation.org">Tully Foote</maintainer>
+  <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
   <license>BSD</license>
   
   <url type="website">http://www.ros.org/wiki/nodelet_core</url>

@@ -4,7 +4,7 @@
   <description>
     A package for nodelet_topic_tools unit tests.
   </description>
-  <maintainer email="tfoote@osrfoundation.org">Tully Foote</maintainer>
+  <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
   <license>BSD</license>
 
   <url>http://ros.org/wiki/nodelet_topic_tools</url>

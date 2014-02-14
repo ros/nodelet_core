@@ -10,7 +10,7 @@
     implementing a nodelet, as well as the NodeletLoader class used
     for instantiating nodelets.
   </description>
-  <maintainer email="tfoote@osrfoundation.org">Tully Foote</maintainer>
+  <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
   <license>BSD</license>
 
   <url>http://ros.org/wiki/nodelet</url>
