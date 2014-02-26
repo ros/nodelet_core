@@ -30,6 +30,8 @@
 #ifndef NODELET_CALLBACK_QUEUE_MANAGER_H
 #define NODELET_CALLBACK_QUEUE_MANAGER_H
 
+#include <ros/types.h>
+
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_array.hpp>
 #include <boost/unordered_map.hpp>
