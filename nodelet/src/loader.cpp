@@ -191,6 +191,7 @@ struct Loader::Impl
   boost::shared_ptr<LoaderROS> services_;
 
   boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)> create_instance_;
+  boost::function<void ()> refresh_classes_;
   boost::shared_ptr<detail::CallbackQueueManager> callback_manager_; // Must outlive nodelets_
 
   typedef boost::ptr_map<std::string, ManagedNodelet> M_stringToNodelet;
@@ -203,6 +204,7 @@ struct Loader::Impl
     boost::shared_ptr<Loader> loader(new Loader("nodelet", "nodelet::Nodelet"));
     // create_instance_ is self-contained; it owns a copy of the loader shared_ptr
     create_instance_ = boost::bind(&Loader::createInstance, loader, _1);
+    refresh_classes_ = boost::bind(&Loader::refreshDeclaredClasses, loader);
   }
 
   Impl(const boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)>& create_instance)
@@ -257,27 +259,38 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
     return false;
   }
 
+  NodeletPtr p;
   try
   {
-    NodeletPtr p(impl_->create_instance_(type));
-    if (!p)
-      return false;
-    ROS_DEBUG("Done loading nodelet %s", name.c_str());
-
-    ManagedNodelet* mn = new ManagedNodelet(p, impl_->callback_manager_.get());
-    impl_->nodelets_.insert(const_cast<std::string&>(name), mn); // mn now owned by boost::ptr_map
-    p->init(name, remappings, my_argv, mn->st_queue.get(), mn->mt_queue.get());
-    /// @todo Can we delay processing the queues until Nodelet::onInit() returns?
-
-    ROS_DEBUG("Done initing nodelet %s", name.c_str());
-    return true;
+    p = impl_->create_instance_(type);
   }
   catch (std::runtime_error& e)
   {
-    ROS_ERROR("Failed to load nodelet [%s] of type [%s]: %s", name.c_str(), type.c_str(), e.what());
+    try
+    {
+      impl_->refresh_classes_();
+      p = impl_->create_instance_(type);
+    }
+    catch (std::runtime_error& e)
+    {
+      ROS_ERROR("Failed to load nodelet [%s] of type [%s]: %s", name.c_str(), type.c_str(), e.what());
+      return false;
+    }
   }
 
-  return false;
+  if (!p)
+  {
+    return false;
+  }
+  ROS_DEBUG("Done loading nodelet %s", name.c_str());
+
+  ManagedNodelet* mn = new ManagedNodelet(p, impl_->callback_manager_.get());
+  impl_->nodelets_.insert(const_cast<std::string&>(name), mn); // mn now owned by boost::ptr_map
+  p->init(name, remappings, my_argv, mn->st_queue.get(), mn->mt_queue.get());
+  /// @todo Can we delay processing the queues until Nodelet::onInit() returns?
+
+  ROS_DEBUG("Done initing nodelet %s", name.c_str());
+  return true;
 }
 
 bool Loader::unload (const std::string & name)
