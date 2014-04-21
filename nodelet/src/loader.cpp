@@ -131,6 +131,7 @@ private:
     if (!success)
     {
       ROS_ERROR("Failed to find nodelet with name '%s' to unload.", name.c_str());
+      return success;
     }
 
     // Break the bond, if there is one
