@@ -2,6 +2,10 @@
 Changelog for package nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix missing boost dependency
+
 1.8.2 (2014-01-07)
 ------------------
 

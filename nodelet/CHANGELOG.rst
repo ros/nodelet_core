@@ -2,6 +2,12 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix missing header (`#14 <https://github.com/ros/nodelet_core/issues/14>`_)
+* fix check that there are enough arguments when nodelet is launched with the unload command (`#12 <https://github.com/ros/nodelet_core/issues/12>`_)
+* exit if Loader::load returns failure in "standalone" mode instead of continuing to run (`#11 <https://github.com/ros/nodelet_core/issues/11>`_)
+
 1.8.2 (2014-01-07)
 ------------------
 * fix erasing bond when it breaks (`#8 <https://github.com/ros/nodelet_core/issues/8>`_)
