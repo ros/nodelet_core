@@ -22,7 +22,7 @@
   <build_depend>bondcpp</build_depend>
   <build_depend>boost</build_depend>
   <build_depend>message_generation</build_depend>
-  <build_depend>pluginlib</build_depend>
+  <build_depend version_gte="1.10.0">pluginlib</build_depend>
   <build_depend>rosconsole</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
@@ -33,7 +33,7 @@
   <run_depend>bondcpp</run_depend>
   <run_depend>boost</run_depend>
   <run_depend>message_runtime</run_depend>
-  <run_depend>pluginlib</run_depend>
+  <run_depend version_gte="1.10.0">pluginlib</run_depend>
   <run_depend>rosconsole</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
