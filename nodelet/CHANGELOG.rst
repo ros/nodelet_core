@@ -2,8 +2,16 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.8.3 (2014-05-08)
+------------------
+* Add version to pluginlib dependency
+* nodelet: avoid breaking bond when unloading unknown nodelet
+* nodelet: refresh list of available classes if class is not found
+* Fixed missing header
+* Correctly check that there are enough arguments when nodelet is launched with the unload command
+* Exit if Loader::load returns failure in "standalone" mode instead of continuing to run
+* Contributors: Dirk Thomas, Esteve Fernandez, Forrest Voight, Gary Servin, Marcus Liebhardt, Mitchell Wills
+
 * fix missing header (`#14 <https://github.com/ros/nodelet_core/issues/14>`_)
 * fix check that there are enough arguments when nodelet is launched with the unload command (`#12 <https://github.com/ros/nodelet_core/issues/12>`_)
 * exit if Loader::load returns failure in "standalone" mode instead of continuing to run (`#11 <https://github.com/ros/nodelet_core/issues/11>`_)

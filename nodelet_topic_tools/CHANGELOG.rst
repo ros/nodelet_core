@@ -4,6 +4,11 @@ Changelog for package nodelet_topic_tools
 
 Forthcoming
 -----------
+* update changelogs
+* Update maintainer field
+* fix missing boost dependency
+* Contributors: Dirk Thomas, Esteve Fernandez
+
 * fix missing boost dependency
 
 1.8.2 (2014-01-07)

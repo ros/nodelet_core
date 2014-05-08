@@ -4,6 +4,9 @@ Changelog for package nodelet_core
 
 Forthcoming
 -----------
+* update changelogs
+* Update maintainer field
+* Contributors: Dirk Thomas, Esteve Fernandez
 
 1.8.2 (2014-01-07)
 ------------------

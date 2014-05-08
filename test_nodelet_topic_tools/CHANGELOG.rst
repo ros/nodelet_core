@@ -4,6 +4,9 @@ Changelog for package test_nodelet_topic_tools
 
 Forthcoming
 -----------
+* update changelogs
+* Update maintainer field
+* Contributors: Dirk Thomas, Esteve Fernandez
 
 1.8.2 (2014-01-07)
 ------------------
