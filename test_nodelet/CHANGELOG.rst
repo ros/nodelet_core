@@ -2,8 +2,8 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.8.3 (2014-05-08)
+------------------
 * update changelogs
 * Update maintainer field
 * Contributors: Dirk Thomas, Esteve Fernandez
