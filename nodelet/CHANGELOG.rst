@@ -2,6 +2,11 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.9.0 (2014-06-16)
+------------------
+* Fix initialization error handling (`#13 <https://github.com/ros/nodelet_core/issues/13>`_)
+* Contributors: Esteve Fernandez
+
 1.8.3 (2014-05-08)
 ------------------
 * Add version to pluginlib dependency
