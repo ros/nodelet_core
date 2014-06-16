@@ -13,7 +13,7 @@ if(CATKIN_ENABLE_TESTING)
   )
 
   #common commands for building c++ executables and libraries
-  add_library(${PROJECT_NAME} src/plus.cpp src/console_tests.cpp)
+  add_library(${PROJECT_NAME} src/plus.cpp src/console_tests.cpp src/failing_nodelet.cpp)
   target_link_libraries(${PROJECT_NAME} ${BOOST_LIBRARIES}
                                         ${catkin_LIBRARIES}
   )
