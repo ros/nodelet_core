@@ -62,6 +62,31 @@ class TestLoader(unittest.TestCase):
         res = unload.call(req)
         self.assertTrue(res.success)
 
+    def test_loader_failed_initialization(self):
+        load = rospy.ServiceProxy('/nodelet_manager/load_nodelet', NodeletLoad)
+        unload = rospy.ServiceProxy('/nodelet_manager/unload_nodelet', NodeletUnload)
+        list = rospy.ServiceProxy('/nodelet_manager/list', NodeletList)
+
+        load.wait_for_service()
+        unload.wait_for_service()
+        list.wait_for_service()
+
+        req = NodeletLoadRequest()
+        req.name = "/my_nodelet"
+        req.type = "test_nodelet/FailingNodelet"
+        self.assertRaises(rospy.ServiceException, load.call, req)
+
+        # If the Nodelet failed to initialize, it shouldn't be stored in the
+        # nodelet map
+        req = NodeletListRequest()
+        res = list.call(req)
+        self.assertFalse("/my_nodelet" in res.nodelets)
+
+        req = NodeletUnloadRequest()
+        req.name = "/my_nodelet"
+        self.assertRaises(rospy.ServiceException, unload.call, req)
+
+
 if __name__ == '__main__':
     rospy.init_node('test_loader')
     rostest.unitrun('test_loader', 'test_loader', TestLoader)

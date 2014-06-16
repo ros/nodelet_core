@@ -287,11 +287,21 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
 
   ManagedNodelet* mn = new ManagedNodelet(p, impl_->callback_manager_.get());
   impl_->nodelets_.insert(const_cast<std::string&>(name), mn); // mn now owned by boost::ptr_map
-  p->init(name, remappings, my_argv, mn->st_queue.get(), mn->mt_queue.get());
-  /// @todo Can we delay processing the queues until Nodelet::onInit() returns?
+  try {
+    p->init(name, remappings, my_argv, mn->st_queue.get(), mn->mt_queue.get());
+    /// @todo Can we delay processing the queues until Nodelet::onInit() returns?
 
-  ROS_DEBUG("Done initing nodelet %s", name.c_str());
-  return true;
+    ROS_DEBUG("Done initing nodelet %s", name.c_str());
+    return true;
+  } catch(...) {
+    Impl::M_stringToNodelet::iterator it = impl_->nodelets_.find(name);
+    if (it != impl_->nodelets_.end())
+    {
+      impl_->nodelets_.erase(it);
+      ROS_DEBUG ("Failed to initialize nodelet %s", name.c_str ());
+      return (false);
+    }
+  }
 }
 
 bool Loader::unload (const std::string & name)
