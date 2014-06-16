@@ -2,8 +2,14 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.8.4 (2014-06-16)
+------------------
+* Unload nodelets if they fail to initialize
+  Fixes `#13 <https://github.com/ros/nodelet_core/issues/13>`_
+
+1.8.3 (2014-05-08)
+------------------
+* refresh list of available classes and fix bond issue
 * fix missing header (`#14 <https://github.com/ros/nodelet_core/issues/14>`_)
 * fix check that there are enough arguments when nodelet is launched with the unload command (`#12 <https://github.com/ros/nodelet_core/issues/12>`_)
 * exit if Loader::load returns failure in "standalone" mode instead of continuing to run (`#11 <https://github.com/ros/nodelet_core/issues/11>`_)
