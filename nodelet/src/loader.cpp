@@ -267,6 +267,14 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
   }
   catch (std::runtime_error& e)
   {
+    // If we cannot refresh the nodelet cache, fail immediately
+    if(!impl_->refresh_classes_)
+    {
+      ROS_ERROR("Failed to load nodelet [%s] of type [%s]: %s", name.c_str(), type.c_str(), e.what());
+      return false;
+    }
+
+    // otherwise, refresh the cache and try again.
     try
     {
       impl_->refresh_classes_();
