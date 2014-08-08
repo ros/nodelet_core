@@ -33,6 +33,7 @@ import rospy
 import unittest
 import rostest
 import random
+import subprocess
 
 from nodelet.srv import *
 
@@ -86,6 +87,17 @@ class TestLoader(unittest.TestCase):
         req.name = "/my_nodelet"
         self.assertRaises(rospy.ServiceException, unload.call, req)
 
+    def test_loader_error_message(self):
+        proc = subprocess.Popen(["rosrun", "test_nodelet", "create_instance_cb_error"],
+            stderr=subprocess.PIPE
+        )
+
+        # The load should fail
+        self.assertEqual(proc.wait(), 1)
+
+        # And the loader should print our error message
+        out = proc.stderr.read()
+        self.assertIn('NODELET_TEST_FAILURE', out)
 
 if __name__ == '__main__':
     rospy.init_node('test_loader')

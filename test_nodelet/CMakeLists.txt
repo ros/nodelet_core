@@ -35,4 +35,7 @@ if(CATKIN_ENABLE_TESTING)
   target_link_libraries(benchmark ${BOOST_LIBRARIES}
                                   ${PROJECT_NAME}
   )
+
+  add_executable(create_instance_cb_error src/create_instance_cb_error.cpp)
+  target_link_libraries(create_instance_cb_error ${catkin_LIBRARIES})
 endif()
