@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(nodelet)
 
 ## Find catkin dependencies
-find_package(catkin REQUIRED bondcpp message_generation pluginlib rosconsole roscpp std_msgs cmake_modules)
+find_package(catkin REQUIRED bondcpp cmake_modules message_generation pluginlib rosconsole roscpp std_msgs)
 
 ## Find Boost (only headers)
 find_package(Boost REQUIRED)
