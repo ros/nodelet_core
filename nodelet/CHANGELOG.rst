@@ -2,6 +2,11 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.8.5 (2014-10-29)
+------------------
+* Use FindUUID.cmake from cmake-modules to find the UUID libraries
+* Contributors: Esteve Fernandez
+
 1.8.4 (2014-06-16)
 ------------------
 * Unload nodelets if they fail to initialize
