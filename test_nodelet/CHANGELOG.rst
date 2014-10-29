@@ -2,6 +2,11 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.9.1 (2014-10-29)
+------------------
+* test_nodelet: test for `#23 <https://github.com/ros/nodelet_core/issues/23>`_ (display helpful error msg)
+* Contributors: Max Schwarz
+
 1.9.0 (2014-06-16)
 ------------------
 

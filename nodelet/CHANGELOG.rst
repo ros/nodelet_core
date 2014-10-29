@@ -2,6 +2,12 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.9.1 (2014-10-29)
+------------------
+* Use FindUUID.cmake from cmake-modules to find the UUID libraries
+* nodelet: Loader: do not call impl->refresh_classes_ if not available
+* Contributors: Esteve Fernandez, Max Schwarz
+
 1.9.0 (2014-06-16)
 ------------------
 * Fix initialization error handling (`#13 <https://github.com/ros/nodelet_core/issues/13>`_)
