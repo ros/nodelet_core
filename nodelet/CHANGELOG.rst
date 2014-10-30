@@ -2,6 +2,11 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.8.6 (2014-10-30)
+------------------
+* Fix dependency version
+* Contributors: Esteve Fernandez
+
 1.8.5 (2014-10-29)
 ------------------
 * Use FindUUID.cmake from cmake-modules to find the UUID libraries
