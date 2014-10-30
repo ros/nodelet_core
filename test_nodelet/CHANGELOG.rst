@@ -2,6 +2,9 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.9.2 (2014-10-30)
+------------------
+
 1.9.1 (2014-10-29)
 ------------------
 * test_nodelet: test for `#23 <https://github.com/ros/nodelet_core/issues/23>`_ (display helpful error msg)
