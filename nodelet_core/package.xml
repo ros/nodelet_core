@@ -6,7 +6,7 @@
   <license>BSD</license>
   
   <url type="website">http://www.ros.org/wiki/nodelet_core</url>
-  <url type="bugtracker">https://code.ros.org/trac/ros-pkg/query?component=common&amp;status=assigned&amp;status=new&amp;status=reopened</url>
+  <url type="bugtracker">https://github.com/ros/nodelet_core/issues</url>
   <url type="repository">https://github.com/ros/nodelet_core</url>
   
   <author>Tully Foote</author>
