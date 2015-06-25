@@ -280,9 +280,13 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
       impl_->refresh_classes_();
       p = impl_->create_instance_(type);
     }
-    catch (std::runtime_error& e)
+    catch (std::runtime_error& e2)
     {
-      ROS_ERROR("Failed to load nodelet [%s] of type [%s]: %s", name.c_str(), type.c_str(), e.what());
+      // dlopen() can return inconsistent results currently (see
+      // https://sourceware.org/bugzilla/show_bug.cgi?id=17833), so make sure
+      // that we display the messages of both exceptions to the user.
+      ROS_ERROR("Failed to load nodelet [%s] of type [%s] even after refreshing the cache: %s", name.c_str(), type.c_str(), e2.what());
+      ROS_ERROR("The error before refreshing the cache was: %s", e.what());
       return false;
     }
   }
