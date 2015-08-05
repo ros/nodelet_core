@@ -44,6 +44,8 @@ class ConsoleTest : public nodelet::Nodelet
 private:
   virtual void onInit()
   {
+    std::string suffix("logger_suffix");
+
     NODELET_DEBUG("DEBUG output");
     NODELET_DEBUG_STREAM("DEBUG" << " output");
     NODELET_DEBUG_ONCE("DEBUG output");
@@ -57,6 +59,19 @@ private:
     //TODO TEST FILTERS
     //NODELET_DEBUG_FILTER(10.0, "DEBUG output");
     //NODELET_DEBUG_STREAM_FILTER(10.0, "DEBUG" << " output");
+    NODELET_DEBUG_NAMED(suffix, "DEBUG output");
+    NODELET_DEBUG_STREAM_NAMED(suffix, "DEBUG" << " output");
+    NODELET_DEBUG_ONCE_NAMED(suffix, "DEBUG output");
+    NODELET_DEBUG_STREAM_ONCE_NAMED(suffix, "DEBUG" << " output");
+    NODELET_DEBUG_COND_NAMED(1 == 1, suffix, "DEBUG output");
+    NODELET_DEBUG_STREAM_COND_NAMED(1 == 1, suffix, "DEBUG" << " output");
+    NODELET_DEBUG_COND_NAMED(1 == 0, suffix, "DEBUG output unseen");
+    NODELET_DEBUG_STREAM_COND_NAMED(1 == 0, suffix, "DEBUG" << " output unseen");
+    NODELET_DEBUG_THROTTLE_NAMED(10.0, suffix, "DEBUG output");
+    NODELET_DEBUG_STREAM_THROTTLE_NAMED(10.0, suffix, "DEBUG" << " output");
+    //TODO TEST FILTERS
+    //NODELET_DEBUG_FILTER_NAMED(10.0, suffix,  "DEBUG output");
+    //NODELET_DEBUG_STREAM_FILTER_NAMED(10.0, suffix, "DEBUG" << " output");
 
     NODELET_INFO("INFO output");
     NODELET_INFO_STREAM("INFO" << " output");
@@ -71,6 +86,19 @@ private:
     //TODO TEST FILTERS
     //NODELET_INFO_FILTER(10.0, "INFO output");
     //NODELET_INFO_STREAM_FILTER(10.0, "INFO" << " output");
+    NODELET_INFO_NAMED(suffix, "INFO output");
+    NODELET_INFO_STREAM_NAMED(suffix, "INFO" << " output");
+    NODELET_INFO_ONCE_NAMED(suffix, "INFO output");
+    NODELET_INFO_STREAM_ONCE_NAMED(suffix, "INFO" << " output");
+    NODELET_INFO_COND_NAMED(1 == 1, suffix, "INFO output");
+    NODELET_INFO_STREAM_COND_NAMED(1 == 1, suffix, "INFO" << " output");
+    NODELET_INFO_COND_NAMED(1 == 0, suffix, "INFO output unseen");
+    NODELET_INFO_STREAM_COND_NAMED(1 == 0, suffix, "INFO" << " output unseen");
+    NODELET_INFO_THROTTLE_NAMED(10.0, suffix, "INFO output");
+    NODELET_INFO_STREAM_THROTTLE_NAMED(10.0, suffix, "INFO" << " output");
+    //TODO TEST FILTERS
+    //NODELET_INFO_FILTER_NAMED(10.0, suffix,  "INFO output");
+    //NODELET_INFO_STREAM_FILTER_NAMED(10.0, suffix, "INFO" << " output");
 
     NODELET_WARN("WARN output");
     NODELET_WARN_STREAM("WARN" << " output");
@@ -85,6 +113,19 @@ private:
     //TODO TEST FILTERS
     //NODELET_WARN_FILTER(10.0, "WARN output");
     //NODELET_WARN_STREAM_FILTER(10.0, "WARN" << " output");
+    NODELET_WARN_NAMED(suffix, "WARN output");
+    NODELET_WARN_STREAM_NAMED(suffix, "WARN" << " output");
+    NODELET_WARN_ONCE_NAMED(suffix, "WARN output");
+    NODELET_WARN_STREAM_ONCE_NAMED(suffix, "WARN" << " output");
+    NODELET_WARN_COND_NAMED(1 == 1, suffix, "WARN output");
+    NODELET_WARN_STREAM_COND_NAMED(1 == 1, suffix, "WARN" << " output");
+    NODELET_WARN_COND_NAMED(1 == 0, suffix, "WARN output unseen");
+    NODELET_WARN_STREAM_COND_NAMED(1 == 0, suffix, "WARN" << " output unseen");
+    NODELET_WARN_THROTTLE_NAMED(10.0, suffix, "WARN output");
+    NODELET_WARN_STREAM_THROTTLE_NAMED(10.0, suffix, "WARN" << " output");
+    //TODO TEST FILTERS
+    //NODELET_WARN_FILTER_NAMED(10.0, suffix,  "WARN output");
+    //NODELET_WARN_STREAM_FILTER_NAMED(10.0, suffix, "WARN" << " output");
 
     NODELET_ERROR("ERROR output");
     NODELET_ERROR_STREAM("ERROR" << " output");
@@ -99,6 +140,19 @@ private:
     //TODO TEST FILTERS
     //NODELET_ERROR_FILTER(10.0, "ERROR output");
     //NODELET_ERROR_STREAM_FILTER(10.0, "ERROR" << " output");
+    NODELET_ERROR_NAMED(suffix, "ERROR output");
+    NODELET_ERROR_STREAM_NAMED(suffix, "ERROR" << " output");
+    NODELET_ERROR_ONCE_NAMED(suffix, "ERROR output");
+    NODELET_ERROR_STREAM_ONCE_NAMED(suffix, "ERROR" << " output");
+    NODELET_ERROR_COND_NAMED(1 == 1, suffix, "ERROR output");
+    NODELET_ERROR_STREAM_COND_NAMED(1 == 1, suffix, "ERROR" << " output");
+    NODELET_ERROR_COND_NAMED(1 == 0, suffix, "ERROR output unseen");
+    NODELET_ERROR_STREAM_COND_NAMED(1 == 0, suffix, "ERROR" << " output unseen");
+    NODELET_ERROR_THROTTLE_NAMED(10.0, suffix, "ERROR output");
+    NODELET_ERROR_STREAM_THROTTLE_NAMED(10.0, suffix, "ERROR" << " output");
+    //TODO TEST FILTERS
+    //NODELET_ERROR_FILTER_NAMED(10.0, suffix,  "ERROR output");
+    //NODELET_ERROR_STREAM_FILTER_NAMED(10.0, suffix, "ERROR" << " output");
 
     NODELET_FATAL("FATAL output");
     NODELET_FATAL_STREAM("FATAL" << " output");
@@ -113,6 +167,19 @@ private:
     //TODO TEST FILTERS
     //NODELET_FATAL_FILTER(10.0, "FATAL output");
     //NODELET_FATAL_STREAM_FILTER(10.0, "FATAL" << " output");
+    NODELET_FATAL_NAMED(suffix, "FATAL output");
+    NODELET_FATAL_STREAM_NAMED(suffix, "FATAL" << " named output");
+    NODELET_FATAL_ONCE_NAMED(suffix, "FATAL named output");
+    NODELET_FATAL_STREAM_ONCE_NAMED(suffix, "FATAL" << " named output");
+    NODELET_FATAL_COND_NAMED(1 == 1, suffix, "FATAL named output");
+    NODELET_FATAL_STREAM_COND_NAMED(1 == 1, suffix, "FATAL" << " named output");
+    NODELET_FATAL_COND_NAMED(1 == 0, suffix, "FATAL named output unseen");
+    NODELET_FATAL_STREAM_COND_NAMED(1 == 0, suffix, "FATAL" << " named output unseen");
+    NODELET_FATAL_THROTTLE_NAMED(10.0, suffix, "FATAL named output");
+    NODELET_FATAL_STREAM_THROTTLE_NAMED(10.0, suffix, "FATAL" << " named output");
+    //TODO TEST FILTERS
+    //NODELET_FATAL_FILTER_NAMED(10.0, suffix,  "FATAL named output");
+    //NODELET_FATAL_STREAM_FILTER_NAMED(10.0, suffix, "FATAL" << " named output");
 
     
   }
