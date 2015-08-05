@@ -2,6 +2,11 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.9.3 (2015-08-05)
+------------------
+* adding support for named nodelet loggers
+* Contributors: Tully Foote
+
 1.9.2 (2014-10-30)
 ------------------
 

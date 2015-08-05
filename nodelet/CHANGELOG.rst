@@ -2,6 +2,12 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.9.3 (2015-08-05)
+------------------
+* adding support for named nodelet loggers
+* nodelet loader: display error messages from both load attempts on failure
+* Contributors: Max Schwarz, Tully Foote
+
 1.9.2 (2014-10-30)
 ------------------
 * Fix dependency version

@@ -2,6 +2,11 @@
 Changelog for package nodelet_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.9.3 (2015-08-05)
+------------------
+* Update bugtracker url
+* Contributors: Esteve Fernandez
+
 1.9.2 (2014-10-30)
 ------------------
 
