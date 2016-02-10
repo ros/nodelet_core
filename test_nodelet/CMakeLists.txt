@@ -13,7 +13,7 @@ if(CATKIN_ENABLE_TESTING)
   )
 
   #common commands for building c++ executables and libraries
-  add_library(${PROJECT_NAME} src/plus.cpp src/console_tests.cpp src/failing_nodelet.cpp)
+  add_library(${PROJECT_NAME} src/plus.cpp src/console_tests.cpp src/failing_nodelet.cpp src/nodehandles.cpp)
   target_link_libraries(${PROJECT_NAME} ${BOOST_LIBRARIES}
                                         ${catkin_LIBRARIES}
   )
@@ -29,6 +29,21 @@ if(CATKIN_ENABLE_TESTING)
   add_dependencies(tests test_console)
 
   add_rostest(test/test_console.launch)
+
+  add_rostest_gtest(test_nodehandles_different_namespaces
+                    test/test_nodehandles_different_namespaces.test
+                    test/test_nodehandles_different_namespaces.cpp)
+  target_link_libraries(test_nodehandles_different_namespaces ${catkin_LIBRARIES})
+
+  add_rostest_gtest(test_nodehandles_same_namespaces
+                    test/test_nodehandles_same_namespaces.test
+                    test/test_nodehandles_same_namespaces.cpp)
+  target_link_libraries(test_nodehandles_same_namespaces ${catkin_LIBRARIES})
+
+  add_rostest_gtest(test_nodehandles_manager_namespaced
+                    test/test_nodehandles_manager_namespaced.test
+                    test/test_nodehandles_manager_namespaced.cpp)
+  target_link_libraries(test_nodehandles_manager_namespaced ${catkin_LIBRARIES})
 
   # Not a real test. Tries to measure overhead of CallbackQueueManager.
   add_executable(benchmark src/benchmark.cpp)
