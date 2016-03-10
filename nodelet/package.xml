@@ -10,10 +10,12 @@
     implementing a nodelet, as well as the NodeletLoader class used
     for instantiating nodelets.
   </description>
-  <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
+  <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
   <license>BSD</license>
 
-  <url>http://ros.org/wiki/nodelet</url>
+  <url type="website">http://ros.org/wiki/nodelet</url>
+  <url type="bugtracker">https://github.com/ros/nodelet_core/issues</url>
+  <url type="repository">https://github.com/ros/nodelet_core</url>
   <author>Tully Foote</author>
   <author>Radu Bogdan Rusu</author>
 

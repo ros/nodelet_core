@@ -4,10 +4,12 @@
   <description>
     This package contains common nodelet tools such as a mux, demux and throttle.
   </description>
-  <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
+  <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
   <license>BSD</license>
 
-  <url>http://ros.org/wiki/nodelet_topic_tools</url>
+  <url type="website">http://ros.org/wiki/nodelet_topic_tools</url>
+  <url type="bugtracker">https://github.com/ros/nodelet_core/issues</url>
+  <url type="repository">https://github.com/ros/nodelet_core</url>
   <author>Radu Bogdan Rusu</author>
   <author>Tully Foote</author>
 

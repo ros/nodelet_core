@@ -4,10 +4,12 @@
   <description>
     A package for nodelet unit tests
   </description>
-  <maintainer email="esteve@osrfoundation.org">Esteve Fernandez</maintainer>
+  <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
   <license>BSD</license>
 
-  <url>http://ros.org/wiki/test_nodelet</url>
+  <url type="website">http://ros.org/wiki/test_nodelet</url>
+  <url type="bugtracker">https://github.com/ros/nodelet_core/issues</url>
+  <url type="repository">https://github.com/ros/nodelet_core</url>
   <author>Tully Foote</author>
 
   <buildtool_depend version_gte="0.5.68">catkin</buildtool_depend>
