@@ -24,6 +24,8 @@
   <run_depend>rostest</run_depend>
   <run_depend>std_msgs</run_depend>
 
+  <test_depend>rosbash</test_depend>
+
   <export>
     <nodelet plugin="${prefix}/test_nodelet.xml"/>
   </export>
