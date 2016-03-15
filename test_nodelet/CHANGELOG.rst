@@ -2,6 +2,14 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add test dependency on rosbash
+  http://build.ros.org/job/Jdev__nodelet_core__ubuntu_trusty_amd64/3/
+  should fix this
+* update maintainer
+* Contributors: Mikael Arguedas
+
 1.9.3 (2015-08-05)
 ------------------
 * adding support for named nodelet loggers

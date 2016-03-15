@@ -2,6 +2,11 @@
 Changelog for package nodelet_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* update maintainer
+* Contributors: Mikael Arguedas
+
 1.9.3 (2015-08-05)
 ------------------
 * Update bugtracker url

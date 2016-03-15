@@ -2,6 +2,11 @@
 Changelog for package test_nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* update maintainer
+* Contributors: Mikael Arguedas
+
 1.9.3 (2015-08-05)
 ------------------
 
