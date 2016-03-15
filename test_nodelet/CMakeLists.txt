@@ -39,3 +39,6 @@ if(CATKIN_ENABLE_TESTING)
   add_executable(create_instance_cb_error src/create_instance_cb_error.cpp)
   target_link_libraries(create_instance_cb_error ${catkin_LIBRARIES})
 endif()
+
+# always install, since it is marked in the package.xml
+install(FILES test_nodelet.xml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

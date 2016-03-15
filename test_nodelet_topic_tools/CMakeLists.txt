@@ -16,3 +16,6 @@ if(CATKIN_ENABLE_TESTING)
 
   add_rostest(test/test_nodelet_throttle.launch)
 endif()
+
+# always install, since it is marked in the package.xml
+install(FILES test/test_nodelets.xml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/test)
