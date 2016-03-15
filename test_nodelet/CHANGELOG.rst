@@ -2,8 +2,8 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.4 (2016-03-15)
+------------------
 * add test dependency on rosbash
   http://build.ros.org/job/Jdev__nodelet_core__ubuntu_trusty_amd64/3/
   should fix this
