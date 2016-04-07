@@ -177,7 +177,7 @@ class NodeletInterface
       {
         // Maybe service shut down in the meantime, which isn't an error
         if (ros::service::exists(service_name, false))
-          ROS_FATAL("Service call failed!");
+          ROS_FATAL_STREAM("Failed to unload nodelet '" << name << "` from manager `" << manager << "'");
         return (false);
       }
       return (true);
@@ -224,7 +224,7 @@ class NodeletInterface
       srv.request.bond_id = bond_id;
       if (!client.call (srv))
       {
-        ROS_FATAL("Service call failed!");
+        ROS_FATAL_STREAM("Failed to load nodelet '" << name << "` of type `" << type << "` to manager `" << manager << "'");
         return false;
       }
       return true;
