@@ -2,8 +2,8 @@
 Changelog for package test_nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.5 (2016-06-22)
+------------------
 * fix non-isolated build
 * Contributors: Dirk Thomas
 

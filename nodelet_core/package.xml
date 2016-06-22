@@ -1,6 +1,6 @@
 <package>
   <name>nodelet_core</name>
-  <version>1.9.4</version>
+  <version>1.9.5</version>
   <description>Nodelet Core Metapackage</description>
   <maintainer email="mikael@osrfoundation.org">Mikael Arguedas</maintainer>
   <license>BSD</license>
