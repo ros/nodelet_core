@@ -2,6 +2,11 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* more sane debugging messages
+* Contributors: Daniel Stonier
+
 1.9.4 (2016-03-15)
 ------------------
 * update maintainer
