@@ -4,4 +4,9 @@
       Throttle strings in nodelet (testing only).
     </description>
   </class>
+  <class name="test_nodelet_topic_tools/NodeletLazyString" type="test_nodelet_topic_tools::NodeletLazyString" base_class_type="nodelet::Nodelet">
+    <description>
+      Lazy transport strings in nodelet (testing only).
+    </description>
+  </class>
 </library>

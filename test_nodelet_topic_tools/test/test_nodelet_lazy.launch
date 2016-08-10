@@ -1,0 +1,41 @@
+<launch>
+
+  <node name="empty_string_publisher"
+        pkg="test_nodelet_topic_tools" type="empty_string_publisher.py">
+    <remap from="~output" to="input" />
+  </node>
+
+  <param name="verbose_connection" value="true" />
+
+  <node name="string_nodelet_lazy_0"
+        pkg="nodelet" type="nodelet"
+        args="standalone test_nodelet_topic_tools/NodeletLazyString"
+        output="screen">
+    <remap from="~input"  to="input"/>
+  </node>
+  <node name="string_nodelet_lazy_1"
+        pkg="nodelet" type="nodelet"
+        args="standalone test_nodelet_topic_tools/NodeletLazyString"
+        output="screen">
+    <remap from="~input"  to="string_nodelet_lazy_0/output"/>
+  </node>
+  <node name="string_nodelet_lazy_2"
+        pkg="nodelet" type="nodelet"
+        args="standalone test_nodelet_topic_tools/NodeletLazyString"
+        output="screen">
+    <remap from="~input"  to="string_nodelet_lazy_1/output"/>
+  </node>
+
+  <test test-name="test_lazy"
+        name="test_lazy"
+        pkg="test_nodelet_topic_tools" type="test_lazy.py"
+        retry="3">
+    <rosparam>
+      input_topic_type: std_msgs/String
+      check_connected_topics: [string_nodelet_lazy_0/output, string_nodelet_lazy_1/output]
+      wait_for_connection: 3
+    </rosparam>
+    <remap from="~input" to="string_nodelet_lazy_2/output" />
+  </test>
+
+</launch>
