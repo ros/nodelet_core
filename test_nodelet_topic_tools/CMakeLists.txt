@@ -10,9 +10,10 @@ catkin_package(
 
 if(CATKIN_ENABLE_TESTING)
   include_directories(SYSTEM ${catkin_INCLUDE_DIRS})
-  add_library(test_nodelet_topic_tools test/string_nodelet_throttle.cpp)
+  add_library(test_nodelet_topic_tools test/string_nodelet_lazy.cpp test/string_nodelet_throttle.cpp)
   target_link_libraries(test_nodelet_topic_tools ${catkin_LIBRARIES})
   add_dependencies(test_nodelet_topic_tools ${catkin_EXPORTED_TARGETS})
 
+  add_rostest(test/test_nodelet_lazy.launch)
   add_rostest(test/test_nodelet_throttle.launch)
 endif()
