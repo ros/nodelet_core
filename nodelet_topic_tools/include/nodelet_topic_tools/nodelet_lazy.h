@@ -121,8 +121,8 @@ protected:
     if (!lazy_)
     {
       boost::mutex::scoped_lock lock(connection_mutex_);
-      ever_subscribed_ = true;
       subscribe();
+      ever_subscribed_ = true;
     }
   }
 
@@ -143,10 +143,6 @@ protected:
         ros::Publisher pub = publishers_[i];
         if (pub.getNumSubscribers() > 0)
         {
-          if (!ever_subscribed_)
-          {
-            ever_subscribed_ = true;
-          }
           if (connection_status_ != SUBSCRIBED)
           {
             if (verbose_connection_)
@@ -155,6 +151,10 @@ protected:
             }
             subscribe();
             connection_status_ = SUBSCRIBED;
+          }
+          if (!ever_subscribed_)
+          {
+            ever_subscribed_ = true;
           }
           return;
         }
