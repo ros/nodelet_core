@@ -102,13 +102,19 @@ protected:
     {
       nh_->param("verbose_connection", verbose_connection_, false);
     }
-    // timer to warn when no connection in a few seconds
+    // timer to warn when no connection in the specified seconds
     ever_subscribed_ = false;
-    timer_ever_subscribed_ = nh_->createWallTimer(
-      ros::WallDuration(5),
-      &NodeletLazy::warnNeverSubscribedCallback,
-      this,
-      /*oneshot=*/true);
+    double duration_to_warn_no_connection;
+    pnh_->param("duration_to_warn_no_connection",
+                duration_to_warn_no_connection, 5.0);
+    if (duration_to_warn_no_connection > 0)
+    {
+      timer_ever_subscribed_ = nh_->createWallTimer(
+        ros::WallDuration(duration_to_warn_no_connection),
+        &NodeletLazy::warnNeverSubscribedCallback,
+        this,
+        /*oneshot=*/true);
+    }
   }
 
   /** @brief
