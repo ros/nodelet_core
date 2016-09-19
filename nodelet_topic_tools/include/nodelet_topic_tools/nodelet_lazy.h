@@ -84,15 +84,13 @@ protected:
     ros::param::param<bool>("~use_multithread_callback", use_multithread, true);
     if (use_multithread)
     {
-      NODELET_DEBUG("[%s] [nodelet_topic_tools::NodeletLazy::onInit] use multithread callback",
-                    nodelet::Nodelet::getName().c_str());
+      NODELET_DEBUG("Using multithread callback");
       nh_.reset (new ros::NodeHandle(getMTNodeHandle()));
       pnh_.reset (new ros::NodeHandle(getMTPrivateNodeHandle()));
     }
     else
     {
-      NODELET_DEBUG("[%s] [nodelet_topic_tools::NodeletLazy::onInit] use singlethread callback",
-                    nodelet::Nodelet::getName().c_str());
+      NODELET_DEBUG("Using singlethread callback");
       nh_.reset(new ros::NodeHandle(getNodeHandle()));
       pnh_.reset(new ros::NodeHandle(getPrivateNodeHandle()));
     }
@@ -135,8 +133,7 @@ protected:
   {
     if (verbose_connection_)
     {
-      NODELET_INFO("[%s] [nodelet_topic_tools::NodeletLazy::connectionCallback] New connection or disconnection is detected",
-                   nodelet::Nodelet::getName().c_str());
+      NODELET_INFO("New connection or disconnection is detected");
     }
     if (lazy_)
     {
@@ -154,8 +151,7 @@ protected:
           {
             if (verbose_connection_)
             {
-              NODELET_INFO("[%s] [nodelet_topic_tools::NodeletLazy::connectionCallback] Subscribe input topics",
-                           nodelet::Nodelet::getName().c_str());
+              NODELET_INFO("Subscribe input topics");
             }
             subscribe();
             connection_status_ = SUBSCRIBED;
@@ -167,8 +163,7 @@ protected:
       {
         if (verbose_connection_)
         {
-          NODELET_INFO("[%s] [nodelet_topic_tools::NodeletLazy::connectionCallback] Unsubscribe input topics",
-                       nodelet::Nodelet::getName().c_str());
+          NODELET_INFO("Unsubscribe input topics");
         }
         unsubscribe();
         connection_status_ = NOT_SUBSCRIBED;
@@ -184,8 +179,7 @@ protected:
   {
     if (!ever_subscribed_)
     {
-      NODELET_WARN("[%s] [nodelet_topic_tools::NodeletLazy::warnNeverSubscribedCallback] this node/nodelet subscribes topics only when subscribed.",
-                   nodelet::Nodelet::getName().c_str());
+      NODELET_WARN("This node/nodelet subscribes topics only when subscribed.");
     }
   }
 
