@@ -199,8 +199,7 @@ protected:
   virtual void unsubscribe() = 0;
 
   /** @brief
-    * Advertise a topic and watch the publisher. Publishers which are
-    * created by this method.
+    * Update the list of Publishers created by this method.
     * It automatically reads latch boolean parameter from nh and
     * publish topic with appropriate latch parameter.
     *
