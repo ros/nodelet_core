@@ -2,6 +2,9 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.9.5 (2016-06-22)
 ------------------
 * more sane debugging messages
@@ -144,10 +147,10 @@ Changelog for package nodelet
 * ~Loader now stops callback manager threads before destroying the nodelets. Otherwise the worker threads could operate on nodelet data as/after it's destroyed.
 * Use ros::names::parentNamespace().
 * Cleaned scoped_ptr's out of ThreadInfo and updated its padding.
-* Made ThreadInfo::calling an atomic_count. This allows the manager thread to pick the queue with least work more accurately, and reduces contention b/c getSmallestQueue no longer needs to lock on queue_mutex_.
+* Made ThreadInfo::calling an atomic_count. This allows the manager thread to pick the queue with least work more accurately, and reduces contention b/c getSmallestQueue no longer needs to lock on ``queue_mutex_``.
 * Minor code cleanup and finer locking in managerThread().
 * Actually pad ThreadInfo to a multiple of 64 bytes. Previous expression was wrongly wrapped in sizeof().
-* Instead of thread_info_.resize(num_threads), push each ThreadInfo on individually. With resize(), all threads ended up sharing the same queue_mutex and queue_cond. Doesn't seem to be much of a performance win though.
+* Instead of ``thread_info_``.resize(num_threads), push each ThreadInfo on individually. With resize(), all threads ended up sharing the same queue_mutex and queue_cond. Doesn't seem to be much of a performance win though.
 * Added test instrumentation to CallbackQueueManager to track size of worker thread queues over time. Must be enabled at compilation time with -DNODELET_QUEUE_DEBUG.
 * nodelet patches for osx lion support from wjwwood
 * Added --no-bond option to nodelet loading to disable bonds.

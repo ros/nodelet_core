@@ -2,6 +2,18 @@
 Changelog for package test_nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add NodeletLazy abstract class for lazy transport (`#45 <https://github.com/ros/nodelet_core/issues/45>`_)
+  * Add NodeletLazy abstract class for lazy transport
+  * Add test for NodeletLazy with checking its lazy-ness
+  * Fix ROS logging format supporting `ros/ros_comm#875 <https://github.com/ros/ros_comm/issues/875>`_
+  * Fix ever_subscribed\_ flag setting location
+  * Clearfy the comment describing advertise method
+  * Parameterize the duration to warn the no connection
+  User can disable this feature by setting -1 to the param.
+* Contributors: Kentaro Wada
+
 1.9.5 (2016-06-22)
 ------------------
 * fix non-isolated build
