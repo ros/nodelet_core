@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ######################################################################
 # Software License Agreement (BSD License)
 #
@@ -32,21 +33,6 @@
 #  POSSIBILITY OF SUCH DAMAGE.
 ######################################################################
 
-macro(nodelet_add_executable node_name nodelet_name)
-  # Get path to nodelet ROS package
-  if(nodelet_SOURCE_DIR)
-    set(_nodelet_SOURCE_DIR ${nodelet_SOURCE_DIR})
-  elseif(nodelet_SOURCE_PREFIX)
-    set(_nodelet_SOURCE_DIR ${nodelet_SOURCE_PREFIX})
-  else(nodelet_SOURCE_PREFIX)
-    set(_nodelet_SOURCE_DIR ${nodelet_PREFIX}/share/nodelet)
-  endif()
-  # Generate standalone nodelet executable
-  set(NODE_NAME ${node_name})
-  set(NODELET_NAME ${nodelet_name})
-  configure_file(${_nodelet_SOURCE_DIR}/cmake/standalone_nodelet_exe.in ${node_name} @ONLY)
-  file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${node_name}
-       DESTINATION ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_BIN_DESTINATION})
-  install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${node_name}
-          DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-endmacro()
+# Default node name is "@NODE_NAME@",
+# but it is reconfigured by argument afterward.
+rosrun nodelet nodelet standalone @NODELET_NAME@ __name:=@NODE_NAME@ "$@"
