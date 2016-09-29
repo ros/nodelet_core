@@ -18,6 +18,10 @@ if(CATKIN_ENABLE_TESTING)
                                         ${catkin_LIBRARIES}
   )
 
+  # Test nodelet executable
+  nodelet_add_executable(plus test_nodelet/Plus)
+  add_rostest(test_nodelet_executable.launch)
+
   add_rostest(test_local.launch)
   add_rostest(test_loader.launch)
 
