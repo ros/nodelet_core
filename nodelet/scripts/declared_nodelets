@@ -34,21 +34,22 @@
 
 
 
-import roslib
+import rospkg
 from xml.dom import minidom
 import xml
 
 nodelet_files = []
 
-for p in roslib.rospack.rospack_depends_on_1('nodelet'):
+rp = rospkg.RosPack()
+for p in rp.get_depends_on('nodelet', implicit=False):
     #print "Processing package %s to find declared nodelets"%p
-    manifest = roslib.manifest.load_manifest(p)
+    manifest = rp.get_manifest(p)
     for e in manifest.exports:
         try:
             if e.__dict__['tag'] == 'nodelet':
                 plugin_file = e.get('plugin')
                 if plugin_file:
-                    plugin_file = plugin_file.replace('${prefix}',roslib.packages.get_pkg_dir(p))
+                    plugin_file = plugin_file.replace('${prefix}', rp.get_path(p))
                     nodelet_files.append(plugin_file)
         except Exception, ex:
             print ex 
