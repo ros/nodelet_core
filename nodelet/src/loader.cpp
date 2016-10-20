@@ -89,6 +89,8 @@ private:
   bool serviceLoad(nodelet::NodeletLoad::Request &req,
                    nodelet::NodeletLoad::Response &res)
   {
+    boost::mutex::scoped_lock lock(lock_);
+
     // build map
     M_string remappings;
     if (req.remap_source_args.size() != req.remap_target_args.size())
@@ -127,6 +129,8 @@ private:
 
   bool unload(const std::string& name)
   {
+    boost::mutex::scoped_lock lock(lock_);
+
     bool success = parent_->unload(name);
     if (!success)
     {
@@ -134,8 +138,14 @@ private:
       return success;
     }
 
-    // Break the bond, if there is one
-    bond_map_.erase(name);
+    // break the bond, if there is one
+    M_stringToBond::iterator it = bond_map_.find(name);
+    if (it != bond_map_.end()) {
+        // disable callback for broken bond, as we are breaking it intentially now
+        it->second->setBrokenCallback(boost::function<void(void)>());
+        // erase (and break) bond
+        bond_map_.erase(name);
+    }
 
     return success;
   }
@@ -152,7 +162,9 @@ private:
   ros::ServiceServer load_server_;
   ros::ServiceServer unload_server_;
   ros::ServiceServer list_server_;
-  
+
+  boost::mutex lock_;
+
   ros::CallbackQueue bond_callback_queue_;
   ros::AsyncSpinner bond_spinner_;
   typedef boost::ptr_map<std::string, bond::Bond> M_stringToBond;
