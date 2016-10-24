@@ -2,6 +2,9 @@
 Changelog for package nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.9.6 (2016-09-20)
 ------------------
 * Add NodeletLazy abstract class for lazy transport (`#45 <https://github.com/ros/nodelet_core/issues/45>`_)
