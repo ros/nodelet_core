@@ -1,0 +1,4 @@
+<launch>
+  <env name="ROSCONSOLE_CONFIG_FILE" value="$(find test_nodelet)/debug_logging.conf"/>
+  <test test-name="test_bond_break_on_shutdown" pkg="test_nodelet" type="test_bond_break_on_shutdown.py" />
+</launch>

@@ -29,6 +29,7 @@ if(CATKIN_ENABLE_TESTING)
   add_dependencies(tests test_console)
 
   add_rostest(test/test_console.launch)
+  add_rostest(test/test_bond_break_on_shutdown.launch)
 
   # Not a real test. Tries to measure overhead of CallbackQueueManager.
   add_executable(benchmark src/benchmark.cpp)
