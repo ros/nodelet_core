@@ -331,9 +331,10 @@ int
     if (arg_parser.isBondEnabled())
       bond.start();
     // Spin our own loop
+    ros::AsyncSpinner spinner(1);
+    spinner.start();
     while (!request_shutdown)
     {
-      ros::spinOnce();
       if (arg_parser.isBondEnabled() && bond.isBroken())
       {
         ROS_INFO("Bond broken, exiting");
