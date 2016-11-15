@@ -2,8 +2,8 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.8 (2016-11-15)
+------------------
 * Fix bond handling during nodelet unloading (`#51 <https://github.com/ros/nodelet_core/issues/51>`_)
   * add test whether bond breaking on unload works (tests `#50 <https://github.com/ros/nodelet_core/issues/50>`_)
   * disable callback for broken bond when we are breaking it
