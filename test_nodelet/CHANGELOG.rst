@@ -2,6 +2,20 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix bond handling during nodelet unloading (`#51 <https://github.com/ros/nodelet_core/issues/51>`_)
+  * add test whether bond breaking on unload works (tests `#50 <https://github.com/ros/nodelet_core/issues/50>`_)
+  * disable callback for broken bond when we are breaking it
+  This avoids the nodelet::LoaderROS::unload() method to be called
+  twice for the same nodelet, causing an error output.
+  * use AsyncSpinner for nodelet load in order for the shutdown procedure to work
+  During shutdown, the bonds still need to communicate their status in order
+  for the nodelet to properly/cleanly/quickly unload. This requires the node
+  to spin.
+  * add test whether LoaderROS::unload() is called twice (tests `#50 <https://github.com/ros/nodelet_core/issues/50>`_)
+* Contributors: Daniel Seifert
+
 1.9.7 (2016-10-24)
 ------------------
 
