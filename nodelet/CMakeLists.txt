@@ -36,6 +36,8 @@ add_executable(nodelet src/nodelet.cpp)
 target_link_libraries(nodelet nodeletlib ${UUID_LIBRARIES} ${catkin_LIBRARIES} ${BOOST_LIBRARIES})
 
 # install
+catkin_install_python(PROGRAMS scripts/declared_nodelets
+                      DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 install(DIRECTORY include/${PROJECT_NAME}/
         DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
