@@ -30,7 +30,6 @@
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>std_msgs</build_depend>
-  <build_depend>tinyxml</build_depend>
   <build_depend>uuid</build_depend>
 
   <run_depend>bondcpp</run_depend>
@@ -40,6 +39,5 @@
   <run_depend>rosconsole</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
-  <run_depend>tinyxml</run_depend>
   <run_depend>uuid</run_depend>
 </package>
