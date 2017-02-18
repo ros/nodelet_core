@@ -2,8 +2,8 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.9 (2017-02-17)
+------------------
 * drop unused dependency on tinyxml (`#54 <https://github.com/ros/nodelet_core/pull/54>`_)
 * Install the declared_nodelets script (`#53 <https://github.com/ros/nodelet_core/pull/53>`_)
 * Contributors: Dmitry Rozhkov, Kentaro Wada
