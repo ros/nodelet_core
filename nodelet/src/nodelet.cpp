@@ -106,7 +106,7 @@ class NodeletArgumentParsing
 
       else if (command_ == "unload" && non_ros_args.size() > 3)
       {
-sr
+        type_    = "nodelet_unloader";
         name_    = non_ros_args[2];
         manager_ = non_ros_args[3];
         used_args = 4;
