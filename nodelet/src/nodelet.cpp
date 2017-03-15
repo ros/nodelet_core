@@ -241,7 +241,7 @@ void print_usage(int argc, char** argv)
   printf("\nnodelet usage:\n");
   printf("nodelet load pkg/Type manager [--no-bond]  - Launch a nodelet of type pkg/Type on manager manager\n");
   printf("nodelet standalone pkg/Type   - Launch a nodelet of type pkg/Type in a standalone node\n");
-  printf("nodelet unload name manager   - Unload a nodelet a nodelet by name from manager\n");
+  printf("nodelet unload name manager   - Unload a nodelet by name from manager\n");
   printf("nodelet manager               - Launch a nodelet manager node\n");
 
 };
