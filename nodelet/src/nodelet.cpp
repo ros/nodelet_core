@@ -106,15 +106,16 @@ class NodeletArgumentParsing
 
       else if (command_ == "unload" && non_ros_args.size() > 3)
       {
-	name_    = non_ros_args[2];
-	manager_ = non_ros_args[3];
-	used_args = 4;
+sr
+        name_    = non_ros_args[2];
+        manager_ = non_ros_args[3];
+        used_args = 4;
       }
       else if (command_ == "standalone" && non_ros_args.size() > 2)
       {
-	type_ = non_ros_args[2];
-	printf("type is %s\n", type_.c_str());
-	used_args = 3;
+        type_ = non_ros_args[2];
+        printf("type is %s\n", type_.c_str());
+        used_args = 3;
       }
 
       if (command_ == "manager")
