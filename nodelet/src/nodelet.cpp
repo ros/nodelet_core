@@ -106,15 +106,16 @@ class NodeletArgumentParsing
 
       else if (command_ == "unload" && non_ros_args.size() > 3)
       {
-	name_    = non_ros_args[2];
-	manager_ = non_ros_args[3];
-	used_args = 4;
+        type_    = "nodelet_unloader";
+        name_    = non_ros_args[2];
+        manager_ = non_ros_args[3];
+        used_args = 4;
       }
       else if (command_ == "standalone" && non_ros_args.size() > 2)
       {
-	type_ = non_ros_args[2];
-	printf("type is %s\n", type_.c_str());
-	used_args = 3;
+        type_ = non_ros_args[2];
+        printf("type is %s\n", type_.c_str());
+        used_args = 3;
       }
 
       if (command_ == "manager")
@@ -241,7 +242,7 @@ void print_usage(int argc, char** argv)
   printf("\nnodelet usage:\n");
   printf("nodelet load pkg/Type manager [--no-bond]  - Launch a nodelet of type pkg/Type on manager manager\n");
   printf("nodelet standalone pkg/Type   - Launch a nodelet of type pkg/Type in a standalone node\n");
-  printf("nodelet unload name manager   - Unload a nodelet a nodelet by name from manager\n");
+  printf("nodelet unload name manager   - Unload a nodelet by name from manager\n");
   printf("nodelet manager               - Launch a nodelet manager node\n");
 
 };
