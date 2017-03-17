@@ -35,7 +35,7 @@
 
 #include <boost/bind.hpp>
 
-boost::shared_ptr<nodelet::Nodelet> create_instance(const std::string& lookup_name)
+boost::shared_ptr<nodelet::Nodelet> create_instance(const std::string&)
 {
     throw std::runtime_error("NODELET_TEST_FAILURE");
 }
