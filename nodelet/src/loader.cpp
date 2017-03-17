@@ -150,7 +150,7 @@ private:
     return success;
   }
 
-  bool serviceList(nodelet::NodeletList::Request &req,
+  bool serviceList(nodelet::NodeletList::Request &,
                    nodelet::NodeletList::Response &res)
   {
     res.nodelets = parent_->listLoadedNodelets();

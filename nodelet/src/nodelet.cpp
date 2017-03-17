@@ -249,7 +249,7 @@ void print_usage(int argc, char** argv)
 
 sig_atomic_t volatile request_shutdown = 0;
 
-void nodeletLoaderSigIntHandler(int sig)
+void nodeletLoaderSigIntHandler(int)
 {
   request_shutdown = 1;
 }
