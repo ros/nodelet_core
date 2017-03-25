@@ -14,6 +14,7 @@ from nodelet.srv import NodeletList
 class NodeletInterface():
     def list_nodelets(self, manager):
         service_manager = manager + "/list"
+        rospy.loginfo('Waiting for service: %s', service_manager)
         rospy.wait_for_service(service_manager)
         service_client = rospy.ServiceProxy(service_manager, NodeletList)
         resp = service_client()
@@ -35,6 +36,7 @@ if __name__ == '__main__':
 
     manager = args[1]
     service_manager = manager + "/list"
+    rospy.loginfo('Waiting for service: %s', service_manager)
     rospy.wait_for_service(service_manager)
     service_client = rospy.ServiceProxy(service_manager, NodeletList)
     resp = service_client()
