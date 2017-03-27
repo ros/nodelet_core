@@ -2,8 +2,8 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.10 (2017-03-27)
+-------------------
 * installs the list_nodelets script (`#58 <https://github.com/ros/nodelet_core/issues/58>`_)
   * python3 compatibility
   * pep8
