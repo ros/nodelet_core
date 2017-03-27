@@ -2,6 +2,11 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix unused var warning
+* Contributors: Mikael Arguedas
+
 1.9.9 (2017-02-17)
 ------------------
 

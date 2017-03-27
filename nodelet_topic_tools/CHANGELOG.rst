@@ -2,6 +2,9 @@
 Changelog for package nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.9.9 (2017-02-17)
 ------------------
 
