@@ -71,8 +71,9 @@ def main():
                 for lib in dom.getElementsByTagName('library'):
                     for name in lib.getElementsByTagName('class'):
                         nodelets.append(name.getAttribute('name'))
-            except xml.parsers.expat.ExpatError:
-                pass
+            except xml.parsers.expat.ExpatError as e:
+                print('%s: %s' % (f, e), file=sys.stderr)
+                continue
         declared_nodelets.append({
             'package': p,
             'manifest': f,
