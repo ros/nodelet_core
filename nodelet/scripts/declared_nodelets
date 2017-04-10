@@ -46,6 +46,7 @@ import xml
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-p', '--package')
     args = parser.parse_args()
 
     rp = rospkg.RosPack()
@@ -80,6 +81,8 @@ def main():
         })
 
     for declared in declared_nodelets:
+        if args.package and declared['package'] != args.package:
+            continue
         if args.verbose:
             print('- package: %s' % declared['package'])
             print('  manifest: %s' % declared['manifest'])
