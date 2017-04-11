@@ -32,40 +32,67 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+from __future__ import print_function
 
+import argparse
+import sys
+import xml
+from xml.dom import minidom
 
 import rospkg
-from xml.dom import minidom
-import xml
 
-nodelet_files = []
 
-rp = rospkg.RosPack()
-for p in rp.get_depends_on('nodelet', implicit=False):
-    #print "Processing package %s to find declared nodelets"%p
-    manifest = rp.get_manifest(p)
-    for e in manifest.exports:
-        try:
-            if e.__dict__['tag'] == 'nodelet':
-                plugin_file = e.get('plugin')
-                if plugin_file:
-                    plugin_file = plugin_file.replace('${prefix}', rp.get_path(p))
-                    nodelet_files.append(plugin_file)
-        except Exception, ex:
-            print ex 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('-p', '--package')
+    args = parser.parse_args()
 
-declared_nodelets = []
+    rp = rospkg.RosPack()
+    nodelet_files = []
+    for p in rp.get_depends_on('nodelet', implicit=False):
+        manifest = rp.get_manifest(p)
+        for e in manifest.exports:
+            try:
+                if e.__dict__['tag'] == 'nodelet':
+                    plugin_file = e.get('plugin')
+                    if plugin_file:
+                        plugin_file = plugin_file.replace('${prefix}', rp.get_path(p))
+                        nodelet_files.append((p, plugin_file))
+            except Exception as e:
+                print(e, file=sys.stderr)
 
-for f in nodelet_files:
-    with open(f) as fh:
-        try:
-            dom = minidom.parse(fh)
-            for lib in dom.getElementsByTagName('library'):
-                for name in lib.getElementsByTagName('class'):
-                    declared_nodelets.append(name.getAttribute('name'))
-        except xml.parsers.expat.ExpatError, ex:
-            "failed to parse file %s"%f
+    declared_nodelets = []
+    for p, f in nodelet_files:
+        nodelets = []
+        with open(f) as fh:
+            try:
+                dom = minidom.parse(fh)
+                for lib in dom.getElementsByTagName('library'):
+                    for name in lib.getElementsByTagName('class'):
+                        nodelets.append(name.getAttribute('name'))
+            except xml.parsers.expat.ExpatError as e:
+                print('%s: %s' % (f, e), file=sys.stderr)
+                continue
+        declared_nodelets.append({
+            'package': p,
+            'manifest': f,
+            'nodelets': nodelets,
+        })
 
-#print "\n\nDECLARED NODELETS\n================="
-for n in declared_nodelets:
-    print n
+    for declared in declared_nodelets:
+        if args.package and declared['package'] != args.package:
+            continue
+        if args.verbose:
+            print('- package: %s' % declared['package'])
+            print('  manifest: %s' % declared['manifest'])
+            print('  nodelets:')
+            for nodelet in declared['nodelets']:
+                print('    - %s' % nodelet)
+        else:
+            for nodelet in declared['nodelets']:
+                print(nodelet)
+
+
+if __name__ == '__main__':
+    main()
