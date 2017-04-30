@@ -85,6 +85,16 @@ class TestConnection(unittest.TestCase):
             else:
                 raise ValueError('Not found topic: {}'.format(check_topic))
 
+        sub.unregister()
+        rospy.sleep(1)  # wait for disconnection
+
+        # Check specified topics do not exist
+        _, subscriptions, _ = self.master.getSystemState()
+        for check_topic in check_connected_topics:
+            for topic, sub_node in subscriptions:
+                if topic == rospy.get_namespace() + check_topic:
+                    raise ValueError('Found topic: {}'.format(check_topic))
+
     def _cb_test_subscriber_appears(self, msg):
         pass
 
