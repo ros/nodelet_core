@@ -188,6 +188,7 @@ protected:
     return nodelet_name_ + "." + suffix;
   }
   inline const V_string& getMyArgv() const { return my_argv_; }
+  inline const M_string& getRemappingArgs() const { return remapping_args_; }
 
   ros::NodeHandle& getNodeHandle() const;
   ros::NodeHandle& getPrivateNodeHandle() const;
@@ -209,6 +210,7 @@ private:
   NodeHandlePtr mt_nh_;
   NodeHandlePtr mt_private_nh_;
   V_string my_argv_;
+  M_string remapping_args_;
 
   // Method to be overridden by subclass when starting up.
   virtual void onInit() = 0;

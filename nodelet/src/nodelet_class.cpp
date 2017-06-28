@@ -114,6 +114,7 @@ void Nodelet::init(const std::string& name, const M_string& remapping_args, cons
 
   nodelet_name_ = name;
   my_argv_ = my_argv;
+  remapping_args_ = remapping_args;
 
   // Set up NodeHandles with correct namespaces
   private_nh_.reset(new ros::NodeHandle(name, remapping_args));
