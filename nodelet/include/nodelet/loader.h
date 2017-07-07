@@ -69,7 +69,7 @@ public:
    * create nodelet instances
    */
   Loader(const boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)>& create_instance);
-  
+
   ~Loader();
 
   /** \brief Load a nodelet */
@@ -84,7 +84,7 @@ public:
 
   /**\brief List the names of all loaded nodelets */
   std::vector<std::string> listLoadedNodelets();
-  
+
 private:
   boost::mutex lock_; ///<! Public methods must lock this to preserve internal integrity.
   struct Impl;

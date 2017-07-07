@@ -52,7 +52,7 @@ each CallbackQueue has weak ownership of its associated Nodelet.
 
 Loader ensures that the CallbackQueues associated with a Nodelet outlive that
 Nodelet. CallbackQueueManager ensures that CallbackQueues continue to survive as
-long as they have pending callbacks. 
+long as they have pending callbacks.
 
 CallbackQueue holds a weak_ptr to its associated Nodelet, which it attempts to
 lock before invoking any callback. So any lingering callbacks processed after a
@@ -231,7 +231,7 @@ struct Loader::Impl
     server_nh.param("num_worker_threads", num_threads_param, 0);
     callback_manager_.reset(new detail::CallbackQueueManager(num_threads_param));
     ROS_INFO("Initializing nodelet with %d worker threads.", (int)callback_manager_->getNumWorkerThreads());
-  
+
     services_.reset(new LoaderROS(parent, server_nh));
   }
 };

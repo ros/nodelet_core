@@ -127,7 +127,7 @@ void Nodelet::init(const std::string& name, const M_string& remapping_args, cons
   nh_->setCallbackQueue(st_queue);
   mt_private_nh_->setCallbackQueue(mt_queue);
   mt_nh_->setCallbackQueue(mt_queue);
-  
+
   NODELET_DEBUG ("Nodelet initializing");
   inited_ = true;
   this->onInit ();

@@ -74,7 +74,7 @@ uint32_t CallbackQueue::callOne()
     if (!tracker)
       return ros::CallbackQueue::Disabled;
   }
-  
+
   return queue_.callOne();
 }
 

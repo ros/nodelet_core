@@ -28,7 +28,7 @@ class TestNodeletThrottle(unittest.TestCase):
     def test_nodelet_throttle(self):
         for i in range(0,10):
             self._pub.publish(String('hello, world'))
-            rospy.sleep(1.0)        
+            rospy.sleep(1.0)
 
         self.assert_(self._msgs_rec > 0, "No messages received from nodelet throttle on topic \"string_out\"")
 
