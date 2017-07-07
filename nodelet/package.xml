@@ -1,4 +1,6 @@
-<package>
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="2">
   <name>nodelet</name>
   <version>1.9.10</version>
   <description>
@@ -21,23 +23,17 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>bondcpp</build_depend>
-  <build_depend>boost</build_depend>
   <build_depend version_gte="0.3.2">cmake_modules</build_depend>
   <build_depend>message_generation</build_depend>
-  <build_depend version_gte="1.10.0">pluginlib</build_depend>
-  <build_depend>rosconsole</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>uuid</build_depend>
 
-  <run_depend>bondcpp</run_depend>
-  <run_depend>boost</run_depend>
-  <run_depend>message_runtime</run_depend>
-  <run_depend version_gte="1.10.0">pluginlib</run_depend>
-  <run_depend>rosconsole</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>uuid</run_depend>
+  <depend>bondcpp</depend>
+  <depend>boost</depend>
+  <depend version_gte="1.10.0">pluginlib</depend>
+  <depend>rosconsole</depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>uuid</depend>
+
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>rospy</exec_depend>
 </package>
