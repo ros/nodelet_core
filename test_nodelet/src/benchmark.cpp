@@ -39,7 +39,7 @@ int main(int argc, char** argv)
   man.addQueue(queue, true);
 
   double start = ros::WallTime::now().toSec();
-  
+
   for (long i = 0; i < NUM_CALLBACKS; ++i)
   {
     MyCallbackPtr cb(new MyCallback);

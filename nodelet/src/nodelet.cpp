@@ -72,7 +72,7 @@ class NodeletArgumentParsing
     std::string manager_;
     std::vector<std::string> local_args_;
     bool is_bond_enabled_;
-  
+
   public:
     //NodeletArgumentParsing() { };
     bool
@@ -328,7 +328,7 @@ int
     signal(SIGINT, nodeletLoaderSigIntHandler);
     ros::XMLRPCManager::instance()->unbind("shutdown");
     ros::XMLRPCManager::instance()->bind("shutdown", shutdownCallback);
-    
+
     if (arg_parser.isBondEnabled())
       bond.start();
     // Spin our own loop

@@ -6,7 +6,7 @@
   </class>
   <class name="test_nodelet/ConsoleTest" type="test_nodelet::ConsoleTest" base_class_type="nodelet::Nodelet">
     <description>
-      Test nodelet rosconsole macros. 
+      Test nodelet rosconsole macros.
     </description>
   </class>
   <class name="test_nodelet/FailingNodelet" type="test_nodelet::FailingNodelet" base_class_type="nodelet::Nodelet">

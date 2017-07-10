@@ -44,7 +44,7 @@
 
 namespace nodelet
 {
-  /** \brief @b NodeletMUX represent a mux nodelet for topics: it takes N (<=8) input topics, and publishes all of them 
+  /** \brief @b NodeletMUX represent a mux nodelet for topics: it takes N (<=8) input topics, and publishes all of them
     * on one output topic.
     * \author Radu Bogdan Rusu
     */
@@ -53,9 +53,8 @@ namespace nodelet
   {
     typedef typename boost::shared_ptr<T> TPtr;
     typedef typename boost::shared_ptr<const T> TConstPtr;
-    
+
     public:
-    
       NodeletMUX () : maximum_queue_size_ (3) {}
 
       //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,11 +69,11 @@ namespace nodelet
         if (!private_nh_.getParam ("input_topics", input_topics))
         {
           ROS_ERROR ("[nodelet::NodeletMUX::init] Need a 'input_topics' parameter to be set before continuing!");
-          return; 
+          return;
         }
-        
+
         private_nh_.getParam ("max_queue_size", maximum_queue_size_);
-        
+
         // Check the type
         switch (input_topics.getType ())
         {
@@ -108,7 +107,7 @@ namespace nodelet
             filters_[0]->registerCallback (boost::bind (&NodeletMUX<T,Filter>::filter_cb, this, _1));
 
             ts_.reset (new message_filters::TimeSynchronizer<T,T,T,T,T,T,T,T> (maximum_queue_size_));
-           
+
             switch (input_topics.size ())
             {
               case 2:
@@ -160,7 +159,7 @@ namespace nodelet
             return;
           }
         }
-        
+
         ts_->registerCallback (boost::bind (&NodeletMUX<T,Filter>::input, this, _1, _2, _3, _4, _5, _6, _7, _8));
       }
 
@@ -172,12 +171,12 @@ namespace nodelet
         nf_.add (input);
       }
 
-      void 
-      input (const TConstPtr &in1, const TConstPtr &in2, const TConstPtr &in3, const TConstPtr &in4, 
+      void
+      input (const TConstPtr &in1, const TConstPtr &in2, const TConstPtr &in3, const TConstPtr &in4,
              const TConstPtr &in5, const TConstPtr &in6, const TConstPtr &in7, const TConstPtr &in8)
-      { 
-        pub_output_.publish (in1); pub_output_.publish (in2); pub_output_.publish (in3); pub_output_.publish (in4); 
-        pub_output_.publish (in5); pub_output_.publish (in6); pub_output_.publish (in7); pub_output_.publish (in8); 
+      {
+        pub_output_.publish (in1); pub_output_.publish (in2); pub_output_.publish (in3); pub_output_.publish (in4);
+        pub_output_.publish (in5); pub_output_.publish (in6); pub_output_.publish (in7); pub_output_.publish (in8);
       }
 
       /** \brief ROS local node handle. */
@@ -190,7 +189,7 @@ namespace nodelet
 
       /** \brief The maximum number of messages that we can store in the queue. */
       int maximum_queue_size_;
-      
+
       /** \brief A vector of message filters. */
       std::vector<boost::shared_ptr<Filter> > filters_;
 

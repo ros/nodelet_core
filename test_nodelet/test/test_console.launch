@@ -1,4 +1,3 @@
-<launch> 
-
+<launch>
   <test test-name="console_test" pkg="test_nodelet" type="test_console" />
 </launch>

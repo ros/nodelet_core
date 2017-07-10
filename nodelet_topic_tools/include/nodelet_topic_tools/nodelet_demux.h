@@ -63,7 +63,7 @@ namespace nodelet
         if (!private_nh_.getParam ("output_topics", output_topics_))
         {
           ROS_ERROR ("[nodelet::NodeletDEMUX::init] Need a 'output_topics' parameter to be set before continuing!");
-          return; 
+          return;
         }
         // Check the type
         switch (output_topics_.getType ())
@@ -115,7 +115,7 @@ namespace nodelet
       std::vector<boost::shared_ptr <ros::Publisher> > pubs_output_;
       /** \brief The input subscriber. */
       Subscriber sub_input_;
-            
+
 
       /** \brief The list of output topics passed as a parameter. */
       XmlRpc::XmlRpcValue output_topics_;
@@ -141,7 +141,7 @@ namespace nodelet
         if (!private_nh_.getParam ("output_topics", output_topics_))
         {
           ROS_ERROR ("[nodelet::NodeletDEMUX::init] Need a 'output_topics' parameter to be set before continuing!");
-          return; 
+          return;
         }
         // Check the type
         switch (output_topics_.getType ())
@@ -193,7 +193,7 @@ namespace nodelet
       std::vector<boost::shared_ptr <ros::Publisher> > pubs_output_;
       /** \brief The input subscriber. */
       ros::Subscriber sub_input_;
-            
+
 
       /** \brief The list of output topics passed as a parameter. */
       XmlRpc::XmlRpcValue output_topics_;
