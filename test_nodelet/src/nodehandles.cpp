@@ -25,6 +25,6 @@ private:
   ros::Publisher global_pub_, namespaced_pub_, private_pub_;
 };
 
-} // namespace dude
+}  // namespace test_nodelet
 
 PLUGINLIB_EXPORT_CLASS(test_nodelet::NodehandleTest, nodelet::Nodelet);

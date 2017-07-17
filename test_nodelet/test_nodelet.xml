@@ -14,7 +14,7 @@
       A node that fails to initialize properly.
     </description>
   </class>
-    <class name="test_nodelet/NodehandleTest" type="test_nodelet::NodehandleTest" base_class_type="nodelet::Nodelet">
+  <class name="test_nodelet/NodehandleTest" type="test_nodelet::NodehandleTest" base_class_type="nodelet::Nodelet">
     <description>
       A node that creates public and private nodehandles.
     </description>
