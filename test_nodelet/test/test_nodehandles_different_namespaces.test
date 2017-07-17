@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  <group ns="manager_namespace">
+    <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager"/>
+  </group>
+  <group ns="nodelet_namespace">
+    <node pkg="nodelet" type="nodelet" name="nodehandle_test" args="load test_nodelet/NodehandleTest /manager_namespace/nodelet_manager"/>
+  </group>
+  <group ns="test_namespace">
+    <test test-name="test_nodehandles" pkg="test_nodelet" type="test_nodehandles_different_namespaces"/>
+  </group>
+</launch>
