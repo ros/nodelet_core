@@ -44,7 +44,7 @@
 #include <std_msgs/Float32.h>
 #include <ros/ros.h>
 
-TEST(SameNamespaces, NodeletPrivateNodehandle) {
+TEST(ManagerNamespaced, NodeletPrivateNodehandle) {
   ros::NodeHandle nh;
   ros::Duration(2).sleep();
   ros::master::V_TopicInfo master_topics;
@@ -61,7 +61,7 @@ TEST(SameNamespaces, NodeletPrivateNodehandle) {
   EXPECT_TRUE(found_topic);
 }
 
-TEST(SameNamespaces, NodeletNamespacedNodehandle) {
+TEST(ManagerNamespaced, NodeletNamespacedNodehandle) {
   ros::NodeHandle nh;
   ros::Duration(2).sleep();
   ros::master::V_TopicInfo master_topics;
@@ -78,7 +78,7 @@ TEST(SameNamespaces, NodeletNamespacedNodehandle) {
   EXPECT_TRUE(found_topic);
 }
 
-TEST(SameNamespaces, NodeletGlobalNodehandle) {
+TEST(ManagerNamespaced, NodeletGlobalNodehandle) {
   ros::NodeHandle nh;
   ros::Duration(2).sleep();
   ros::master::V_TopicInfo master_topics;
@@ -95,7 +95,7 @@ TEST(SameNamespaces, NodeletGlobalNodehandle) {
   EXPECT_TRUE(found_topic);
 }
 
-TEST(SameNamespaces, NodePrivateNodehandle) {
+TEST(ManagerNamespaced, NodePrivateNodehandle) {
   ros::NodeHandle nh("~");
   ros::Publisher pub = nh.advertise<std_msgs::Empty>("private", 10);
   ros::master::V_TopicInfo master_topics;
@@ -112,7 +112,7 @@ TEST(SameNamespaces, NodePrivateNodehandle) {
   EXPECT_TRUE(found_topic);
 }
 
-TEST(SameNamespaces, NodeNamespacedNodehandle) {
+TEST(ManagerNamespaced, NodeNamespacedNodehandle) {
   ros::NodeHandle nh;
   ros::Publisher pub = nh.advertise<std_msgs::String>("namespaced", 10);
   ros::master::V_TopicInfo master_topics;
@@ -129,7 +129,7 @@ TEST(SameNamespaces, NodeNamespacedNodehandle) {
   EXPECT_TRUE(found_topic);
 }
 
-TEST(SameNamespaces, NodeGlobalNodehandle) {
+TEST(ManagerNamespaced, NodeGlobalNodehandle) {
   ros::NodeHandle nh;
   ros::Publisher pub = nh.advertise<std_msgs::Float32>("/public", 10);
   ros::master::V_TopicInfo master_topics;
