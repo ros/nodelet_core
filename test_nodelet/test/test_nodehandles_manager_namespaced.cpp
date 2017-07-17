@@ -61,22 +61,24 @@ TEST(ManagerNamespaced, NodeletPrivateNodehandle) {
   EXPECT_TRUE(found_topic);
 }
 
-TEST(ManagerNamespaced, NodeletNamespacedNodehandle) {
-  ros::NodeHandle nh;
-  ros::Duration(2).sleep();
-  ros::master::V_TopicInfo master_topics;
-  ros::master::getTopics(master_topics);
-  bool found_topic = false;
-
-  for (ros::master::V_TopicInfo::iterator it = master_topics.begin() ; it != master_topics.end(); it++) {
-    const ros::master::TopicInfo& info = *it;
-    if (info.datatype.compare("std_msgs/Byte") == 0) {
-      found_topic = true;
-      EXPECT_STREQ("/namespaced", info.name.c_str());
-    }
-  }
-  EXPECT_TRUE(found_topic);
-}
+// TODO(mikaelarguedas) reenable this once
+// https://github.com/ros/nodelet_core/issues/7 is fixed
+// TEST(ManagerNamespaced, NodeletNamespacedNodehandle) {
+//   ros::NodeHandle nh;
+//   ros::Duration(2).sleep();
+//   ros::master::V_TopicInfo master_topics;
+//   ros::master::getTopics(master_topics);
+//   bool found_topic = false;
+// 
+//   for (ros::master::V_TopicInfo::iterator it = master_topics.begin() ; it != master_topics.end(); it++) {
+//     const ros::master::TopicInfo& info = *it;
+//     if (info.datatype.compare("std_msgs/Byte") == 0) {
+//       found_topic = true;
+//       EXPECT_STREQ("/namespaced", info.name.c_str());
+//     }
+//   }
+//   EXPECT_TRUE(found_topic);
+// }
 
 TEST(ManagerNamespaced, NodeletGlobalNodehandle) {
   ros::NodeHandle nh;
