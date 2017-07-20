@@ -113,6 +113,7 @@ void Nodelet::init(const std::string& name, const M_string& remapping_args, cons
   }
 
   nodelet_name_ = name;
+  remapping_args_ = remapping_args;
   my_argv_ = my_argv;
 
   // Set up NodeHandles with correct namespaces
