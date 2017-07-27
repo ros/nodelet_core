@@ -2,8 +2,8 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.11 (2017-07-27)
+-------------------
 * Test nodehandles (`#64 <https://github.com/ros/nodelet_core/issues/64>`_)
 * remove trailing whitespaces (`#62 <https://github.com/ros/nodelet_core/issues/62>`_)
 * switch to package format 2 (`#63 <https://github.com/ros/nodelet_core/issues/63>`_)

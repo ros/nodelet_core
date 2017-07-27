@@ -2,8 +2,8 @@
 Changelog for package test_nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.11 (2017-07-27)
+-------------------
 * remove trailing whitespaces (`#62 <https://github.com/ros/nodelet_core/issues/62>`_)
 * switch to package format 2 (`#63 <https://github.com/ros/nodelet_core/issues/63>`_)
 * Test laziness after disconnection (`#60 <https://github.com/ros/nodelet_core/issues/60>`_)

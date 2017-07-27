@@ -2,8 +2,8 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.11 (2017-07-27)
+-------------------
 * Add getRemappingArgs method to nodelet to reuse it in subclass (`#61 <https://github.com/ros/nodelet_core/issues/61>`_)
 * remove trailing whitespaces (`#62 <https://github.com/ros/nodelet_core/issues/62>`_)
 * switch to package format 2 (`#63 <https://github.com/ros/nodelet_core/issues/63>`_)
