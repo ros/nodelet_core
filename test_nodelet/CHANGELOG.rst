@@ -2,6 +2,13 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Test nodehandles (`#64 <https://github.com/ros/nodelet_core/issues/64>`_)
+* remove trailing whitespaces (`#62 <https://github.com/ros/nodelet_core/issues/62>`_)
+* switch to package format 2 (`#63 <https://github.com/ros/nodelet_core/issues/63>`_)
+* Contributors: Mikael Arguedas
+
 1.9.10 (2017-03-27)
 -------------------
 * fix unused var warning

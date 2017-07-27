@@ -2,6 +2,14 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add getRemappingArgs method to nodelet to reuse it in subclass (`#61 <https://github.com/ros/nodelet_core/issues/61>`_)
+* remove trailing whitespaces (`#62 <https://github.com/ros/nodelet_core/issues/62>`_)
+* switch to package format 2 (`#63 <https://github.com/ros/nodelet_core/issues/63>`_)
+* Show pkg and manifest file with verbose option (`#59 <https://github.com/ros/nodelet_core/issues/59>`_)
+* Contributors: Kentaro Wada, Mikael Arguedas
+
 1.9.10 (2017-03-27)
 -------------------
 * installs the list_nodelets script (`#58 <https://github.com/ros/nodelet_core/issues/58>`_)

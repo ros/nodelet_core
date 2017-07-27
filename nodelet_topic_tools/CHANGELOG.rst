@@ -2,6 +2,12 @@
 Changelog for package nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove trailing whitespaces (`#62 <https://github.com/ros/nodelet_core/issues/62>`_)
+* switch to package format 2 (`#63 <https://github.com/ros/nodelet_core/issues/63>`_)
+* Contributors: Mikael Arguedas
+
 1.9.10 (2017-03-27)
 -------------------
 
