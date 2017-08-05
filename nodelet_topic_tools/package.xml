@@ -20,8 +20,8 @@
   <depend>boost</depend>
   <depend>dynamic_reconfigure</depend>
 
-  <exec_depend>message_filters</exec_depend>
-  <exec_depend>nodelet</exec_depend>
-  <exec_depend>pluginlib</exec_depend>
-  <exec_depend>roscpp</exec_depend>
+  <build_export_depend>message_filters</build_export_depend>
+  <build_export_depend>nodelet</build_export_depend>
+  <build_export_depend>pluginlib</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
 </package>
