@@ -2,6 +2,9 @@
 Changelog for package nodelet_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.9.11 (2017-07-27)
 -------------------
 * remove trailing whitespaces (`#62 <https://github.com/ros/nodelet_core/issues/62>`_)

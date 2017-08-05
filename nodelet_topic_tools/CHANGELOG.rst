@@ -2,6 +2,11 @@
 Changelog for package nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix exec_depend that are actually build_export_depends (`#65 <https://github.com/ros/nodelet_core/issues/65>`_)
+* Contributors: Mikael Arguedas
+
 1.9.11 (2017-07-27)
 -------------------
 * remove trailing whitespaces (`#62 <https://github.com/ros/nodelet_core/issues/62>`_)

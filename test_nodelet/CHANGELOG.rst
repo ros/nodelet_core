@@ -2,6 +2,9 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.9.11 (2017-07-27)
 -------------------
 * Test nodehandles (`#64 <https://github.com/ros/nodelet_core/issues/64>`_)
