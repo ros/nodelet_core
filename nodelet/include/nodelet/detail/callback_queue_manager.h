@@ -84,7 +84,6 @@ private:
   struct ThreadInfo;
   void workerThread(ThreadInfo*);
 
-  class ThreadInfo;
   ThreadInfo* getSmallestQueue();
 
   struct QueueInfo
