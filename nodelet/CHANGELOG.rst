@@ -2,8 +2,8 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.13 (2017-10-27)
+-------------------
 * Drop unneeded forward declaration. (`#68 <https://github.com/ros/nodelet_core/issues/68>`_)
 * Contributors: Mike Purvis
 

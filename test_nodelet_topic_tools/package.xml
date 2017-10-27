@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="2">
   <name>test_nodelet_topic_tools</name>
-  <version>1.9.12</version>
+  <version>1.9.13</version>
   <description>
     A package for nodelet_topic_tools unit tests.
   </description>
