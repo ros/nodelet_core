@@ -68,5 +68,5 @@ private:
   double value_;
 };
 
-PLUGINLIB_DECLARE_CLASS(test_nodelet, Plus, test_nodelet::Plus, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS(test_nodelet::Plus, nodelet::Nodelet)
 }

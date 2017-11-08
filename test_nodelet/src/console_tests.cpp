@@ -184,5 +184,5 @@ private:
 
 };
 
-PLUGINLIB_DECLARE_CLASS(test_nodelet, ConsoleTest, test_nodelet::ConsoleTest, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS(test_nodelet::ConsoleTest, nodelet::Nodelet)
 }

@@ -47,5 +47,5 @@ private:
   }
 };
 
-PLUGINLIB_DECLARE_CLASS(test_nodelet, FailingNodelet, test_nodelet::FailingNodelet, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS(test_nodelet::FailingNodelet, nodelet::Nodelet)
 }
