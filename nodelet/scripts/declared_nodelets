@@ -35,6 +35,7 @@
 from __future__ import print_function
 
 import argparse
+import os
 import sys
 import xml
 from xml.dom import minidom
@@ -65,6 +66,9 @@ def main():
     declared_nodelets = []
     for p, f in nodelet_files:
         nodelets = []
+        if not os.path.exists(f):
+            print('%s: %s' % (f, "The file does not exist."), file=sys.stderr)
+            continue
         with open(f) as fh:
             try:
                 dom = minidom.parse(fh)
