@@ -66,8 +66,8 @@ def main():
     declared_nodelets = []
     for p, f in nodelet_files:
         nodelets = []
-        if not os.path.exists(f):
-            print('%s: %s' % (f, "The file does not exist."), file=sys.stderr)
+        if not os.path.isfile(f):
+            print('%s: %s' % (f, 'The file does not exist.'), file=sys.stderr)
             continue
         with open(f) as fh:
             try:
