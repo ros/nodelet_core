@@ -2,6 +2,11 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* declared_nodelets: continue on missing plugin xml (`#70 <https://github.com/ros/nodelet_core/issues/70>`_)
+* Contributors: Furushchev
+
 1.9.13 (2017-10-27)
 -------------------
 * Drop unneeded forward declaration. (`#68 <https://github.com/ros/nodelet_core/issues/68>`_)
