@@ -2,8 +2,8 @@
 Changelog for package test_nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.14 (2017-11-15)
+-------------------
 * update to use non deprecated pluginlib macro (`#69 <https://github.com/ros/nodelet_core/issues/69>`_)
 * Contributors: Mikael Arguedas
 

@@ -2,8 +2,8 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.14 (2017-11-15)
+-------------------
 * declared_nodelets: continue on missing plugin xml (`#70 <https://github.com/ros/nodelet_core/issues/70>`_)
 * Contributors: Furushchev
 
