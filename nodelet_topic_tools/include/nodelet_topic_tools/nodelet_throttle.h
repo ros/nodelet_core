@@ -31,7 +31,7 @@
  */
 
 #include <ros/ros.h>
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 #include <nodelet/nodelet.h>
 #include <dynamic_reconfigure/server.h>
 #include <nodelet_topic_tools/NodeletThrottleConfig.h>
