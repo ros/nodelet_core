@@ -31,7 +31,7 @@
 #include <nodelet/nodelet.h>
 #include <nodelet/detail/callback_queue.h>
 #include <nodelet/detail/callback_queue_manager.h>
-#include <pluginlib/class_loader.h>
+#include <pluginlib/class_loader.hpp>
 #include <bondcpp/bond.h>
 
 #include <ros/ros.h>
