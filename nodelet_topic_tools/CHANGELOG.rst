@@ -2,8 +2,8 @@
 Changelog for package nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.15 (2018-03-16)
+-------------------
 * use new pluginlib headers (`#73 <https://github.com/ros/nodelet_core/issues/73>`_)
 * Contributors: Mikael Arguedas
 
