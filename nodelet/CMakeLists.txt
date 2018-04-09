@@ -17,13 +17,17 @@ add_service_files(DIRECTORY srv FILES NodeletList.srv  NodeletLoad.srv  NodeletU
 generate_messages(DEPENDENCIES std_msgs)
 
 catkin_package(
-  INCLUDE_DIRS include ${UUID_INCLUDE_DIRS}
-  LIBRARIES nodeletlib ${UUID_LIBRARIES}
+  INCLUDE_DIRS include
+  LIBRARIES nodeletlib
   CATKIN_DEPENDS bondcpp message_runtime pluginlib rosconsole roscpp std_msgs
   DEPENDS Boost
 )
 
-include_directories(include ${catkin_INCLUDE_DIRS} ${BOOST_INCLUDE_DIRS})
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${BOOST_INCLUDE_DIRS}
+  ${UUID_INCLUDE_DIRS})
 
 # Debug only, collects stats on how callbacks are doled out to worker threads
 #add_definitions(-DNODELET_QUEUE_DEBUG)
