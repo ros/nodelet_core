@@ -40,6 +40,7 @@
 
 #include <ros/ros.h>
 #include <nodelet/nodelet.h>
+#include <boost/foreach.hpp>
 #include <boost/thread.hpp>
 #include <string>
 #include <vector>
@@ -56,6 +57,25 @@ enum ConnectionStatus
   NOT_SUBSCRIBED,
   SUBSCRIBED
 };
+
+/**
+ * @brief Checks if at least one publisher has subscribers.
+ * @param publishers Vector of publishers.
+ * @return True if at least one publisher has subscribers; False otherwise.
+ */
+template <class T>
+bool has_subscribers(const std::vector<T>& publishers)
+{
+  BOOST_FOREACH (const T& publisher, publishers)
+  {
+    if (publisher.getNumSubscribers() > 0)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 /** @brief
   * Nodelet to automatically subscribe/unsubscribe
@@ -135,7 +155,7 @@ protected:
   /** @brief
     * callback function which is called when new subscriber come
     */
-  virtual void connectionCallback(const ros::SingleSubscriberPublisher& pub)
+  virtual void connectionCallback()
   {
     if (verbose_connection_)
     {
@@ -144,28 +164,23 @@ protected:
     if (lazy_)
     {
       boost::mutex::scoped_lock lock(connection_mutex_);
-      for (size_t i = 0; i < publishers_.size(); i++)
+      if (hasSubscribers())
       {
-        ros::Publisher pub = publishers_[i];
-        if (pub.getNumSubscribers() > 0)
+        if (connection_status_ != SUBSCRIBED)
         {
-          if (connection_status_ != SUBSCRIBED)
+          if (verbose_connection_)
           {
-            if (verbose_connection_)
-            {
-              NODELET_INFO("Subscribe input topics");
-            }
-            subscribe();
-            connection_status_ = SUBSCRIBED;
+            NODELET_INFO("Subscribe input topics");
           }
-          if (!ever_subscribed_)
-          {
-            ever_subscribed_ = true;
-          }
-          return;
+          subscribe();
+          connection_status_ = SUBSCRIBED;
+        }
+        if (!ever_subscribed_)
+        {
+          ever_subscribed_ = true;
         }
       }
-      if (connection_status_ == SUBSCRIBED)
+      else if (connection_status_ == SUBSCRIBED)
       {
         if (verbose_connection_)
         {
@@ -221,16 +236,23 @@ protected:
   {
     boost::mutex::scoped_lock lock(connection_mutex_);
     ros::SubscriberStatusCallback connect_cb
-      = boost::bind(&NodeletLazy::connectionCallback, this, _1);
-    ros::SubscriberStatusCallback disconnect_cb
-      = boost::bind(&NodeletLazy::connectionCallback, this, _1);
+      = boost::bind(&NodeletLazy::connectionCallback, this);
     ros::Publisher pub = nh.advertise<T>(topic, queue_size,
                                           connect_cb,
-                                          disconnect_cb,
+                                          connect_cb,
                                           ros::VoidConstPtr(),
                                           latch);
     publishers_.push_back(pub);
     return pub;
+  }
+
+  /**
+   * @brief Checks if at least one publisher has subscribers.
+   * @return True if at least one publisher has subscribers; False otherwise.
+   */
+  virtual bool hasSubscribers() const
+  {
+    return has_subscribers(publishers_);
   }
 
   /** @brief
