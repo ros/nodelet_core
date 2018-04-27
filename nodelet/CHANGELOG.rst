@@ -2,6 +2,13 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* uuid dependency fixup (`#74 <https://github.com/ros/nodelet_core/issues/74>`_)
+  * don't export uuid library
+  * wrap for readability
+* Contributors: Mikael Arguedas
+
 1.9.15 (2018-03-16)
 -------------------
 * use new pluginlib headers (`#73 <https://github.com/ros/nodelet_core/issues/73>`_)
