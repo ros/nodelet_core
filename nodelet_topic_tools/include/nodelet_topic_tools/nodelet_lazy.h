@@ -232,7 +232,7 @@ protected:
     */
   template<class T> ros::Publisher
   advertise(ros::NodeHandle& nh,
-            std::string topic, int queue_size, bool latch=false)
+            const std::string& topic, int queue_size, bool latch=false)
   {
     boost::mutex::scoped_lock lock(connection_mutex_);
     ros::SubscriberStatusCallback connect_cb
