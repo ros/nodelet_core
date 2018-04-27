@@ -2,8 +2,8 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.9.16 (2018-04-27)
+-------------------
 * uuid dependency fixup (`#74 <https://github.com/ros/nodelet_core/issues/74>`_)
   * don't export uuid library
   * wrap for readability
