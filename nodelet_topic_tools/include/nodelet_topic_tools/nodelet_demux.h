@@ -44,100 +44,15 @@
 
 namespace nodelet
 {
-  /** \brief @b NodeletDEMUX represent a demux nodelet for topics: it takes 1 input topic, and publishes on N (<=8) output topics.
-    * \author Radu Bogdan Rusu
-    */
-  template <typename T, typename Subscriber = message_filters::Subscriber<T> >
-  class NodeletDEMUX: public Nodelet
-  {
-    typedef typename boost::shared_ptr<const T> TConstPtr;
-    public:
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      /** \brief Nodelet initialization routine. */
-      void
-        onInit ()
-      {
-        private_nh_ = getPrivateNodeHandle ();
-        sub_input_.subscribe (private_nh_, "input", 1, bind (&NodeletDEMUX<T,Subscriber>::input_callback, this, _1));
-
-        if (!private_nh_.getParam ("output_topics", output_topics_))
-        {
-          ROS_ERROR ("[nodelet::NodeletDEMUX::init] Need a 'output_topics' parameter to be set before continuing!");
-          return;
-        }
-        // Check the type
-        switch (output_topics_.getType ())
-        {
-          case XmlRpc::XmlRpcValue::TypeArray:
-          {
-            if (output_topics_.size () == 1)
-            {
-              ROS_ERROR ("[nodelet::NodeletDEMUX::init] Only one topic given. Does it make sense to passthrough?");
-              return;
-            }
-
-            if (output_topics_.size () > 8)
-            {
-              ROS_ERROR ("[nodelet::NodeletDEMUX::init] More than 8 topics passed!");
-              return;
-             }
-
-            ROS_INFO_STREAM ("[nodelet::NodeletDEMUX::init] Publishing to " << output_topics_.size () << " user given topics as outputs:");
-            for (int d = 0; d < output_topics_.size (); ++d)
-              ROS_INFO_STREAM (" - " << (std::string)(output_topics_[d]));
-
-            pubs_output_.resize (output_topics_.size ());
-            for (int d = 0; d < output_topics_.size (); ++d)
-              pubs_output_[d] = boost::make_shared<ros::Publisher>(private_nh_.template advertise<T> ((std::string)(output_topics_[d]), 1));
-            break;
-          }
-          default:
-          {
-            ROS_ERROR ("[nodelet::NodeletDEMUX::init] Invalid 'output_topics' parameter given!");
-            return;
-          }
-        }
-      }
-
-    private:
-
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      void
-        input_callback (const TConstPtr &input)
-      {
-        for (size_t d = 0; d < pubs_output_.size (); ++d)
-          pubs_output_[d]->publish (input);
-      }
-
-      /** \brief ROS local node handle. */
-      ros::NodeHandle private_nh_;
-      /** \brief The output list of publishers. */
-      std::vector<boost::shared_ptr <ros::Publisher> > pubs_output_;
-      /** \brief The input subscriber. */
-      Subscriber sub_input_;
-
-
-      /** \brief The list of output topics passed as a parameter. */
-      XmlRpc::XmlRpcValue output_topics_;
-  };
-
-  /** \brief @b NodeletDEMUX represent a demux nodelet for topics: it takes 1 input topic, and publishes on N (<=8) output topics.
-    * \author Radu Bogdan Rusu
-    */
   template <typename T>
-  class NodeletDEMUX<T, message_filters::Subscriber<T> >: public Nodelet
+  class NodeletBaseDEMUX: public Nodelet
   {
     typedef typename boost::shared_ptr<const T> TConstPtr;
     public:
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      /** \brief Nodelet initialization routine. */
-      void
-        onInit ()
+      virtual void onInit() = 0;
+
+      virtual void finishInit ()
       {
-        private_nh_ = getPrivateNodeHandle ();
-
-        sub_input_ = private_nh_.subscribe ("input", 1, &NodeletDEMUX<T>::input_callback, this);
-
         if (!private_nh_.getParam ("output_topics", output_topics_))
         {
           ROS_ERROR ("[nodelet::NodeletDEMUX::init] Need a 'output_topics' parameter to be set before continuing!");
@@ -166,7 +81,8 @@ namespace nodelet
 
             pubs_output_.resize (output_topics_.size ());
             for (int d = 0; d < output_topics_.size (); ++d)
-              pubs_output_[d] = boost::make_shared<ros::Publisher>(private_nh_.template advertise<T> ((std::string)(output_topics_[d]), 1));
+              pubs_output_[d] = boost::make_shared<ros::Publisher>(
+                  private_nh_.template advertise<T> ((std::string)(output_topics_[d]), 1));
             break;
           }
           default:
@@ -177,10 +93,8 @@ namespace nodelet
         }
       }
 
-    private:
-
-      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      void
+    // protected:
+      virtual void
         input_callback (const TConstPtr &input)
       {
         for (size_t d = 0; d < pubs_output_.size (); ++d)
@@ -194,9 +108,53 @@ namespace nodelet
       /** \brief The input subscriber. */
       ros::Subscriber sub_input_;
 
-
       /** \brief The list of output topics passed as a parameter. */
       XmlRpc::XmlRpcValue output_topics_;
+  };
+
+  /** \brief @b NodeletDEMUX represent a demux nodelet for topics: it takes 1 input topic, and publishes on N (<=8) output topics.
+    * \author Radu Bogdan Rusu
+    */
+  template <typename T, typename Subscriber = message_filters::Subscriber<T> >
+  class NodeletDEMUX: public NodeletBaseDEMUX<T>
+  {
+    typedef typename boost::shared_ptr<const T> TConstPtr;
+    public:
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /** \brief Nodelet initialization routine. */
+      virtual void
+        onInit ()
+      {
+        this->private_nh_ = getPrivateNodeHandle ();
+        this->sub_input_.subscribe (this->private_nh_, "input", 1, bind (&NodeletDEMUX<T,Subscriber>::input_callback, this, _1));
+        finishInit();
+      }
+  };
+
+  /** \brief @b NodeletDEMUX represent a demux nodelet for topics: it takes 1 input topic, and publishes on N (<=8) output topics.
+    * \author Radu Bogdan Rusu
+    */
+  template <typename T>
+  class NodeletDEMUX<T, message_filters::Subscriber<T> >: public NodeletBaseDEMUX<T>
+  {
+    typedef typename boost::shared_ptr<const T> TConstPtr;
+    public:
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      /** \brief Nodelet initialization routine. */
+      virtual void
+        onInit ()
+      {
+        this->private_nh_ = this->getPrivateNodeHandle ();
+        // this->sub_input_ = this->private_nh_.subscribe ("input", 1, &NodeletBaseDEMUX<T>::input_callback, this);
+        this->sub_input_ = this->private_nh_.subscribe ("input", 1, &NodeletDEMUX::input_callback, this);
+        this->finishInit();
+      }
+
+      virtual void
+        input_callback (const TConstPtr &input)
+      {
+        NodeletBaseDEMUX<T>::input_callback(input);
+      }
   };
 
 }
