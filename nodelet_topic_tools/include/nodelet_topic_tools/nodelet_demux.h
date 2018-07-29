@@ -88,7 +88,7 @@ namespace nodelet
 
             pubs_output_.resize (output_topics_.size ());
             for (int d = 0; d < output_topics_.size (); ++d)
-              *pubs_output_[d] = private_nh_.template advertise<T> ((std::string)(output_topics_[d]), 1);
+              pubs_output_[d] = boost::make_shared<ros::Publisher>(private_nh_.template advertise<T> ((std::string)(output_topics_[d]), 1));
             break;
           }
           default:
@@ -166,7 +166,7 @@ namespace nodelet
 
             pubs_output_.resize (output_topics_.size ());
             for (int d = 0; d < output_topics_.size (); ++d)
-              *pubs_output_[d] = private_nh_.template advertise<T> ((std::string)(output_topics_[d]), 1);
+              pubs_output_[d] = boost::make_shared<ros::Publisher>(private_nh_.template advertise<T> ((std::string)(output_topics_[d]), 1));
             break;
           }
           default:
