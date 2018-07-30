@@ -53,6 +53,11 @@ namespace nodelet
 
       virtual void finishInit ()
       {
+        // this will evenly redistribute the input topic over the n output topics
+        auto_index_ = false;
+        private_nh_.getParam ("auto_index", auto_index_);
+        index_ = 0;
+
         if (!private_nh_.getParam ("output_topics", output_topics_))
         {
           ROS_ERROR ("[nodelet::NodeletDEMUX::init] Need a 'output_topics' parameter to be set before continuing!");
@@ -93,13 +98,24 @@ namespace nodelet
         }
       }
 
-    // protected:
+    protected:
       virtual void
         input_callback (const TConstPtr &input)
       {
+        if (auto_index_ && (pubs_output_.size () > 0))
+        {
+          index_ %= pubs_output_.size ();
+          pubs_output_[index_]->publish (input);
+          index_++;
+          return;
+        }
+
         for (size_t d = 0; d < pubs_output_.size (); ++d)
           pubs_output_[d]->publish (input);
       }
+
+      bool auto_index_;
+      unsigned int index_;
 
       /** \brief ROS local node handle. */
       ros::NodeHandle private_nh_;
@@ -125,9 +141,9 @@ namespace nodelet
       virtual void
         onInit ()
       {
-        this->private_nh_ = getPrivateNodeHandle ();
+        this->private_nh_ = this->getPrivateNodeHandle ();
         this->sub_input_.subscribe (this->private_nh_, "input", 1, bind (&NodeletDEMUX<T,Subscriber>::input_callback, this, _1));
-        finishInit();
+        this->finishInit();
       }
   };
 
