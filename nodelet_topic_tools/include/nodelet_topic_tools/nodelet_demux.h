@@ -41,22 +41,32 @@
 #include <nodelet/nodelet.h>
 #include <message_filters/time_synchronizer.h>
 #include <message_filters/subscriber.h>
+#include <std_msgs/UInt8.h>
 
 namespace nodelet
 {
   template <typename T>
   class NodeletBaseDEMUX: public Nodelet
   {
+    // TODO(lucasw) would ShapeShifter work as well?
     typedef typename boost::shared_ptr<const T> TConstPtr;
     public:
       virtual void onInit() = 0;
 
       virtual void finishInit ()
       {
-        // this will evenly redistribute the input topic over the n output topics
+        // auto_index_ will evenly redistribute the input topic over the n output topics
         auto_index_ = false;
         private_nh_.getParam ("auto_index", auto_index_);
         index_ = 0;
+        if (!auto_index_)
+        {
+          std_msgs::UInt8::Ptr maskp(new std_msgs::UInt8);
+          maskp->data = 0xff;
+          mask_ = maskp;
+          select_sub_ = private_nh_.subscribe ("select", 1,
+              &NodeletBaseDEMUX::select_callback, this);
+        }
 
         if (!private_nh_.getParam ("output_topics", output_topics_))
         {
@@ -111,11 +121,21 @@ namespace nodelet
         }
 
         for (size_t d = 0; d < pubs_output_.size (); ++d)
-          pubs_output_[d]->publish (input);
+        {
+          if ((1 << d) & mask_->data)
+            pubs_output_[d]->publish (input);
+        }
+      }
+
+      virtual void
+        select_callback (const std_msgs::UInt8::ConstPtr& msg)
+      {
+        mask_ = msg;
       }
 
       bool auto_index_;
       unsigned int index_;
+      std_msgs::UInt8::ConstPtr mask_;
 
       /** \brief ROS local node handle. */
       ros::NodeHandle private_nh_;
@@ -123,6 +143,8 @@ namespace nodelet
       std::vector<boost::shared_ptr <ros::Publisher> > pubs_output_;
       /** \brief The input subscriber. */
       ros::Subscriber sub_input_;
+      /** \brief The output topic select subscriber. */
+      ros::Subscriber select_sub_;
 
       /** \brief The list of output topics passed as a parameter. */
       XmlRpc::XmlRpcValue output_topics_;
@@ -161,7 +183,6 @@ namespace nodelet
         onInit ()
       {
         this->private_nh_ = this->getPrivateNodeHandle ();
-        // this->sub_input_ = this->private_nh_.subscribe ("input", 1, &NodeletBaseDEMUX<T>::input_callback, this);
         this->sub_input_ = this->private_nh_.subscribe ("input", 1, &NodeletDEMUX::input_callback, this);
         this->finishInit();
       }
