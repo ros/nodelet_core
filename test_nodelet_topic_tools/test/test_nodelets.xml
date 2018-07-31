@@ -9,4 +9,10 @@
       Lazy transport strings in nodelet (testing only).
     </description>
   </class>
+  <!-- TODO(lucas) not sure how to put this into test_nodelet_topic_tools -->
+  <class name="NodeletDemuxString" type="NodeletDemuxString" base_class_type="nodelet::Nodelet">
+    <description>
+      Nodelet demultiplexer (testing only).
+    </description>
+  </class>
 </library>
