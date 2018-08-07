@@ -53,9 +53,9 @@
 #include "nodelet/NodeletUnload.h"
 
 #ifndef _WIN32
-#include <uuid/uuid.h>
+# include <uuid/uuid.h>
 #else
-#include <rpc.h>
+# include <rpc.h>
 #endif
 
 std::string genId()
