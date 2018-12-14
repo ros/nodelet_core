@@ -60,6 +60,16 @@ public:
 
   uint32_t callOne();
 
+  /**
+   * \brief Enable the queue (queue is enabled by default)
+   */
+  void enable();
+  /**
+   * \brief Disable the queue, meaning any calls to addCallback() will have no effect
+   */
+  void disable();
+
+
 private:
   CallbackQueueManager* parent_;
   ros::CallbackQueue queue_;

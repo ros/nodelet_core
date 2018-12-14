@@ -78,5 +78,16 @@ uint32_t CallbackQueue::callOne()
   return queue_.callOne();
 }
 
+void CallbackQueue::enable()
+{
+  queue_.enable();
+}
+
+void CallbackQueue::disable()
+{
+  queue_.disable();
+}
+
+
 } // namespace detail
 } // namespace nodelet

@@ -162,6 +162,10 @@ typedef boost::shared_ptr<ros::NodeHandle> NodeHandlePtr;
 typedef std::map<std::string, std::string> M_string;
 typedef std::vector<std::string> V_string;
 
+namespace detail {
+	class CallbackQueue;
+}
+
 class UninitializedException : public Exception
 {
 public:

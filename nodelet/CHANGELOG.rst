@@ -2,6 +2,10 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* delay processing of queues until Nodelet::onInit() returns
+
 1.9.16 (2018-04-27)
 -------------------
 * uuid dependency fixup (`#74 <https://github.com/ros/nodelet_core/issues/74>`_)
