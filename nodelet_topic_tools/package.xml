@@ -24,4 +24,5 @@
   <build_export_depend>nodelet</build_export_depend>
   <build_export_depend>pluginlib</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
 </package>

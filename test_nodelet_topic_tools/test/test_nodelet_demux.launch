@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node pkg="nodelet" name="nodelet_manager" type="nodelet" args="manager"/>
+
+  <param name="verbose_connection" value="true" />
+
+  <node name="string_nodelet_demux"
+        pkg="nodelet" type="nodelet"
+        args="load NodeletDemuxString nodelet_manager"
+        output="screen">
+    <remap from="~input"  to="input"/>
+    <param name="auto_index" value="true" />
+    <rosparam>
+      output_topics: [/input1, /input2]
+    </rosparam>
+  </node>
+
+  <test test-name="test_demux"
+        name="test_demux"
+        pkg="test_nodelet_topic_tools" type="test_demux.py"
+        retry="3">
+    <rosparam>
+      output_topics: [/input1, /input2]
+    </rosparam>
+  </test>
+
+</launch>
