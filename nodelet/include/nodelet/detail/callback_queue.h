@@ -30,6 +30,8 @@
 #ifndef NODELET_CALLBACK_QUEUE_H
 #define NODELET_CALLBACK_QUEUE_H
 
+#include "nodelet/nodeletdecl.h"
+
 #include <ros/callback_queue.h>
 #include <ros/callback_queue_interface.h>
 #include <boost/enable_shared_from_this.hpp>
@@ -47,7 +49,7 @@ namespace detail
 
 class CallbackQueueManager;
 
-class CallbackQueue : public ros::CallbackQueueInterface,
+class NODELETLIB_DECL CallbackQueue : public ros::CallbackQueueInterface,
                       public boost::enable_shared_from_this<CallbackQueue>
 {
 public:

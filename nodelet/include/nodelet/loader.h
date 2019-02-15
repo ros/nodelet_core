@@ -36,6 +36,8 @@
 #ifndef NODELET_LOADER_H
 #define NODELET_LOADER_H
 
+#include "nodeletdecl.h"
+
 #include <map>
 #include <vector>
 #include <boost/function.hpp>
@@ -57,7 +59,7 @@ typedef std::vector<std::string> V_string;
 /** \brief A class which will construct and sequentially call Nodelets according to xml
  * This is the primary way in which users are expected to interact with Nodelets
  */
-class Loader
+class NODELETLIB_DECL Loader
 {
 public:
   /** \brief Construct the nodelet loader with optional ros API at default location of NodeHandle("~")*/

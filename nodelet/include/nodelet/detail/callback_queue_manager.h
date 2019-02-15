@@ -30,6 +30,8 @@
 #ifndef NODELET_CALLBACK_QUEUE_MANAGER_H
 #define NODELET_CALLBACK_QUEUE_MANAGER_H
 
+#include "nodelet/nodeletdecl.h"
+
 #include <ros/types.h>
 
 #include <boost/shared_ptr.hpp>
@@ -60,7 +62,7 @@ typedef boost::shared_ptr<CallbackQueue> CallbackQueuePtr;
  * single long-running callback can potentially block other callbacks from being executed.  Some kind of
  * work-stealing could mitigate this, and is a good direction for future work.
  */
-class CallbackQueueManager
+class NODELETLIB_DECL CallbackQueueManager
 {
 public:
   /**
