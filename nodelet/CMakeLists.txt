@@ -29,6 +29,7 @@ catkin_package(
   LIBRARIES nodeletlib
   CATKIN_DEPENDS bondcpp message_runtime pluginlib rosconsole roscpp std_msgs
   DEPENDS Boost
+  CFG_EXTRAS nodelet-extras.cmake
 )
 
 include_directories(
@@ -60,4 +61,8 @@ install(TARGETS nodeletlib
 )
 install(TARGETS nodelet
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+install(DIRECTORY cmake
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+        USE_SOURCE_PERMISSIONS
 )

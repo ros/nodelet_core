@@ -1,0 +1,25 @@
+<launch>
+  <node name="Plus"
+        pkg="test_nodelet" type="plus">
+    <param name="value" type="double" value="2.1"/>
+  </node>
+
+  <node name="plus_remap"
+        pkg="test_nodelet" type="plus">
+    <param name="value" type="double" value="2.1"/>
+    <remap from="~out" to="remapped_output"/>
+  </node>
+
+  <node name="Plus2"
+        pkg="test_nodelet" type="plus">
+    <rosparam file="$(find test_nodelet)/plus_default.yaml"/>
+  </node>
+
+  <node name="Plus3" pkg="test_nodelet" type="plus">
+    <param name="value" type="double" value="2.5"/>
+    <remap from="~in" to="Plus2/out"/>
+  </node>
+
+  <test test-name="plus_local"
+        pkg="test_nodelet" type="plus_local.py" />
+</launch>
