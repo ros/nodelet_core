@@ -225,6 +225,9 @@ public:
   /**\brief Empty constructor required for dynamic loading */
   Nodelet();
 
+  /**\brief Whether the nodelet is initialized */
+  bool is_initialized();
+
   /**\brief Init function called at startup
    * \param name The name of the nodelet
    * \param remapping_args The remapping args in a map for the nodelet

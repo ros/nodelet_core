@@ -104,6 +104,11 @@ ros::NodeHandle& Nodelet::getMTPrivateNodeHandle() const
   return *mt_private_nh_;
 }
 
+bool Nodelet::is_initialized()
+{
+  return inited_;
+}
+
 void Nodelet::init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
                    ros::CallbackQueueInterface* st_queue, ros::CallbackQueueInterface* mt_queue)
 {
@@ -130,8 +135,8 @@ void Nodelet::init(const std::string& name, const M_string& remapping_args, cons
   mt_nh_->setCallbackQueue(mt_queue);
 
   NODELET_DEBUG ("Nodelet initializing");
-  inited_ = true;
   this->onInit ();
+  inited_ = true;
 }
 
 } // namespace nodelet
