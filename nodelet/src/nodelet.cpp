@@ -89,7 +89,7 @@ class NodeletArgumentParsing
     bool is_bond_enabled_;
 
   public:
-    //NodeletArgumentParsing() { };
+    NodeletArgumentParsing() : is_bond_enabled_(true) { };
     bool
       parseArgs(int argc, char** argv)
     {
