@@ -343,6 +343,7 @@ int main(int argc, char** argv)
         {
             bond_id = name + "_" + genId();
         }
+        bond::Bond bond(manager + "/bond", bond_id);
         if (!ni.loadNodelet(name, type, manager, arg_parser.getMyArgv(), bond_id))
         {
             return -1;
@@ -355,7 +356,6 @@ int main(int argc, char** argv)
 
         if (arg_parser.isBondEnabled())
         {
-            bond::Bond bond(manager + "/bond", bond_id);
             bond.start();
         }
         // Spin our own loop
