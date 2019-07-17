@@ -31,6 +31,12 @@ catkin_package(
   DEPENDS Boost
 )
 
+# http://www.ros.org/reps/rep-0003.html
+# require c++11 since kinetic
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11)
+endif()
+
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
