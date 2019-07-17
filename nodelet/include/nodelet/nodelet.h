@@ -44,7 +44,7 @@ namespace ros
 {
 class NodeHandle;
 class CallbackQueueInterface;
-}
+} // namespace ros
 
 #define NODELET_DEBUG(...) ROS_DEBUG_NAMED(getName(), __VA_ARGS__)
 #define NODELET_DEBUG_STREAM(...) ROS_DEBUG_STREAM_NAMED(getName(), __VA_ARGS__)
@@ -163,79 +163,82 @@ typedef boost::shared_ptr<ros::NodeHandle> NodeHandlePtr;
 typedef std::map<std::string, std::string> M_string;
 typedef std::vector<std::string> V_string;
 
-namespace detail {
-	class CallbackQueue;
+namespace detail
+{
+class CallbackQueue;
 }
 
 class UninitializedException : public Exception
 {
 public:
-  UninitializedException(const std::string& method_name)
-  : Exception("Calling [" + method_name + "] before the Nodelet is initialized is not allowed.")
-  {}
+    UninitializedException(const std::string& method_name)
+        : Exception("Calling [" + method_name + "] before the Nodelet is initialized is not allowed.")
+    {
+    }
 };
 
 class MultipleInitializationException : public Exception
 {
 public:
-  MultipleInitializationException()
-  : Exception("Initialized multiple times")
-  {}
+    MultipleInitializationException()
+        : Exception("Initialized multiple times")
+    {
+    }
 };
 
 class NODELETLIB_DECL Nodelet
 {
-  // Protected data fields for use by the subclass.
+    // Protected data fields for use by the subclass.
 protected:
-  inline const std::string& getName() const { return nodelet_name_; }
-  inline std::string getSuffixedName(const std::string& suffix) const
-  {
-    return nodelet_name_ + "." + suffix;
-  }
-  inline const V_string& getMyArgv() const { return my_argv_; }
-  inline const M_string& getRemappingArgs() const { return remapping_args_; }
+    inline const std::string& getName() const { return nodelet_name_; }
+    inline std::string getSuffixedName(const std::string& suffix) const
+    {
+        return nodelet_name_ + "." + suffix;
+    }
+    inline const V_string& getMyArgv() const { return my_argv_; }
+    inline const M_string& getRemappingArgs() const { return remapping_args_; }
 
-  ros::NodeHandle& getNodeHandle() const;
-  ros::NodeHandle& getPrivateNodeHandle() const;
-  ros::NodeHandle& getMTNodeHandle() const;
-  ros::NodeHandle& getMTPrivateNodeHandle() const;
+    ros::NodeHandle& getNodeHandle() const;
+    ros::NodeHandle& getPrivateNodeHandle() const;
+    ros::NodeHandle& getMTNodeHandle() const;
+    ros::NodeHandle& getMTPrivateNodeHandle() const;
 
-  ros::CallbackQueueInterface& getSTCallbackQueue() const;
-  ros::CallbackQueueInterface& getMTCallbackQueue() const;
+    ros::CallbackQueueInterface& getSTCallbackQueue() const;
+    ros::CallbackQueueInterface& getMTCallbackQueue() const;
 
-
-  // Internal storage;
+    // Internal storage;
 private:
-  bool inited_;
+    bool inited_;
 
-  std::string nodelet_name_;
+    std::string nodelet_name_;
 
-  NodeHandlePtr nh_;
-  NodeHandlePtr private_nh_;
-  NodeHandlePtr mt_nh_;
-  NodeHandlePtr mt_private_nh_;
-  V_string my_argv_;
-  M_string remapping_args_;
+    NodeHandlePtr nh_;
+    NodeHandlePtr private_nh_;
+    NodeHandlePtr mt_nh_;
+    NodeHandlePtr mt_private_nh_;
+    V_string my_argv_;
+    M_string remapping_args_;
 
-  // Method to be overridden by subclass when starting up.
-  virtual void onInit() = 0;
+    // Method to be overridden by subclass when starting up.
+    virtual void onInit() = 0;
 
-  // Public API used for launching
+    // Public API used for launching
 public:
-  /**\brief Empty constructor required for dynamic loading */
-  Nodelet();
+    /**\brief Empty constructor required for dynamic loading */
+    Nodelet();
 
-  /**\brief Init function called at startup
+    /**\brief Init function called at startup
    * \param name The name of the nodelet
    * \param remapping_args The remapping args in a map for the nodelet
    * \param my_argv The commandline arguments for this nodelet stripped of special arguments such as ROS arguments
    */
-  void init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
-            ros::CallbackQueueInterface* st_queue = NULL,
-            ros::CallbackQueueInterface* mt_queue = NULL);
+    void init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
+              ros::CallbackQueueInterface* st_queue = NULL,
+              ros::CallbackQueueInterface* mt_queue = NULL);
 
-  virtual ~Nodelet();
+    virtual ~Nodelet();
 };
 
-}
+} // namespace nodelet
+
 #endif //NODELET_NODELET_H

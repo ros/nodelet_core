@@ -37,9 +37,9 @@
 namespace nodelet
 {
 
-Nodelet::Nodelet ()
-: inited_(false)
-, nodelet_name_("uninitialized")
+Nodelet::Nodelet()
+    : inited_(false)
+    , nodelet_name_("uninitialized")
 {
 }
 
@@ -47,91 +47,92 @@ Nodelet::~Nodelet()
 {
 }
 
-ros::CallbackQueueInterface& Nodelet::getSTCallbackQueue () const
+ros::CallbackQueueInterface& Nodelet::getSTCallbackQueue() const
 {
-  if (!inited_)
-  {
-    throw UninitializedException("getSTCallbackQueue");
-  }
+    if (!inited_)
+    {
+        throw UninitializedException("getSTCallbackQueue");
+    }
 
-  return *nh_->getCallbackQueue();
+    return *nh_->getCallbackQueue();
 }
 
-ros::CallbackQueueInterface& Nodelet::getMTCallbackQueue () const
+ros::CallbackQueueInterface& Nodelet::getMTCallbackQueue() const
 {
-  if (!inited_)
-  {
-    throw UninitializedException("getMTCallbackQueue");
-  }
+    if (!inited_)
+    {
+        throw UninitializedException("getMTCallbackQueue");
+    }
 
-  return *mt_nh_->getCallbackQueue();
+    return *mt_nh_->getCallbackQueue();
 }
 
 ros::NodeHandle& Nodelet::getNodeHandle() const
 {
-  if (!inited_)
-  {
-    throw UninitializedException("getNodeHandle");
-  }
+    if (!inited_)
+    {
+        throw UninitializedException("getNodeHandle");
+    }
 
-  return *nh_;
+    return *nh_;
 }
 ros::NodeHandle& Nodelet::getPrivateNodeHandle() const
 {
-  if (!inited_)
-  {
-    throw UninitializedException("getPrivateNodeHandle");
-  }
+    if (!inited_)
+    {
+        throw UninitializedException("getPrivateNodeHandle");
+    }
 
-  return *private_nh_;
+    return *private_nh_;
 }
 ros::NodeHandle& Nodelet::getMTNodeHandle() const
 {
-  if (!inited_)
-  {
-    throw UninitializedException("getMTNodeHandle");
-  }
+    if (!inited_)
+    {
+        throw UninitializedException("getMTNodeHandle");
+    }
 
-  return *mt_nh_;
+    return *mt_nh_;
 }
 ros::NodeHandle& Nodelet::getMTPrivateNodeHandle() const
 {
-  if (!inited_)
-  {
-    throw UninitializedException("getMTPrivateNodeHandle");
-  }
+    if (!inited_)
+    {
+        throw UninitializedException("getMTPrivateNodeHandle");
+    }
 
-  return *mt_private_nh_;
+    return *mt_private_nh_;
 }
 
 void Nodelet::init(const std::string& name, const M_string& remapping_args, const V_string& my_argv,
-                   ros::CallbackQueueInterface* st_queue, ros::CallbackQueueInterface* mt_queue)
+                   ros::CallbackQueueInterface* st_queue,
+                   ros::CallbackQueueInterface* mt_queue)
 {
-  if (inited_)
-  {
-    throw MultipleInitializationException();
-  }
+    if (inited_)
+    {
+        throw MultipleInitializationException();
+    }
 
-  nodelet_name_ = name;
-  remapping_args_ = remapping_args;
-  my_argv_ = my_argv;
+    nodelet_name_ = name;
+    remapping_args_ = remapping_args;
+    my_argv_ = my_argv;
 
-  // Set up NodeHandles with correct namespaces
-  private_nh_.reset(new ros::NodeHandle(name, remapping_args));
-  nh_.reset(new ros::NodeHandle(ros::names::parentNamespace(name), remapping_args));
-  mt_private_nh_.reset(new ros::NodeHandle(name, remapping_args));
-  mt_nh_.reset(new ros::NodeHandle(ros::names::parentNamespace(name), remapping_args));
+    // Set up NodeHandles with correct namespaces
+    private_nh_.reset(new ros::NodeHandle(name, remapping_args));
+    nh_.reset(new ros::NodeHandle(ros::names::parentNamespace(name), remapping_args));
+    mt_private_nh_.reset(new ros::NodeHandle(name, remapping_args));
+    mt_nh_.reset(new ros::NodeHandle(ros::names::parentNamespace(name), remapping_args));
 
-  // Use the provided callback queues (or the global queue if they're NULL).
-  // This allows Loader and CallbackQueueManager to spread nodelets over multiple threads.
-  private_nh_->setCallbackQueue(st_queue);
-  nh_->setCallbackQueue(st_queue);
-  mt_private_nh_->setCallbackQueue(mt_queue);
-  mt_nh_->setCallbackQueue(mt_queue);
+    // Use the provided callback queues (or the global queue if they're NULL).
+    // This allows Loader and CallbackQueueManager to spread nodelets over multiple threads.
+    private_nh_->setCallbackQueue(st_queue);
+    nh_->setCallbackQueue(st_queue);
+    mt_private_nh_->setCallbackQueue(mt_queue);
+    mt_nh_->setCallbackQueue(mt_queue);
 
-  NODELET_DEBUG ("Nodelet initializing");
-  inited_ = true;
-  this->onInit ();
+    NODELET_DEBUG("Nodelet initializing");
+    inited_ = true;
+    this->onInit();
 }
 
 } // namespace nodelet
