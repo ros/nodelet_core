@@ -115,7 +115,6 @@ private:
     if (res.success && !req.bond_id.empty())
     {
       /// @todo Report error if a bond with same id has already been created
-      // bond_map_.insert(std::make_pair(req.name, std::make_unique<bond::Bond>(nh_.getNamespace() + "/bond", req.bond_id)));
       bond_map_.insert(std::make_pair(req.name, std::move(std::unique_ptr<bond::Bond>(new bond::Bond(nh_.getNamespace() + "/bond", req.bond_id)))));
 
       const auto& bond = bond_map_[req.name];
@@ -315,7 +314,6 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
   }
   ROS_DEBUG("Done loading nodelet %s", name.c_str());
 
-  // impl_->nodelets_.insert(std::make_pair(name, std::make_unique<ManagedNodelet>(p, impl_->callback_manager_.get())));
   impl_->nodelets_.insert(std::make_pair(name, std::move(std::unique_ptr<ManagedNodelet>(new ManagedNodelet(p, impl_->callback_manager_.get())))));
 
   const auto& mn = impl_->nodelets_[name];
