@@ -49,8 +49,9 @@ namespace detail
 
 class CallbackQueueManager;
 
-class NODELETLIB_DECL CallbackQueue : public ros::CallbackQueueInterface,
-                                      public boost::enable_shared_from_this<CallbackQueue>
+class NODELETLIB_DECL CallbackQueue :
+    public ros::CallbackQueueInterface,
+    public boost::enable_shared_from_this<CallbackQueue>
 {
 public:
     CallbackQueue(CallbackQueueManager* parent, const ros::VoidConstPtr& tracked_object = ros::VoidConstPtr());

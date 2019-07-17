@@ -100,9 +100,13 @@ public:
         size_t used_args = 0;
 
         if (non_ros_args.size() > 1)
+        {
             command_ = non_ros_args[1];
+        }
         else
+        {
             return false;
+        }
 
         if (command_ == "load" && non_ros_args.size() > 3)
         {
@@ -135,10 +139,14 @@ public:
         }
 
         if (command_ == "manager")
+        {
             used_args = 2;
+        }
 
         for (size_t i = used_args; i < non_ros_args.size(); i++)
+        {
             local_args_.push_back(non_ros_args[i]);
+        }
 
         return (used_args > 0);
     };
@@ -175,7 +183,7 @@ public:
             // Probably the manager has shut down already, which is fine
             ROS_WARN("Couldn't find service %s, perhaps the manager is already shut down",
                      service_name.c_str());
-            return (false);
+            return false;
         }
 
         ros::ServiceClient client = n_.serviceClient<nodelet::NodeletUnload>(service_name);
@@ -191,9 +199,9 @@ public:
             {
                 ROS_FATAL_STREAM("Failed to unload nodelet '" << name << "` from manager `" << manager << "'");
             }
-            return (false);
+            return false;
         }
-        return (true);
+        return true;
     }
 
     ////////////////////////////////////////////////////////////////////////////////
