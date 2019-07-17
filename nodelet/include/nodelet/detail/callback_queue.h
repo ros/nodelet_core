@@ -50,33 +50,31 @@ namespace detail
 class CallbackQueueManager;
 
 class NODELETLIB_DECL CallbackQueue : public ros::CallbackQueueInterface,
-                      public boost::enable_shared_from_this<CallbackQueue>
+                                      public boost::enable_shared_from_this<CallbackQueue>
 {
 public:
-  CallbackQueue(CallbackQueueManager* parent,
-                const ros::VoidConstPtr& tracked_object = ros::VoidConstPtr());
-  ~CallbackQueue();
+    CallbackQueue(CallbackQueueManager* parent, const ros::VoidConstPtr& tracked_object = ros::VoidConstPtr());
+    ~CallbackQueue();
 
-  virtual void addCallback(const ros::CallbackInterfacePtr& callback, uint64_t owner_id = 0);
-  virtual void removeByID(uint64_t owner_id);
+    virtual void addCallback(const ros::CallbackInterfacePtr& callback, uint64_t owner_id = 0);
+    virtual void removeByID(uint64_t owner_id);
 
-  uint32_t callOne();
+    uint32_t callOne();
 
-  /**
+    /**
    * \brief Enable the queue (queue is enabled by default)
    */
-  void enable();
-  /**
+    void enable();
+    /**
    * \brief Disable the queue, meaning any calls to addCallback() will have no effect
    */
-  void disable();
-
+    void disable();
 
 private:
-  CallbackQueueManager* parent_;
-  ros::CallbackQueue queue_;
-  ros::VoidConstWPtr tracked_object_;
-  bool has_tracked_object_;
+    CallbackQueueManager* parent_;
+    ros::CallbackQueue queue_;
+    ros::VoidConstWPtr tracked_object_;
+    bool has_tracked_object_;
 };
 
 } // namespace detail

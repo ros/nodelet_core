@@ -62,35 +62,34 @@ typedef std::vector<std::string> V_string;
 class NODELETLIB_DECL Loader
 {
 public:
-  /** \brief Construct the nodelet loader with optional ros API at default location of NodeHandle("~")*/
-  Loader(bool provide_ros_api = true);
-  /** \brief Construct the nodelet loader with optional ros API in namespace of passed NodeHandle */
-  Loader(const ros::NodeHandle& server_nh);
-  /**
+    /** \brief Construct the nodelet loader with optional ros API at default location of NodeHandle("~")*/
+    Loader(bool provide_ros_api = true);
+    /** \brief Construct the nodelet loader with optional ros API in namespace of passed NodeHandle */
+    Loader(const ros::NodeHandle& server_nh);
+    /**
    * \brief Construct the nodelet loader without ros API, using non-standard factory function to
    * create nodelet instances
    */
-  Loader(const boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)>& create_instance);
+    Loader(const boost::function<boost::shared_ptr<Nodelet>(const std::string&)>& create_instance);
 
-  ~Loader();
+    ~Loader();
 
-  /** \brief Load a nodelet */
-  bool load(const std::string& name, const std::string& type, const M_string& remappings,
-            const V_string& my_argv);
+    /** \brief Load a nodelet */
+    bool load(const std::string& name, const std::string& type, const M_string& remappings, const V_string& my_argv);
 
-  /** \brief Unload a nodelet */
-  bool unload(const std::string& name);
+    /** \brief Unload a nodelet */
+    bool unload(const std::string& name);
 
-  /** \brief Clear all nodelets from this loader */
-  bool clear();
+    /** \brief Clear all nodelets from this loader */
+    bool clear();
 
-  /**\brief List the names of all loaded nodelets */
-  std::vector<std::string> listLoadedNodelets();
+    /**\brief List the names of all loaded nodelets */
+    std::vector<std::string> listLoadedNodelets();
 
 private:
-  boost::mutex lock_; ///<! Public methods must lock this to preserve internal integrity.
-  struct Impl;
-  boost::scoped_ptr<Impl> impl_;
+    boost::mutex lock_; ///<! Public methods must lock this to preserve internal integrity.
+    struct Impl;
+    boost::scoped_ptr<Impl> impl_;
 };
 
 } // namespace nodelet

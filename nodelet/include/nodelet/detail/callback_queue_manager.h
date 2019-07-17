@@ -65,101 +65,104 @@ typedef boost::shared_ptr<CallbackQueue> CallbackQueuePtr;
 class NODELETLIB_DECL CallbackQueueManager
 {
 public:
-  /**
+    /**
    * \brief Constructor
    *
    * By default, uses the number of hardware threads available on the current system.
    */
-  CallbackQueueManager(uint32_t num_worker_threads = 0);
-  ~CallbackQueueManager();
+    CallbackQueueManager(uint32_t num_worker_threads = 0);
+    ~CallbackQueueManager();
 
-  void addQueue(const CallbackQueuePtr& queue, bool threaded);
-  void removeQueue(const CallbackQueuePtr& queue);
-  void callbackAdded(const CallbackQueuePtr& queue);
+    void addQueue(const CallbackQueuePtr& queue, bool threaded);
+    void removeQueue(const CallbackQueuePtr& queue);
+    void callbackAdded(const CallbackQueuePtr& queue);
 
-  uint32_t getNumWorkerThreads();
+    uint32_t getNumWorkerThreads();
 
-  void stop();
+    void stop();
 
 private:
-  void managerThread();
-  struct ThreadInfo;
-  void workerThread(ThreadInfo*);
+    void managerThread();
+    struct ThreadInfo;
+    void workerThread(ThreadInfo*);
 
-  ThreadInfo* getSmallestQueue();
+    ThreadInfo* getSmallestQueue();
 
-  struct QueueInfo
-  {
-    QueueInfo()
-    : threaded(false)
-    , thread_index(0xffffffff)
-    , in_thread(0)
-    {}
+    struct QueueInfo
+    {
+        QueueInfo()
+            : threaded(false)
+            , thread_index(0xffffffff)
+            , in_thread(0)
+        {
+        }
 
-    CallbackQueuePtr queue;
-    bool threaded;
+        CallbackQueuePtr queue;
+        bool threaded;
 
-    // Only used if threaded == false
-    boost::mutex st_mutex;
-    /// @todo Could get rid of st_mutex by updating [thread_index|in_thread] atomically
-    uint32_t thread_index;
-    uint32_t in_thread;
-  };
-  typedef boost::shared_ptr<QueueInfo> QueueInfoPtr;
+        // Only used if threaded == false
+        boost::mutex st_mutex;
+        /// @todo Could get rid of st_mutex by updating [thread_index|in_thread] atomically
+        uint32_t thread_index;
+        uint32_t in_thread;
+    };
+    typedef boost::shared_ptr<QueueInfo> QueueInfoPtr;
 
-  typedef boost::unordered_map<CallbackQueue*, QueueInfoPtr> M_Queue;
-  M_Queue queues_;
-  boost::mutex queues_mutex_;
+    typedef boost::unordered_map<CallbackQueue*, QueueInfoPtr> M_Queue;
+    M_Queue queues_;
+    boost::mutex queues_mutex_;
 
-  /// @todo SRMW lockfree queue. waiting_mutex_ has the potential for a lot of contention
-  typedef std::vector<CallbackQueuePtr> V_Queue;
-  V_Queue waiting_;
-  boost::mutex waiting_mutex_;
-  boost::condition_variable waiting_cond_;
-  boost::thread_group tg_;
+    /// @todo SRMW lockfree queue. waiting_mutex_ has the potential for a lot of contention
+    typedef std::vector<CallbackQueuePtr> V_Queue;
+    V_Queue waiting_;
+    boost::mutex waiting_mutex_;
+    boost::condition_variable waiting_cond_;
+    boost::thread_group tg_;
 
-  struct ThreadInfo
-  {
-    ThreadInfo()
-    : calling(0)
-    {}
+    struct ThreadInfo
+    {
+        ThreadInfo()
+            : calling(0)
+        {
+        }
 
-    /// @todo SRSW lockfree queue
-    boost::mutex queue_mutex;
-    boost::condition_variable queue_cond;
-    std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> > queue;
-    boost::detail::atomic_count calling;
+        /// @todo SRSW lockfree queue
+        boost::mutex queue_mutex;
+        boost::condition_variable queue_cond;
+        std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> > queue;
+        boost::detail::atomic_count calling;
 
 #ifdef NODELET_QUEUE_DEBUG
-    struct Record
-    {
-      Record(double stamp, uint32_t tasks, bool threaded)
-        : stamp(stamp), tasks(tasks), threaded(threaded)
-      {}
+        struct Record
+        {
+            Record(double stamp, uint32_t tasks, bool threaded)
+                : stamp(stamp), tasks(tasks), threaded(threaded)
+            {
+            }
 
-      double stamp;
-      uint32_t tasks;
-      bool threaded;
-    };
+            double stamp;
+            uint32_t tasks;
+            bool threaded;
+        };
 
-    std::vector<Record> history;
+        std::vector<Record> history;
 #endif
 
-    // Pad sizeof(ThreadInfo) to be a multiple of 64 (cache line size) to avoid false sharing.
-    // This still doesn't guarantee ThreadInfo is actually allocated on a cache line boundary though.
-    static const int ACTUAL_SIZE =
-      sizeof(boost::mutex) +
-      sizeof(boost::condition_variable) +
-      sizeof(std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> >) +
-      sizeof(boost::detail::atomic_count);
-    uint8_t pad[((ACTUAL_SIZE + 63) & ~63) - ACTUAL_SIZE];
-  };
-  /// @todo Use cache-aligned allocator for thread_info_
-  typedef boost::scoped_array<ThreadInfo> V_ThreadInfo;
-  V_ThreadInfo thread_info_;
+        // Pad sizeof(ThreadInfo) to be a multiple of 64 (cache line size) to avoid false sharing.
+        // This still doesn't guarantee ThreadInfo is actually allocated on a cache line boundary though.
+        static const int ACTUAL_SIZE =
+            sizeof(boost::mutex) +
+            sizeof(boost::condition_variable) +
+            sizeof(std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> >) +
+            sizeof(boost::detail::atomic_count);
+        uint8_t pad[((ACTUAL_SIZE + 63) & ~63) - ACTUAL_SIZE];
+    };
+    /// @todo Use cache-aligned allocator for thread_info_
+    typedef boost::scoped_array<ThreadInfo> V_ThreadInfo;
+    V_ThreadInfo thread_info_;
 
-  bool running_;
-  uint32_t num_worker_threads_;
+    bool running_;
+    uint32_t num_worker_threads_;
 };
 
 } // namespace detail

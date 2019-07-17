@@ -44,247 +44,246 @@ namespace detail
 {
 
 CallbackQueueManager::CallbackQueueManager(uint32_t num_worker_threads)
-: running_(true),
-  num_worker_threads_(num_worker_threads)
+    : running_(true),
+      num_worker_threads_(num_worker_threads)
 {
-  if (num_worker_threads_ == 0)
-    num_worker_threads_ = boost::thread::hardware_concurrency();
+    if (num_worker_threads_ == 0)
+        num_worker_threads_ = boost::thread::hardware_concurrency();
 
-  tg_.create_thread(boost::bind(&CallbackQueueManager::managerThread, this));
+    tg_.create_thread(boost::bind(&CallbackQueueManager::managerThread, this));
 
-  size_t num_threads = getNumWorkerThreads();
-  thread_info_.reset( new ThreadInfo[num_threads] );
-  for (size_t i = 0; i < num_threads; ++i)
-  {
-    tg_.create_thread(boost::bind(&CallbackQueueManager::workerThread, this, &thread_info_[i]));
-  }
+    size_t num_threads = getNumWorkerThreads();
+    thread_info_.reset(new ThreadInfo[num_threads]);
+    for (size_t i = 0; i < num_threads; ++i)
+    {
+        tg_.create_thread(boost::bind(&CallbackQueueManager::workerThread, this, &thread_info_[i]));
+    }
 }
 
 CallbackQueueManager::~CallbackQueueManager()
 {
-  stop();
+    stop();
 
 #ifdef NODELET_QUEUE_DEBUG
-  // Write out task assignment histories for each thread
-  typedef ThreadInfo::Record Record;
-  for (size_t i = 0; i < num_threads; ++i)
-  {
-    char filename[128];
-    sprintf(filename, "thread_history_%d.txt", (int)i);
-    FILE* file = fopen(filename, "w");
-    fprintf(file, "# timestamps tasks threaded\n");
-    const std::vector<Record>& history = thread_info_[i].history;
-    for (int j = 0; j < (int)history.size(); ++j)
+    // Write out task assignment histories for each thread
+    typedef ThreadInfo::Record Record;
+    for (size_t i = 0; i < num_threads; ++i)
     {
-      Record r = history[j];
-      fprintf(file, "%.6f %u %d\n", r.stamp, r.tasks, (int)r.threaded);
+        char filename[128];
+        sprintf(filename, "thread_history_%d.txt", (int)i);
+        FILE* file = fopen(filename, "w");
+        fprintf(file, "# timestamps tasks threaded\n");
+        const std::vector<Record>& history = thread_info_[i].history;
+        for (int j = 0; j < (int)history.size(); ++j)
+        {
+            Record r = history[j];
+            fprintf(file, "%.6f %u %d\n", r.stamp, r.tasks, (int)r.threaded);
+        }
+        fclose(file);
     }
-    fclose(file);
-  }
 #endif
 }
 
 void CallbackQueueManager::stop()
 {
-  running_ = false;
-  {
-    boost::mutex::scoped_lock lock(waiting_mutex_);
-    waiting_cond_.notify_all();
-  }
+    running_ = false;
+    {
+        boost::mutex::scoped_lock lock(waiting_mutex_);
+        waiting_cond_.notify_all();
+    }
 
-  size_t num_threads = getNumWorkerThreads();
-  for (size_t i = 0; i < num_threads; ++i)
-  {
-    boost::mutex::scoped_lock lock(thread_info_[i].queue_mutex);
-    thread_info_[i].queue_cond.notify_all();
-  }
+    size_t num_threads = getNumWorkerThreads();
+    for (size_t i = 0; i < num_threads; ++i)
+    {
+        boost::mutex::scoped_lock lock(thread_info_[i].queue_mutex);
+        thread_info_[i].queue_cond.notify_all();
+    }
 
-  tg_.join_all();
+    tg_.join_all();
 }
 
 uint32_t CallbackQueueManager::getNumWorkerThreads()
 {
-  return num_worker_threads_;
+    return num_worker_threads_;
 }
 
 void CallbackQueueManager::addQueue(const CallbackQueuePtr& queue, bool threaded)
 {
-  boost::mutex::scoped_lock lock(queues_mutex_);
+    boost::mutex::scoped_lock lock(queues_mutex_);
 
-  QueueInfoPtr& info = queues_[queue.get()];
-  ROS_ASSERT(!info);
-  info.reset(new QueueInfo);
-  info->queue = queue;
-  info->threaded = threaded;
+    QueueInfoPtr& info = queues_[queue.get()];
+    ROS_ASSERT(!info);
+    info.reset(new QueueInfo);
+    info->queue = queue;
+    info->threaded = threaded;
 }
 
 void CallbackQueueManager::removeQueue(const CallbackQueuePtr& queue)
 {
-  boost::mutex::scoped_lock lock(queues_mutex_);
-  ROS_ASSERT(queues_.find(queue.get()) != queues_.end());
+    boost::mutex::scoped_lock lock(queues_mutex_);
+    ROS_ASSERT(queues_.find(queue.get()) != queues_.end());
 
-  queues_.erase(queue.get());
+    queues_.erase(queue.get());
 }
 
 void CallbackQueueManager::callbackAdded(const CallbackQueuePtr& queue)
 {
-  {
-    boost::mutex::scoped_lock lock(waiting_mutex_);
-    waiting_.push_back(queue);
-  }
+    {
+        boost::mutex::scoped_lock lock(waiting_mutex_);
+        waiting_.push_back(queue);
+    }
 
-  waiting_cond_.notify_all();
+    waiting_cond_.notify_all();
 }
 
 CallbackQueueManager::ThreadInfo* CallbackQueueManager::getSmallestQueue()
 {
-  size_t smallest = std::numeric_limits<size_t>::max();
-  uint32_t smallest_index = 0xffffffff;
-  for (unsigned i = 0; i < num_worker_threads_; ++i)
-  {
-    ThreadInfo& ti = thread_info_[i];
-
-    size_t size = ti.calling;
-    if (size == 0)
+    size_t smallest = std::numeric_limits<size_t>::max();
+    uint32_t smallest_index = 0xffffffff;
+    for (unsigned i = 0; i < num_worker_threads_; ++i)
     {
-      return &ti;
+        ThreadInfo& ti = thread_info_[i];
+
+        size_t size = ti.calling;
+        if (size == 0)
+        {
+            return &ti;
+        }
+
+        if (size < smallest)
+        {
+            smallest = size;
+            smallest_index = i;
+        }
     }
 
-    if (size < smallest)
-    {
-      smallest = size;
-      smallest_index = i;
-    }
-  }
-
-  return &thread_info_[smallest_index];
+    return &thread_info_[smallest_index];
 }
 
 void CallbackQueueManager::managerThread()
 {
-  V_Queue local_waiting;
+    V_Queue local_waiting;
 
-  while (running_)
-  {
+    while (running_)
     {
-      boost::mutex::scoped_lock lock(waiting_mutex_);
-
-      while (waiting_.empty() && running_)
-      {
-        waiting_cond_.wait(lock);
-      }
-
-      if (!running_)
-      {
-        return;
-      }
-
-      local_waiting.swap(waiting_);
-    }
-
-    {
-      boost::mutex::scoped_lock lock(queues_mutex_);
-
-      V_Queue::iterator it = local_waiting.begin();
-      V_Queue::iterator end = local_waiting.end();
-      for (; it != end; ++it)
-      {
-        CallbackQueuePtr& queue = *it;
-
-        M_Queue::iterator it = queues_.find(queue.get());
-        if (it != queues_.end())
         {
-          QueueInfoPtr& info = it->second;
-          ThreadInfo* ti = 0;
-          if (info->threaded)
-          {
-            // If this queue is thread-safe we immediately add it to the thread with the least work queued
-            ti = getSmallestQueue();
-          }
-          else
-          {
-            // If this queue is non-thread-safe and has no in-progress calls happening, we add it to the
-            // thread with the least work queued.  If the queue already has calls in-progress we add it
-            // to the thread it's already being called from
-            boost::mutex::scoped_lock lock(info->st_mutex);
+            boost::mutex::scoped_lock lock(waiting_mutex_);
 
-            if (info->in_thread == 0)
+            while (waiting_.empty() && running_)
             {
-              ti = getSmallestQueue();
-              info->thread_index = ti - thread_info_.get();
-            }
-            else
-            {
-              ti = &thread_info_[info->thread_index];
+                waiting_cond_.wait(lock);
             }
 
-            ++info->in_thread;
-          }
+            if (!running_)
+            {
+                return;
+            }
 
-          {
-            boost::mutex::scoped_lock lock(ti->queue_mutex);
-            ti->queue.push_back(std::make_pair(queue, info));
-            ++ti->calling;
-#ifdef NODELET_QUEUE_DEBUG
-            double stamp = ros::WallTime::now().toSec();
-            uint32_t tasks = ti->calling;
-            ti->history.push_back(ThreadInfo::Record(stamp, tasks, true));
-#endif
-          }
-
-          ti->queue_cond.notify_all();
+            local_waiting.swap(waiting_);
         }
-      }
-    }
 
-    local_waiting.clear();
-  }
+        {
+            boost::mutex::scoped_lock lock(queues_mutex_);
+
+            V_Queue::iterator it = local_waiting.begin();
+            V_Queue::iterator end = local_waiting.end();
+            for (; it != end; ++it)
+            {
+                CallbackQueuePtr& queue = *it;
+
+                M_Queue::iterator it = queues_.find(queue.get());
+                if (it != queues_.end())
+                {
+                    QueueInfoPtr& info = it->second;
+                    ThreadInfo* ti = 0;
+                    if (info->threaded)
+                    {
+                        // If this queue is thread-safe we immediately add it to the thread with the least work queued
+                        ti = getSmallestQueue();
+                    }
+                    else
+                    {
+                        // If this queue is non-thread-safe and has no in-progress calls happening, we add it to the
+                        // thread with the least work queued.  If the queue already has calls in-progress we add it
+                        // to the thread it's already being called from
+                        boost::mutex::scoped_lock lock(info->st_mutex);
+
+                        if (info->in_thread == 0)
+                        {
+                            ti = getSmallestQueue();
+                            info->thread_index = ti - thread_info_.get();
+                        }
+                        else
+                        {
+                            ti = &thread_info_[info->thread_index];
+                        }
+
+                        ++info->in_thread;
+                    }
+
+                    {
+                        boost::mutex::scoped_lock lock(ti->queue_mutex);
+                        ti->queue.push_back(std::make_pair(queue, info));
+                        ++ti->calling;
+#ifdef NODELET_QUEUE_DEBUG
+                        double stamp = ros::WallTime::now().toSec();
+                        uint32_t tasks = ti->calling;
+                        ti->history.push_back(ThreadInfo::Record(stamp, tasks, true));
+#endif
+                    }
+
+                    ti->queue_cond.notify_all();
+                }
+            }
+        }
+
+        local_waiting.clear();
+    }
 }
 
 void CallbackQueueManager::workerThread(ThreadInfo* info)
 {
-  std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> > local_queues;
+    std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> > local_queues;
 
-  while (running_)
-  {
+    while (running_)
     {
-      boost::mutex::scoped_lock lock(info->queue_mutex);
+        {
+            boost::mutex::scoped_lock lock(info->queue_mutex);
 
-      while (info->queue.empty() && running_)
-      {
-        info->queue_cond.wait(lock);
-      }
+            while (info->queue.empty() && running_)
+            {
+                info->queue_cond.wait(lock);
+            }
 
-      if (!running_)
-      {
-        return;
-      }
+            if (!running_)
+            {
+                return;
+            }
 
-      info->queue.swap(local_queues);
+            info->queue.swap(local_queues);
+        }
+
+        std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> >::iterator it = local_queues.begin();
+        std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> >::iterator end = local_queues.end();
+        for (; it != end; ++it)
+        {
+            CallbackQueuePtr& queue = it->first;
+            QueueInfoPtr& qi = it->second;
+            if (queue->callOne() == ros::CallbackQueue::TryAgain)
+            {
+                callbackAdded(queue);
+            }
+            --info->calling;
+
+            if (!qi->threaded)
+            {
+                boost::mutex::scoped_lock lock(qi->st_mutex);
+                --qi->in_thread;
+            }
+        }
+
+        local_queues.clear();
     }
-
-    std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> >::iterator it = local_queues.begin();
-    std::vector<std::pair<CallbackQueuePtr, QueueInfoPtr> >::iterator end = local_queues.end();
-    for (; it != end; ++it)
-    {
-      CallbackQueuePtr& queue = it->first;
-      QueueInfoPtr& qi = it->second;
-      if (queue->callOne() == ros::CallbackQueue::TryAgain)
-      {
-        callbackAdded(queue);
-      }
-      --info->calling;
-
-      if (!qi->threaded)
-      {
-        boost::mutex::scoped_lock lock(qi->st_mutex);
-        --qi->in_thread;
-      }
-    }
-
-    local_queues.clear();
-
-  }
 }
 
 } // namespace detail

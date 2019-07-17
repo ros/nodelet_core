@@ -39,9 +39,9 @@ namespace detail
 
 CallbackQueue::CallbackQueue(CallbackQueueManager* parent,
                              const ros::VoidConstPtr& tracked_object)
-: parent_(parent)
-, tracked_object_(tracked_object)
-, has_tracked_object_(tracked_object)
+    : parent_(parent)
+    , tracked_object_(tracked_object)
+    , has_tracked_object_(tracked_object)
 {
 }
 
@@ -51,43 +51,42 @@ CallbackQueue::~CallbackQueue()
 
 void CallbackQueue::addCallback(const ros::CallbackInterfacePtr& cb, uint64_t owner_id)
 {
-  if (queue_.isEnabled())
-  {
-    queue_.addCallback(cb, owner_id);
-    parent_->callbackAdded(shared_from_this());
-  }
+    if (queue_.isEnabled())
+    {
+        queue_.addCallback(cb, owner_id);
+        parent_->callbackAdded(shared_from_this());
+    }
 }
 
 void CallbackQueue::removeByID(uint64_t owner_id)
 {
-  queue_.removeByID(owner_id);
+    queue_.removeByID(owner_id);
 }
 
 uint32_t CallbackQueue::callOne()
 {
-  // Don't try to call the callback after its nodelet has been destroyed!
-  ros::VoidConstPtr tracker;
-  if (has_tracked_object_)
-  {
-    tracker = tracked_object_.lock();
+    // Don't try to call the callback after its nodelet has been destroyed!
+    ros::VoidConstPtr tracker;
+    if (has_tracked_object_)
+    {
+        tracker = tracked_object_.lock();
 
-    if (!tracker)
-      return ros::CallbackQueue::Disabled;
-  }
+        if (!tracker)
+            return ros::CallbackQueue::Disabled;
+    }
 
-  return queue_.callOne();
+    return queue_.callOne();
 }
 
 void CallbackQueue::enable()
 {
-  queue_.enable();
+    queue_.enable();
 }
 
 void CallbackQueue::disable()
 {
-  queue_.disable();
+    queue_.disable();
 }
-
 
 } // namespace detail
 } // namespace nodelet

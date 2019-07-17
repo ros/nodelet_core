@@ -39,13 +39,12 @@ namespace nodelet
 class Exception : public std::runtime_error
 {
 public:
-  Exception(const std::string& what)
-  : std::runtime_error(what)
-  {}
+    Exception(const std::string& what)
+        : std::runtime_error(what)
+    {
+    }
 };
 
 } // namespace nodelet
 
 #endif // NODELET_EXCEPTION_H
-
-
