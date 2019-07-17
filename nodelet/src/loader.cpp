@@ -27,6 +27,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <memory>
+#include <unordered_map>
+#include <utility>
+
 #include <nodelet/loader.h>
 #include <nodelet/nodelet.h>
 #include <nodelet/detail/callback_queue.h>
@@ -40,7 +44,6 @@
 #include <nodelet/NodeletList.h>
 #include <nodelet/NodeletUnload.h>
 
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/utility.hpp>
 
 /*
@@ -111,8 +114,10 @@ private:
     // If requested, create bond to sister process
     if (res.success && !req.bond_id.empty())
     {
-      bond::Bond* bond = new bond::Bond(nh_.getNamespace() + "/bond", req.bond_id);
-      bond_map_.insert(req.name, bond);
+      /// @todo Report error if a bond with same id has already been created
+      bond_map_.insert(std::make_pair(req.name, std::move(std::unique_ptr<bond::Bond>(new bond::Bond(nh_.getNamespace() + "/bond", req.bond_id)))));
+
+      const auto& bond = bond_map_[req.name];
       bond->setCallbackQueue(&bond_callback_queue_);
       bond->setBrokenCallback(boost::bind(&LoaderROS::unload, this, req.name));
       bond->start();
@@ -139,11 +144,12 @@ private:
     }
 
     // break the bond, if there is one
-    M_stringToBond::iterator it = bond_map_.find(name);
+    const auto it = bond_map_.find(name);
     if (it != bond_map_.end()) {
         // disable callback for broken bond, as we are breaking it intentially now
         it->second->setBrokenCallback(boost::function<void(void)>());
-        // erase (and break) bond
+
+        // erase and break bond
         bond_map_.erase(name);
     }
 
@@ -167,8 +173,7 @@ private:
 
   ros::CallbackQueue bond_callback_queue_;
   ros::AsyncSpinner bond_spinner_;
-  typedef boost::ptr_map<std::string, bond::Bond> M_stringToBond;
-  M_stringToBond bond_map_;
+  std::unordered_map<std::string, std::unique_ptr<bond::Bond> > bond_map_;
 };
 
 // Owns a Nodelet and its callback queues
@@ -207,8 +212,8 @@ struct Loader::Impl
   boost::function<void ()> refresh_classes_;
   boost::shared_ptr<detail::CallbackQueueManager> callback_manager_; // Must outlive nodelets_
 
-  typedef boost::ptr_map<std::string, ManagedNodelet> M_stringToNodelet;
-  M_stringToNodelet nodelets_; ///<! A map of name to currently constructed nodelets
+  // map of name to currently constructed nodelets
+  std::unordered_map<std::string, std::unique_ptr<ManagedNodelet> > nodelets_;
 
   Impl()
   {
@@ -309,8 +314,9 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
   }
   ROS_DEBUG("Done loading nodelet %s", name.c_str());
 
-  ManagedNodelet* mn = new ManagedNodelet(p, impl_->callback_manager_.get());
-  impl_->nodelets_.insert(const_cast<std::string&>(name), mn); // mn now owned by boost::ptr_map
+  impl_->nodelets_.insert(std::make_pair(name, std::move(std::unique_ptr<ManagedNodelet>(new ManagedNodelet(p, impl_->callback_manager_.get())))));
+
+  const auto& mn = impl_->nodelets_[name];
   try {
 	mn->st_queue->disable();
 	mn->mt_queue->disable();
@@ -323,7 +329,7 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
 
     ROS_DEBUG("Done initing nodelet %s", name.c_str());
   } catch(...) {
-    Impl::M_stringToNodelet::iterator it = impl_->nodelets_.find(name);
+    const auto it = impl_->nodelets_.find(name);
     if (it != impl_->nodelets_.end())
     {
       impl_->nodelets_.erase(it);
@@ -337,7 +343,7 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
 bool Loader::unload (const std::string & name)
 {
   boost::mutex::scoped_lock lock (lock_);
-  Impl::M_stringToNodelet::iterator it = impl_->nodelets_.find(name);
+  const auto it = impl_->nodelets_.find(name);
   if (it != impl_->nodelets_.end())
   {
     impl_->nodelets_.erase(it);
@@ -359,10 +365,9 @@ std::vector<std::string> Loader::listLoadedNodelets()
 {
   boost::mutex::scoped_lock lock (lock_);
   std::vector<std::string> output;
-  Impl::M_stringToNodelet::iterator it = impl_->nodelets_.begin();
-  for (; it != impl_->nodelets_.end(); ++it)
+  for (const auto& it : impl_->nodelets_)
   {
-    output.push_back(it->first);
+    output.push_back(it.first);
   }
   return output;
 }
