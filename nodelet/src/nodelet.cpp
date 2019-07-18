@@ -335,7 +335,12 @@ int
     std::string bond_id;
     if (arg_parser.isBondEnabled())
       bond_id = name + "_" + genId();
+
+    ros::CallbackQueue bond_callback_queue_;
+    ros::AsyncSpinner bond_spinner_(1, &bond_callback_queue_);
     bond::Bond bond(manager + "/bond", bond_id);
+    bond.setCallbackQueue(&bond_callback_queue_);
+
     if (!ni.loadNodelet(name, type, manager, arg_parser.getMyArgv(), bond_id))
       return -1;
 
@@ -347,10 +352,9 @@ int
     if (arg_parser.isBondEnabled())
       bond.start();
     // Spin our own loop
-    ros::AsyncSpinner spinner(1);
-    spinner.start();
     while (!request_shutdown)
     {
+      ros::spinOnce();
       if (arg_parser.isBondEnabled() && bond.isBroken())
       {
         ROS_INFO("Bond broken, exiting");
