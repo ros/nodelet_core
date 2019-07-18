@@ -53,8 +53,8 @@ class TestBondBreakOnShutdown(unittest.TestCase):
         proc_manager.send_signal(signal.SIGINT)
         (m_out, m_err) = proc_manager.communicate()
 
-        print n_out
-        print m_out
+        rospy.loginfo(n_out)
+        rospy.loginfo(m_out)
 
         # check that nodelet unloaded and there was no error with bond breaking
         self.assertIn('Unloading nodelet /test from manager nodelet_manager', n_out)
