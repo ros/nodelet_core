@@ -43,7 +43,6 @@
 @b nodeletcpp is a tool for loading/unloading nodelets to/from a Nodelet manager.
 **/
 #include <signal.h>
-#include <sstream>
 
 #include <ros/ros.h>
 #include <ros/callback_queue.h>
@@ -173,9 +172,7 @@ class NodeletInterface
     bool
       unloadNodelet (const std::string &name, const std::string &manager)
     {
-      std::ostringstream oss;
-      oss << "Unloading nodelet " << name << " from manager " << manager;
-      ROS_INFO(oss.str().c_str());
+      ROS_INFO("Unloading nodelet %s from manager %s", name.c_str(), manager.c_str());
 
       std::string service_name = manager + "/unload_nodelet";
       // Check if the service exists and is available
