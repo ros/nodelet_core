@@ -54,9 +54,9 @@ class TestBondBreakOnShutdown(unittest.TestCase):
         (m_out, m_err) = proc_manager.communicate()
 
         # check that nodelet unloaded and there was no error with bond breaking
-        self.assertIn('Unloading nodelet /test from manager nodelet_manager', n_out)
-        self.assertNotIn('Bond failed to break on destruction', m_out)
-        self.assertNotIn('Bond failed to break on destruction', n_out)
+        self.assertIn('Unloading nodelet /test from manager nodelet_manager', n_out.decode())
+        self.assertNotIn('Bond failed to break on destruction', m_out.decode())
+        self.assertNotIn('Bond failed to break on destruction', n_out.decode())
 
 if __name__ == '__main__':
     rospy.init_node('test_bond_break_on_shutdown')

@@ -54,8 +54,8 @@ class TestUnloadCalledTwice(unittest.TestCase):
         # check that nodelet unloaded and that LoaderROS::unload() does not
         # complain about nodelet not being found (an indication that it was called
         # again after the nodelet was already unloaded)
-        self.assertIn('Unloading nodelet /test from manager nodelet_manager', n_out)
-        self.assertNotIn('Failed to find nodelet with name', m_err)
+        self.assertIn('Unloading nodelet /test from manager nodelet_manager', n_out.decode())
+        self.assertNotIn('Failed to find nodelet with name', m_err.decode())
 
 if __name__ == '__main__':
     rospy.init_node('test_unload_called_twice')

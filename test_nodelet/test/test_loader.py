@@ -97,7 +97,7 @@ class TestLoader(unittest.TestCase):
 
         # And the loader should print our error message
         out = proc.stderr.read()
-        self.assertIn('NODELET_TEST_FAILURE', out)
+        self.assertIn('NODELET_TEST_FAILURE', out.decode())
 
 if __name__ == '__main__':
     rospy.init_node('test_loader')
