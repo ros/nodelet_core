@@ -29,8 +29,11 @@ if(CATKIN_ENABLE_TESTING)
   add_dependencies(tests test_console)
 
   add_rostest(test/test_console.launch)
-  add_rostest(test/test_bond_break_on_shutdown.launch)
-  add_rostest(test/test_unload_called_twice.launch)
+
+  # TODO(mjcarroll):Remove these tests until
+  # https://github.com/ros/rosconsole/issues/30 is resolved
+  # add_rostest(test/test_bond_break_on_shutdown.launch)
+  # add_rostest(test/test_unload_called_twice.launch)
 
   add_rostest_gtest(test_nodehandles_different_namespaces
                     test/test_nodehandles_different_namespaces.test
