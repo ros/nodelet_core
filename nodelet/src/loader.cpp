@@ -322,13 +322,13 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
 
 
     ROS_DEBUG("Done initing nodelet %s", name.c_str());
-  } catch(...) {
+  } catch(std::runtime_error& e) {
     Impl::M_stringToNodelet::iterator it = impl_->nodelets_.find(name);
     if (it != impl_->nodelets_.end())
     {
       impl_->nodelets_.erase(it);
-      ROS_DEBUG ("Failed to initialize nodelet %s", name.c_str ());
-      return (false);
+      ROS_ERROR("Failed to initialize nodelet %s: %s", name.c_str(), e.what());
+      return false;
     }
   }
   return true;
