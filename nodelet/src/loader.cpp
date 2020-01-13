@@ -277,7 +277,7 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
   {
     p = impl_->create_instance_(type);
   }
-  catch (std::runtime_error& e)
+  catch (const std::exception& e)
   {
     // If we cannot refresh the nodelet cache, fail immediately
     if(!impl_->refresh_classes_)
@@ -292,7 +292,7 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
       impl_->refresh_classes_();
       p = impl_->create_instance_(type);
     }
-    catch (std::runtime_error& e2)
+    catch (const std::exception& e2)
     {
       // dlopen() can return inconsistent results currently (see
       // https://sourceware.org/bugzilla/show_bug.cgi?id=17833), so make sure
