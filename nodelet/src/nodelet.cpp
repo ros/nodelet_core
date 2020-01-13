@@ -93,7 +93,6 @@ class NodeletArgumentParsing
     bool
       parseArgs(int argc, char** argv)
     {
-      is_bond_enabled_ = true;
       std::vector<std::string> non_ros_args;
       ros::removeROSArgs (argc, argv, non_ros_args);
       size_t used_args = 0;
