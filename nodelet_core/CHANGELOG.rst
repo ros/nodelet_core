@@ -2,8 +2,8 @@
 Changelog for package nodelet_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.10.0 (2020-03-09)
+-------------------
 * Update maintainer to Michael Carroll (`#104 <https://github.com/ros/nodelet_core/issues/104>`_)
 * Bump CMake version to avoid CMP0048 warning (`#102 <https://github.com/ros/nodelet_core/issues/102>`_)
 * Contributors: Michael Carroll, Shane Loretz
