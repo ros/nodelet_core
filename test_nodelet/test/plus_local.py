@@ -83,5 +83,5 @@ class TestPlus(unittest.TestCase):
 
 if __name__ == '__main__':
     rospy.init_node('plus_local')
-    rostest.unitrun('test_nodelet', 'test_plus', TestPlus)
+    rostest.rosrun('test_nodelet', 'test_plus', TestPlus)
 

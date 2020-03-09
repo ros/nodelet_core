@@ -60,5 +60,5 @@ class TestBondBreakOnShutdown(unittest.TestCase):
 
 if __name__ == '__main__':
     rospy.init_node('test_bond_break_on_shutdown')
-    rostest.unitrun('test_bond_break_on_shutdown', 'test_bond_break_on_shutdown', TestBondBreakOnShutdown)
+    rostest.rosrun('test_bond_break_on_shutdown', 'test_bond_break_on_shutdown', TestBondBreakOnShutdown)
 

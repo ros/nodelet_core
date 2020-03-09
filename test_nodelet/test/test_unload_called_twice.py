@@ -59,4 +59,4 @@ class TestUnloadCalledTwice(unittest.TestCase):
 
 if __name__ == '__main__':
     rospy.init_node('test_unload_called_twice')
-    rostest.unitrun('test_unload_called_twice', 'test_unload_called_twice', TestUnloadCalledTwice)
+    rostest.rosrun('test_unload_called_twice', 'test_unload_called_twice', TestUnloadCalledTwice)

@@ -56,7 +56,7 @@ class TestLoader(unittest.TestCase):
 
         req = NodeletListRequest()
         res = list.call(req)
-        self.assertTrue("/my_nodelet" in res.nodelets)
+        self.assertIn('/my_nodelet', res.nodelets)
 
         req = NodeletUnloadRequest()
         req.name = "/my_nodelet"
@@ -81,7 +81,7 @@ class TestLoader(unittest.TestCase):
         # nodelet map
         req = NodeletListRequest()
         res = list.call(req)
-        self.assertFalse("/my_nodelet" in res.nodelets)
+        self.assertNotIn('/my_nodelet', res.nodelets)
 
         req = NodeletUnloadRequest()
         req.name = "/my_nodelet"
@@ -97,9 +97,9 @@ class TestLoader(unittest.TestCase):
 
         # And the loader should print our error message
         out = proc.stderr.read()
-        self.assertIn('NODELET_TEST_FAILURE', out)
+        self.assertIn('NODELET_TEST_FAILURE', out.decode())
 
 if __name__ == '__main__':
     rospy.init_node('test_loader')
-    rostest.unitrun('test_loader', 'test_loader', TestLoader)
+    rostest.rosrun('test_loader', 'test_loader', TestLoader)
 
