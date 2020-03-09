@@ -2,6 +2,15 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainer to Michael Carroll (`#104 <https://github.com/ros/nodelet_core/issues/104>`_)
+* Fix nodelet tests for focal (`#103 <https://github.com/ros/nodelet_core/issues/103>`_)
+* Bump CMake version to avoid CMP0048 warning (`#102 <https://github.com/ros/nodelet_core/issues/102>`_)
+* Temporarily disable tests to appease noetic CI (`#97 <https://github.com/ros/nodelet_core/issues/97>`_)
+* Disable tests that don't work in python3 (`#96 <https://github.com/ros/nodelet_core/issues/96>`_)
+* Contributors: Michael Carroll, Shane Loretz
+
 1.9.16 (2018-04-27)
 -------------------
 

@@ -4,7 +4,12 @@ Changelog for package nodelet
 
 Forthcoming
 -----------
-* delay processing of queues until Nodelet::onInit() returns
+* Update maintainer to Michael Carroll (`#104 <https://github.com/ros/nodelet_core/issues/104>`_)
+* Bump CMake version to avoid CMP0048 warning (`#102 <https://github.com/ros/nodelet_core/issues/102>`_)
+* enable Windows build (`#85 <https://github.com/ros/nodelet_core/issues/85>`_)
+* Fix build issue on Windows (`#82 <https://github.com/ros/nodelet_core/issues/82>`_)
+* delay processing of queues until Nodelet::onInit() returns (`#66 <https://github.com/ros/nodelet_core/issues/66>`_)
+* Contributors: James Xu, Johnson Shih, Michael Carroll, Shane Loretz, Simon Gene Gottlieb
 
 1.9.16 (2018-04-27)
 -------------------

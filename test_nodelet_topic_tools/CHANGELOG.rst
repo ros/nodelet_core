@@ -2,6 +2,14 @@
 Changelog for package test_nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update maintainer to Michael Carroll (`#104 <https://github.com/ros/nodelet_core/issues/104>`_)
+* Fix nodelet tests for focal (`#103 <https://github.com/ros/nodelet_core/issues/103>`_)
+* Bump CMake version to avoid CMP0048 warning (`#102 <https://github.com/ros/nodelet_core/issues/102>`_)
+* Temporarily disable tests to appease noetic CI (`#97 <https://github.com/ros/nodelet_core/issues/97>`_)
+* Contributors: Michael Carroll, Shane Loretz
+
 1.9.16 (2018-04-27)
 -------------------
 
