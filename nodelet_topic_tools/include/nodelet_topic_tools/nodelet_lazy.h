@@ -221,9 +221,9 @@ protected:
   {
     boost::mutex::scoped_lock lock(connection_mutex_);
     ros::SubscriberStatusCallback connect_cb
-      = boost::bind(&NodeletLazy::connectionCallback, this, _1);
+      = boost::bind(&NodeletLazy::connectionCallback, this, boost::placeholders::_1);
     ros::SubscriberStatusCallback disconnect_cb
-      = boost::bind(&NodeletLazy::connectionCallback, this, _1);
+      = boost::bind(&NodeletLazy::connectionCallback, this, boost::placeholders::_1);
     ros::Publisher pub = nh.advertise<T>(topic, queue_size,
                                           connect_cb,
                                           disconnect_cb,

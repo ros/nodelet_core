@@ -104,7 +104,7 @@ namespace nodelet
             }
 
             // Subscribe to 1 callback to fill in the passthrough
-            filters_[0]->registerCallback (boost::bind (&NodeletMUX<T,Filter>::filter_cb, this, _1));
+            filters_[0]->registerCallback (boost::bind (&NodeletMUX<T,Filter>::filter_cb, this, boost::placeholders::_1));
 
             ts_.reset (new message_filters::TimeSynchronizer<T,T,T,T,T,T,T,T> (maximum_queue_size_));
 
@@ -160,7 +160,7 @@ namespace nodelet
           }
         }
 
-        ts_->registerCallback (boost::bind (&NodeletMUX<T,Filter>::input, this, _1, _2, _3, _4, _5, _6, _7, _8));
+        ts_->registerCallback (boost::bind (&NodeletMUX<T,Filter>::input, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3, boost::placeholders::_4, boost::placeholders::_5, boost::placeholders::_6, boost::placeholders::_7, boost::placeholders::_8));
       }
 
     private:

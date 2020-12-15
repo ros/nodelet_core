@@ -33,7 +33,7 @@
 #include <nodelet/loader.h>
 #include <ros/init.h>
 
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 boost::shared_ptr<nodelet::Nodelet> create_instance(const std::string&)
 {
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "simple_loader");
 
-    nodelet::Loader loader(boost::bind(&create_instance, _1));
+    nodelet::Loader loader(boost::bind(&create_instance, boost::placeholders::_1));
     std::map<std::string, std::string> remappings;
     std::vector<std::string> my_argv;
     if(!loader.load("/fail", "test_nodelet/FailingNodelet", remappings, my_argv))

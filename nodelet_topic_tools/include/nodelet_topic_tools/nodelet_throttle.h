@@ -68,7 +68,7 @@ private:
     ros::NodeHandle& private_nh = getPrivateNodeHandle();
 
     srv_ = new dynamic_reconfigure::Server<nodelet_topic_tools::NodeletThrottleConfig>(private_nh);
-    dynamic_reconfigure::Server<nodelet_topic_tools::NodeletThrottleConfig>::CallbackType f = boost::bind(&NodeletThrottle::reconfigure, this, _1, _2);
+    dynamic_reconfigure::Server<nodelet_topic_tools::NodeletThrottleConfig>::CallbackType f = boost::bind(&NodeletThrottle::reconfigure, this, boost::placeholders::_1, boost::placeholders::_2);
     srv_->setCallback(f);
 
     // Lazy subscription to topic
