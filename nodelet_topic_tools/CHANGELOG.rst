@@ -2,6 +2,9 @@
 Changelog for package nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.10.1 (2021-01-25)
+-------------------
+
 1.10.0 (2020-03-09)
 -------------------
 * Update maintainer to Michael Carroll (`#104 <https://github.com/ros/nodelet_core/issues/104>`_)

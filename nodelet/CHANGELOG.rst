@@ -2,6 +2,11 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.10.1 (2021-01-25)
+-------------------
+* removed callback queue pause around onInit() (`#107 <https://github.com/ros/nodelet_core/issues/107>`_)
+* Contributors: Tomáš Báča
+
 1.10.0 (2020-03-09)
 -------------------
 * Update maintainer to Michael Carroll (`#104 <https://github.com/ros/nodelet_core/issues/104>`_)
