@@ -12,6 +12,19 @@ find_package(catkin REQUIRED
   std_msgs
 )
 
+catkin_package_xml()
+# split version in parts and pass to extra file
+string(REPLACE "." ";" nodelet_VERSION_LIST "${nodelet_VERSION}")
+list(LENGTH nodelet_VERSION_LIST _count)
+if(NOT _count EQUAL 3)
+  message(FATAL_ERROR "nodelet version '${nodelet_VERSION}' does not match 'MAJOR.MINOR.PATCH' pattern")
+endif()
+list(GET nodelet_VERSION_LIST 0 nodelet_VERSION_MAJOR)
+list(GET nodelet_VERSION_LIST 1 nodelet_VERSION_MINOR)
+list(GET nodelet_VERSION_LIST 2 nodelet_VERSION_PATCH)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/nodelet/version.h.in ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/nodelet/version.h)
+
 ## Find Boost (only headers)
 find_package(Boost REQUIRED)
 
