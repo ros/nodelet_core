@@ -67,6 +67,7 @@ CallbackQueueManager::~CallbackQueueManager()
 #ifdef NODELET_QUEUE_DEBUG
   // Write out task assignment histories for each thread
   typedef ThreadInfo::Record Record;
+  size_t num_threads = getNumWorkerThreads();
   for (size_t i = 0; i < num_threads; ++i)
   {
     char filename[128];
