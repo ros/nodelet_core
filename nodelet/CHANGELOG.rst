@@ -2,6 +2,12 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.10.2 (2021-10-07)
+-------------------
+* add version.h for nodelet (`#105 <https://github.com/ros/nodelet_core/issues/105>`_)
+* Fix missing num_threads call when NODELET_QUEUE_DEBUG (`#112 <https://github.com/ros/nodelet_core/issues/112>`_)
+* Contributors: Matthijs van der Burgh, Shingo Kitagawa
+
 1.10.1 (2021-01-25)
 -------------------
 * removed callback queue pause around onInit() (`#107 <https://github.com/ros/nodelet_core/issues/107>`_)
