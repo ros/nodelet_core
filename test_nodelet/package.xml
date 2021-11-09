@@ -13,6 +13,7 @@
   <url type="bugtracker">https://github.com/ros/nodelet_core/issues</url>
   <url type="repository">https://github.com/ros/nodelet_core</url>
   <author>Tully Foote</author>
+  <author email="michael@openrobotics.org">Michael Carroll</author>
 
   <buildtool_depend version_gte="0.5.68">catkin</buildtool_depend>
 

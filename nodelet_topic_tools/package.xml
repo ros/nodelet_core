@@ -14,6 +14,7 @@
   <url type="repository">https://github.com/ros/nodelet_core</url>
   <author>Radu Bogdan Rusu</author>
   <author>Tully Foote</author>
+  <author email="michael@openrobotics.org">Michael Carroll</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
