@@ -226,9 +226,20 @@ class NodeletInterface
       std::string service_name = std::string (manager) + "/load_nodelet";
 
       // Wait until the service is advertised
+      bool srv_exists = false;
+      int timeout_sec = 10;
+      int timeout_count = 0; 
       ROS_DEBUG ("Waiting for service %s to be available...", service_name.c_str ());
       ros::ServiceClient client = n_.serviceClient<nodelet::NodeletLoad> (service_name);
-      client.waitForExistence ();
+      while (!srv_exists) {
+        if (timeout_count > 0) {
+          ROS_WARN ("Waiting for service %s to be available for %d seconds...", service_name.c_str (), timeout_count * timeout_sec);
+        }
+        srv_exists = client.waitForExistence (ros::Duration(timeout_sec));
+        if (!srv_exists) {
+          timeout_count += 1;
+        }
+      }
 
       // Call the service
       nodelet::NodeletLoad srv;
