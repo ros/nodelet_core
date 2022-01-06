@@ -235,7 +235,7 @@ class NodeletInterface
         if (timeout_count > 0) {
           ROS_WARN ("Waiting for service %s to be available for %d seconds...", service_name.c_str (), timeout_count * timeout_sec);
         }
-        srv_exists = client.waitForExistence (ros::Duration(timeout_sec));
+        srv_exists = client.waitForExistence (ros::Duration (timeout_sec));
         if (!srv_exists) {
           timeout_count += 1;
         }
