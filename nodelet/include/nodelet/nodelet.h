@@ -234,6 +234,17 @@ public:
             ros::CallbackQueueInterface* st_queue = NULL,
             ros::CallbackQueueInterface* mt_queue = NULL);
 
+  /**\brief Whether it is OK to continue working with this nodelet. This function starts returning true right
+   *        before onInit() is called and starts returning false when the nodelet is requested to stop via
+   *        requestStop() or execution of its destructor.
+   * \return Status of the nodelet.
+   */
+  bool ok() const;
+
+  /**\brief Request this nodelet to stop. This function returns immediately. Afterwards, ok() returns false.
+   */
+  void requestStop();
+
   virtual ~Nodelet();
 };
 

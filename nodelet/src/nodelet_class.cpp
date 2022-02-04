@@ -45,6 +45,7 @@ Nodelet::Nodelet ()
 
 Nodelet::~Nodelet()
 {
+  requestStop();
 }
 
 ros::CallbackQueueInterface& Nodelet::getSTCallbackQueue () const
@@ -132,6 +133,16 @@ void Nodelet::init(const std::string& name, const M_string& remapping_args, cons
   NODELET_DEBUG ("Nodelet initializing");
   inited_ = true;
   this->onInit ();
+}
+
+bool Nodelet::ok() const
+{
+  return inited_;
+}
+
+void Nodelet::requestStop()
+{
+  inited_ = false;
 }
 
 } // namespace nodelet

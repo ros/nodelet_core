@@ -194,6 +194,7 @@ struct ManagedNodelet : boost::noncopyable
 
   ~ManagedNodelet()
   {
+    nodelet->requestStop();
     callback_manager->removeQueue(st_queue);
     callback_manager->removeQueue(mt_queue);
   }
