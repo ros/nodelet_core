@@ -58,7 +58,7 @@ namespace nodelet
         onInit ()
       {
         private_nh_ = getPrivateNodeHandle ();
-        sub_input_.subscribe (private_nh_, "input", 1, bind (&NodeletDEMUX<T,Subscriber>::input_callback, this, _1));
+        sub_input_.subscribe (private_nh_, "input", 1, bind (&NodeletDEMUX<T,Subscriber>::input_callback, this, boost::placeholders::_1));
 
         if (!private_nh_.getParam ("output_topics", output_topics_))
         {
