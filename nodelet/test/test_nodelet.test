@@ -1,0 +1,3 @@
+<launch>
+    <test test-name="test_stateful_nodelet" pkg="nodelet" type="test_nodelet"/>
+</launch>

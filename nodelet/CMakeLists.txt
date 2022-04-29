@@ -79,7 +79,8 @@ if(CATKIN_ENABLE_TESTING)
   # find pthread and provide it as Threads::Threads imported target
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
+  find_package(rostest REQUIRED)
 
-  catkin_add_gtest(test_nodelet test/test_nodelet.cpp)
+  add_rostest_gtest(test_nodelet test/test_nodelet.test test/test_nodelet.cpp)
   target_link_libraries(test_nodelet nodeletlib ${BOOST_LIBRARIES} ${catkin_LIBRARIES} Threads::Threads)
 endif()
