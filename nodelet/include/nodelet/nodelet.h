@@ -238,6 +238,10 @@ public:
    *        before onInit() is called and starts returning false when the nodelet is requested to stop via
    *        requestStop() or execution of its destructor.
    * \return Status of the nodelet.
+   * \note You have to make sure the destructor does not finish while you are querying this->ok()! So it is best to
+   *       put a synchronization primitive in the child class destructor that will make sure all callbacks querying
+   *       this->ok() will finish prior to proceeding with the object destruction. But be aware that any deadlock
+   *       in such a destructor would prevent any other nodelets to be loaded/unloaded into the nodelet manager.
    */
   bool ok() const;
 

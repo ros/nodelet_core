@@ -38,4 +38,6 @@
   <exec_depend>libboost-thread</exec_depend>
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>rospy</exec_depend>
+
+  <test_depend>rosunit</test_depend>
 </package>

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.1)
 project(nodelet)
 
 ## Find catkin dependencies
@@ -74,3 +74,12 @@ install(TARGETS nodeletlib
 install(TARGETS nodelet
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+if(CATKIN_ENABLE_TESTING)
+  # find pthread and provide it as Threads::Threads imported target
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
+
+  catkin_add_gtest(test_nodelet test/test_nodelet.cpp)
+  target_link_libraries(test_nodelet nodeletlib ${BOOST_LIBRARIES} ${catkin_LIBRARIES} Threads::Threads)
+endif()
