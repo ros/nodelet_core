@@ -16,10 +16,13 @@
   <author>Tully Foote</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>libboost-dev</build_depend>
+  <build_depend>libboost-thread-dev</build_depend>
 
-  <depend>boost</depend>
   <depend>dynamic_reconfigure</depend>
 
+  <build_export_depend>libboost-dev</build_export_depend>
+  <build_export_depend>libboost-thread-dev</build_export_depend>
   <build_export_depend>message_filters</build_export_depend>
   <build_export_depend>nodelet</build_export_depend>
   <build_export_depend>pluginlib</build_export_depend>
