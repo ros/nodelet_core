@@ -12,6 +12,10 @@ if(CATKIN_ENABLE_TESTING)
                              ${catkin_INCLUDE_DIRS}
   )
 
+  # find pthread and provide it as Threads::Threads imported target
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
+
   #common commands for building c++ executables and libraries
   add_library(${PROJECT_NAME} src/plus.cpp src/console_tests.cpp src/failing_nodelet.cpp src/nodehandles.cpp)
   target_link_libraries(${PROJECT_NAME} ${BOOST_LIBRARIES}
@@ -58,4 +62,7 @@ if(CATKIN_ENABLE_TESTING)
 
   add_executable(create_instance_cb_error src/create_instance_cb_error.cpp)
   target_link_libraries(create_instance_cb_error ${catkin_LIBRARIES})
+
+  add_rostest_gtest(test_nodelet_request_stop test/test_nodelet_request_stop.test test/test_nodelet_request_stop.cpp)
+  target_link_libraries(test_nodelet_request_stop ${BOOST_LIBRARIES} ${catkin_LIBRARIES} Threads::Threads)
 endif()

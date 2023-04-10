@@ -509,7 +509,7 @@ TEST(StatefulNodelet, sleepInterruptByUnloadSimtime)  // NOLINT
 int main(int argc, char **argv)
 {
   testing::InitGoogleTest(&argc, argv);
-  ros::init(argc, argv, "test_nodelet");
+  ros::init(argc, argv, "test_nodelet_request_stop");
   ros::start();
   return RUN_ALL_TESTS();
 }
