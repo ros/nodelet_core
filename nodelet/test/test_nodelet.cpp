@@ -38,7 +38,7 @@
 /**
  * \brief A mock of the nodelet::Nodelet class with empty onInit().
  */
-struct TestNodelet : public ::nodelet::Nodelet
+struct TestNodelet : public nodelet::Nodelet
 {
   /**
    * \brief If wasOk is not null, set the value of this->ok() to it while the object is destroyed.
@@ -47,11 +47,6 @@ struct TestNodelet : public ::nodelet::Nodelet
   {
     if (this->wasOk != nullptr)
       *this->wasOk = this->ok();
-    this->requestStop();
-    // Prevent destruction of the nodelet until the sleep callback finishes. It needs to query this->ok() and it
-    // cannot do it on an already destroyed nodelet.
-    while (ros::ok() && this->sleepRunning)
-      ros::WallDuration(1e-3).sleep();
   }
 
   /**
@@ -61,28 +56,48 @@ struct TestNodelet : public ::nodelet::Nodelet
   {
   }
   
+  bool sleepCb(const ros::Duration& duration, volatile bool& startedExecuting)
+  {
+    volatile bool sleepRunning {true};
+    volatile bool sleepOk {false};
+
+    timer = this->getNodeHandle().createWallTimer(ros::WallDuration(0.001),
+      [=,&sleepOk,&sleepRunning,&startedExecuting](const ros::WallTimerEvent&) {
+        startedExecuting = true;
+        sleepOk = this->sleep(duration);
+	sleepRunning = false;
+      }, true);
+
+    // no access to this-> past this point; the nodelet might already be destroyed
+
+    while (sleepRunning)
+      ros::WallDuration(1e-3).sleep();
+
+    return sleepOk;
+  }
+
   /**
    * \brief Sleep for the given amount of time, checking this->ok() for possible interruptions.
    * \param[in] duration Duration of the sleep.
    * \return The value of this->ok() after the sleep.
    */
-  bool sleep(const ros::Duration& duration) const
+  bool sleep(const ros::Duration& duration)
   {
     const auto endTime = ros::Time::now() + duration;
-    this->sleepRunning = true;
+
     while (ros::Time::now() < endTime && this->ok())
       ros::WallDuration(1e-3).sleep();
-    this->sleepRunning = false;
+
     if (ros::Time::now() < endTime)
       NODELET_INFO_STREAM("Ended " << (endTime - ros::Time::now()) << " s before deadline");
+
     return this->ok();
   }
-  
+
   //! \brief The value of this->ok() during destruction.
   volatile bool* wasOk {nullptr};
   
-  //! \brief True while the sleep is being executed.
-  volatile mutable bool sleepRunning {false};
+  ros::WallTimer timer;
 };
 
 /**
@@ -125,7 +140,8 @@ TEST(StatefulNodelet, sleepInterruptSystime)  // NOLINT
       finished = true;
     });
   
-  ros::WallDuration(0.1).sleep();
+  for (size_t i = 0; i < 1000 && !started; ++i)
+    ros::WallDuration(0.001).sleep();
   EXPECT_TRUE(started);
   EXPECT_FALSE(finished);
   
@@ -159,7 +175,8 @@ TEST(StatefulNodelet, sleepInterruptSimtime)  // NOLINT
       finished = true;
     });
   
-  ros::WallDuration(0.1).sleep();
+  for (size_t i = 0; i < 1000 && !started; ++i)
+    ros::WallDuration(0.001).sleep();
   EXPECT_TRUE(started);
   EXPECT_FALSE(finished);
   
@@ -195,11 +212,12 @@ TEST(StatefulNodelet, sleepFinishSystime)  // NOLINT
       finished = true;
     });
   
-  ros::WallDuration(0.1).sleep();
+  for (size_t i = 0; i < 1000 && !started; ++i)
+    ros::WallDuration(0.001).sleep();
   EXPECT_TRUE(started);
   EXPECT_FALSE(finished);
   
-  ros::WallDuration(1).sleep();
+  ros::WallDuration(1.1).sleep();
 
   EXPECT_TRUE(finished);
   
@@ -228,7 +246,8 @@ TEST(StatefulNodelet, sleepFinishSimtime)  // NOLINT
       finished = true;
     });
   
-  ros::WallDuration(0.1).sleep();
+  for (size_t i = 0; i < 1000 && !started; ++i)
+    ros::WallDuration(0.001).sleep();
   EXPECT_TRUE(started);
   EXPECT_FALSE(finished);
   
@@ -282,8 +301,11 @@ TEST(StatefulNodelet, sleepInterruptByUnloadSystime)  // NOLINT
         });
       loaderPointer = &l;
       // Keep loaderThread running until the end of this test.
-      while (!stop)
+      while (!stop && ros::ok())
+      {
+        ros::spinOnce();
         ros::WallDuration(0, 1000000).sleep();
+      }
     });
   // Wait until loaderThread creates the loader
   while (loaderPointer == nullptr)
@@ -301,43 +323,56 @@ TEST(StatefulNodelet, sleepInterruptByUnloadSystime)  // NOLINT
 
   // First, try if the sleep will finish if waiting enough time
   
-  bool started = false;
-  bool finished = false;
+  volatile bool started = false;
+  volatile bool startedExecuting = false;
+  volatile bool finished = false;
   std::thread t([&]()
     {
       started = true;
-      EXPECT_TRUE(nodelet->sleep(ros::Duration(1)));
+      EXPECT_TRUE(nodelet->sleepCb(ros::Duration(1), startedExecuting));
+      EXPECT_TRUE(nodelet->ok());
       finished = true;
     });
   
-  ros::WallDuration(0.1).sleep();
+  for (size_t i = 0; i < 1000 && !started; ++i)
+    ros::WallDuration(0.001).sleep();
   EXPECT_TRUE(started);
   EXPECT_FALSE(finished);
+
+  for (size_t i = 0; i < 1000 && !startedExecuting; ++i)
+    ros::WallDuration(0.001).sleep();
+  EXPECT_TRUE(startedExecuting);
   
-  ros::WallDuration(1).sleep();
+  ros::WallDuration(1.01).sleep();
   EXPECT_TRUE(finished);
 
   // Now, test that the sleep can be interrupted.
 
   started = false;
+  startedExecuting = false;
   finished = false;
   std::thread t2([&]()
     {
       started = true;
-      EXPECT_FALSE(nodelet->sleep({1, 0}));
+      EXPECT_FALSE(nodelet->sleepCb({1, 0}, startedExecuting));
       finished = true;
-      // cannot test EXPECT_TRUE(cras::isNodeletUnloading(*nodelet)) here as nodelet is no longer valid
-      // the following values are flaky for some reason, so wait a bit to help them settle
       ros::WallDuration(0.1).sleep();
+      // cannot test EXPECT_TRUE(nodelet->ok()) here as nodelet is no longer valid
       EXPECT_FALSE(wasOk);
     });
 
-  ros::WallDuration(0.1).sleep();
+  for (size_t i = 0; i < 1000 && !started; ++i)
+    ros::WallDuration(0.001).sleep();
   EXPECT_TRUE(started);
   EXPECT_FALSE(finished);
 
+  for (size_t i = 0; i < 1000 && !startedExecuting; ++i)
+    ros::WallDuration(0.001).sleep();
+  EXPECT_TRUE(startedExecuting);
+
   EXPECT_TRUE(wasOk);
   loader.unload("my_nodelet");
+  ros::WallDuration(0.1).sleep();  // wait for the unloading to clean callback queues
   EXPECT_FALSE(wasOk);
 
   ros::WallDuration(0.1).sleep();
@@ -377,8 +412,11 @@ TEST(StatefulNodelet, sleepInterruptByUnloadSimtime)  // NOLINT
         });
       loaderPointer = &l;
       // Keep loaderThread running until the end of this test.
-      while (!stop)
+      while (!stop && ros::ok())
+      {
+        ros::spinOnce();
         ros::WallDuration(0, 1000000).sleep();
+      }
     });
   // Wait until loaderThread creates the loader
   while (loaderPointer == nullptr)
@@ -397,19 +435,25 @@ TEST(StatefulNodelet, sleepInterruptByUnloadSimtime)  // NOLINT
   // First, try if the sleep will finish if waiting enough time
   
   bool started = false;
+  bool startedExecuting = false;
   bool finished = false;
   std::thread t([&]()
     {
       EXPECT_TRUE(nodelet->ok());
       started = true;
-      EXPECT_TRUE(nodelet->sleep({1, 0}));
+      EXPECT_TRUE(nodelet->sleepCb({1, 0}, startedExecuting));
       finished = true;
       EXPECT_TRUE(nodelet->ok());
     });
   
-  ros::WallDuration(0.1).sleep();
+  for (size_t i = 0; i < 1000 && !started; ++i)
+    ros::WallDuration(0.001).sleep();
   EXPECT_TRUE(started);
   EXPECT_FALSE(finished);
+
+  for (size_t i = 0; i < 1000 && !startedExecuting; ++i)
+    ros::WallDuration(0.001).sleep();
+  EXPECT_TRUE(startedExecuting);
 
   EXPECT_TRUE(nodelet->ok());
   
@@ -424,12 +468,13 @@ TEST(StatefulNodelet, sleepInterruptByUnloadSimtime)  // NOLINT
   ros::Time::setNow(ros::Time(10));
   
   started = false;
+  startedExecuting = false;
   finished = false;
   std::thread t2([&]()
     {
       EXPECT_TRUE(nodelet->ok());
       started = true;
-      EXPECT_FALSE(nodelet->sleep({1, 0}));
+      EXPECT_FALSE(nodelet->sleepCb({1, 0}, startedExecuting));
       finished = true;
       // cannot test EXPECT_TRUE(nodelet->ok()) here as nodelet is no longer valid
       ros::WallDuration(0.1).sleep();
@@ -437,13 +482,20 @@ TEST(StatefulNodelet, sleepInterruptByUnloadSimtime)  // NOLINT
     });
 
   ros::Time::setNow(ros::Time(10.1));  // not enough for the sleep to finish 
-  ros::WallDuration(0.1).sleep();
+
+  for (size_t i = 0; i < 1000 && !started; ++i)
+    ros::WallDuration(0.001).sleep();
   EXPECT_TRUE(started);
   EXPECT_FALSE(finished);
+
+  for (size_t i = 0; i < 1000 && !startedExecuting; ++i)
+    ros::WallDuration(0.001).sleep();
+  EXPECT_TRUE(startedExecuting);
 
   EXPECT_TRUE(nodelet->ok());
   EXPECT_TRUE(wasOk);
   loader.unload("my_nodelet");
+  ros::WallDuration(0.1).sleep();  // wait for the unloading to clean callback queues
   EXPECT_FALSE(wasOk);
 
   ros::WallDuration(0.1).sleep();
