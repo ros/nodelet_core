@@ -45,7 +45,11 @@ Nodelet::Nodelet ()
 
 Nodelet::~Nodelet()
 {
-  requestStop();
+  // Calling requestStop() would not make sense here. Any downstream class that
+  // would like to use ok() to check for validity of itself would have already
+  // been destroyed by its own destructor before getting here.
+  // requestStop() has to be called by an external manager before actually
+  // starting the destruction sequence.
 }
 
 ros::CallbackQueueInterface& Nodelet::getSTCallbackQueue () const

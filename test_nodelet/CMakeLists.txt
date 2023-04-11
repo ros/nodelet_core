@@ -7,7 +7,7 @@ catkin_package()
 
 if(CATKIN_ENABLE_TESTING)
   find_package(Boost REQUIRED thread)
-  find_package(catkin REQUIRED nodelet pluginlib rostest)
+  find_package(catkin REQUIRED bond nodelet pluginlib rostest)
   include_directories(SYSTEM ${BOOST_INCLUDE_DIRS}
                              ${catkin_INCLUDE_DIRS}
   )
@@ -17,7 +17,7 @@ if(CATKIN_ENABLE_TESTING)
   find_package(Threads REQUIRED)
 
   #common commands for building c++ executables and libraries
-  add_library(${PROJECT_NAME} src/plus.cpp src/console_tests.cpp src/failing_nodelet.cpp src/nodehandles.cpp)
+  add_library(${PROJECT_NAME} src/plus.cpp src/console_tests.cpp src/failing_nodelet.cpp src/nodehandles.cpp src/request_stop.cpp)
   target_link_libraries(${PROJECT_NAME} ${BOOST_LIBRARIES}
                                         ${catkin_LIBRARIES}
   )
@@ -65,4 +65,8 @@ if(CATKIN_ENABLE_TESTING)
 
   add_rostest_gtest(test_nodelet_request_stop test/test_nodelet_request_stop.test test/test_nodelet_request_stop.cpp)
   target_link_libraries(test_nodelet_request_stop ${BOOST_LIBRARIES} ${catkin_LIBRARIES} Threads::Threads)
+
+  add_rostest(test/test_request_stop_unload.test DEPENDENCIES ${PROJECT_NAME})
+  add_rostest(test/test_request_stop_unload_standalone.test DEPENDENCIES ${PROJECT_NAME})
+  add_rostest(test/test_request_stop_unload_kill_manager.test DEPENDENCIES ${PROJECT_NAME})
 endif()

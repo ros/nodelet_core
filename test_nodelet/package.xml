@@ -21,7 +21,10 @@
   <depend>rostest</depend>
   <depend>std_msgs</depend>
 
+  <test_depend>bond</test_depend>
   <test_depend>rosbash</test_depend>
+  <test_depend>rosnode</test_depend>
+  <test_depend>rospy</test_depend>
 
   <export>
     <nodelet plugin="${prefix}/test_nodelet.xml"/>
