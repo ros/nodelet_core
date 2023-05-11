@@ -71,7 +71,8 @@ def main():
             continue
         with open(f) as fh:
             try:
-                dom = minidom.parse(fh)
+                xml_content = '<root>' + fh.read() + '</root>'
+                dom = minidom.parseString(xml_content)
                 for lib in dom.getElementsByTagName('library'):
                     for name in lib.getElementsByTagName('class'):
                         nodelets.append(name.getAttribute('name'))
