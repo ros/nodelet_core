@@ -30,6 +30,7 @@
 #include <pluginlib/class_list_macros.hpp>
 #include <nodelet/nodelet.h>
 #include <ros/ros.h>
+#include <std_msgs/Bool.h>
 
 namespace test_nodelet
 {
@@ -43,8 +44,12 @@ public:
 private:
   virtual void onInit()
   {
+    m_publisher = getPrivateNodeHandle().advertise<std_msgs::Bool>("boolean", 5, false);
     throw std::runtime_error("Initialization error");
   }
+
+private:
+  ros::Publisher m_publisher;
 };
 
 PLUGINLIB_EXPORT_CLASS(test_nodelet::FailingNodelet, nodelet::Nodelet)
