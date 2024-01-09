@@ -2,6 +2,16 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.11.0 (2024-01-09)
+-------------------
+* Don't install version.h.in (`#113 <https://github.com/ros/nodelet_core/issues/113>`_)
+* Fix use-after-free when a nodelet throws on initialization (`#122 <https://github.com/ros/nodelet_core/issues/122>`_)
+* Update package maintainers (`#114 <https://github.com/ros/nodelet_core/issues/114>`_)
+* Reduce boost dependency scope (`#118 <https://github.com/ros/nodelet_core/issues/118>`_)
+* Switch to new boost/bind/bind.hpp (`#117 <https://github.com/ros/nodelet_core/issues/117>`_)
+* show warning in every 10 seconds when manager is not found (`#115 <https://github.com/ros/nodelet_core/issues/115>`_)
+* Contributors: Geoffrey Biggs, Hugal31, Jochen Sprickerhof, Shingo Kitagawa, Stephan
+
 1.10.2 (2021-10-07)
 -------------------
 * add version.h for nodelet (`#105 <https://github.com/ros/nodelet_core/issues/105>`_)

@@ -2,6 +2,11 @@
 Changelog for package test_nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.11.0 (2024-01-09)
+-------------------
+* Update package maintainers (`#114 <https://github.com/ros/nodelet_core/issues/114>`_)
+* Contributors: Geoffrey Biggs
+
 1.10.2 (2021-10-07)
 -------------------
 

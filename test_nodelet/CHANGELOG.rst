@@ -2,6 +2,13 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.11.0 (2024-01-09)
+-------------------
+* Fix use-after-free when a nodelet throws on initialization (`#122 <https://github.com/ros/nodelet_core/issues/122>`_)
+* Update package maintainers (`#114 <https://github.com/ros/nodelet_core/issues/114>`_)
+* Switch to new boost/bind/bind.hpp (`#117 <https://github.com/ros/nodelet_core/issues/117>`_)
+* Contributors: Geoffrey Biggs, Hugal31, Jochen Sprickerhof
+
 1.10.2 (2021-10-07)
 -------------------
 

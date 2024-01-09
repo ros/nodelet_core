@@ -2,6 +2,13 @@
 Changelog for package nodelet_topic_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.11.0 (2024-01-09)
+-------------------
+* Update package maintainers (`#114 <https://github.com/ros/nodelet_core/issues/114>`_)
+* Reduce boost dependency scope (`#118 <https://github.com/ros/nodelet_core/issues/118>`_)
+* Switch to new boost/bind/bind.hpp (`#117 <https://github.com/ros/nodelet_core/issues/117>`_)
+* Contributors: Geoffrey Biggs, Jochen Sprickerhof, Stephan
+
 1.10.2 (2021-10-07)
 -------------------
 
