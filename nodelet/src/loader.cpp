@@ -277,7 +277,7 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
   {
     p = impl_->create_instance_(type);
   }
-  catch (std::runtime_error& e)
+  catch (const std::exception& e)
   {
     // If we cannot refresh the nodelet cache, fail immediately
     if(!impl_->refresh_classes_)
@@ -292,7 +292,7 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
       impl_->refresh_classes_();
       p = impl_->create_instance_(type);
     }
-    catch (std::runtime_error& e2)
+    catch (const std::exception& e2)
     {
       // dlopen() can return inconsistent results currently (see
       // https://sourceware.org/bugzilla/show_bug.cgi?id=17833), so make sure
@@ -316,13 +316,13 @@ bool Loader::load(const std::string &name, const std::string& type, const ros::M
     mn->nodelet->init(name, remappings, my_argv, mn->st_queue.get(), mn->mt_queue.get());
 
     ROS_DEBUG("Done initing nodelet %s", name.c_str());
-  } catch(...) {
+  } catch(const std::exception& e) {
     Impl::M_stringToNodelet::iterator it = impl_->nodelets_.find(name);
     if (it != impl_->nodelets_.end())
     {
       impl_->nodelets_.erase(it);
-      ROS_DEBUG ("Failed to initialize nodelet %s", name.c_str ());
-      return (false);
+      ROS_ERROR("Failed to initialize nodelet %s: %s", name.c_str(), e.what());
+      return false;
     }
   }
   return true;
