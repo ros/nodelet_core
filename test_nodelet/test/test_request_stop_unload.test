@@ -1,0 +1,12 @@
+<launch>
+    <node pkg="nodelet" type="nodelet" name="manager"  args="manager" output="screen"/>
+    <node pkg="nodelet" type="nodelet" name="nodelet" args="load test_nodelet/RequestStop manager">
+        <param name="manager_name" value="manager" />
+        <param name="wait_for_bond" value="true" />
+    </node>
+
+    <test test-name="request_stop_test" pkg="test_nodelet" type="test_request_stop.py">
+        <param name="manager_name" value="manager" />
+        <param name="wait_for_bond" value="true" />
+    </test>
+</launch>

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.1)
 project(nodelet)
 
 ## Find catkin dependencies
@@ -75,3 +75,4 @@ install(TARGETS nodeletlib
 install(TARGETS nodelet
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+

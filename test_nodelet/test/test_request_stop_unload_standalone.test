@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="nodelet" type="nodelet" name="nodelet" args="standalone test_nodelet/RequestStop" />
+
+    <test test-name="request_stop_test" pkg="test_nodelet" type="test_request_stop.py">
+        <param name="stop_method" value="kill" />
+    </test>
+</launch>

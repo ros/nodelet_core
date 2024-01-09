@@ -85,6 +85,28 @@ public:
     bond_spinner_.start();
   }
 
+  ~LoaderROS()
+  {
+    // Clean up the bond map with the mutex locked; if we left that just on the destructor,
+    // the bond map would be destroyed unlocked allowing async callbacks to access it
+    // meanwhile, which could lead to memory corruption and segfaults.
+
+    boost::mutex::scoped_lock lock(lock_);
+    for (auto nameAndBond : bond_map_)
+    {
+      const auto& name = nameAndBond.first;
+      auto bond = nameAndBond.second;
+
+      // Set the broken callback to just unload the nodelet and do not touch the bond map.
+      // It is being cleared explicitly in the next lines. We do not want to erase elements
+      // from it during its own .clear() call. The NoLock variant can be called because we
+      // already have locked the mutex above.
+      bond->setBrokenCallback(boost::bind(&LoaderROS::unloadNoLock, this, name));
+    }
+    
+    bond_map_.clear();
+  }
+
 private:
   bool serviceLoad(nodelet::NodeletLoad::Request &req,
                    nodelet::NodeletLoad::Response &res)
@@ -95,7 +117,7 @@ private:
     M_string remappings;
     if (req.remap_source_args.size() != req.remap_target_args.size())
     {
-      ROS_ERROR("Bad remapppings provided, target and source of different length");
+      ROS_ERROR("Bad remappings provided, target and source of different length");
     }
     else
     {
@@ -114,7 +136,7 @@ private:
       bond::Bond* bond = new bond::Bond(nh_.getNamespace() + "/bond", req.bond_id);
       bond_map_.insert(req.name, bond);
       bond->setCallbackQueue(&bond_callback_queue_);
-      bond->setBrokenCallback(boost::bind(&LoaderROS::unload, this, req.name));
+      bond->setBrokenCallback(boost::bind(&LoaderROS::unloadAndEraseBond, this, req.name));
       bond->start();
     }
     return res.success;
@@ -123,25 +145,35 @@ private:
   bool serviceUnload(nodelet::NodeletUnload::Request &req,
                      nodelet::NodeletUnload::Response &res)
   {
-    res.success = unload(req.name);
+    res.success = unloadAndEraseBond(req.name);
     return res.success;
   }
 
-  bool unload(const std::string& name)
+  bool unloadNoLock(const std::string& name)
   {
-    boost::mutex::scoped_lock lock(lock_);
-
     bool success = parent_->unload(name);
+
     if (!success)
     {
       ROS_ERROR("Failed to find nodelet with name '%s' to unload.", name.c_str());
       return success;
     }
 
+    return success;
+  }
+
+  bool unloadAndEraseBond(const std::string& name)
+  {
+    boost::mutex::scoped_lock lock(lock_);
+
+    bool success = unloadNoLock(name);
+    if (!success)
+      return success;
+
     // break the bond, if there is one
     M_stringToBond::iterator it = bond_map_.find(name);
     if (it != bond_map_.end()) {
-        // disable callback for broken bond, as we are breaking it intentially now
+        // disable callback for broken bond, as we are breaking it intentionally now
         it->second->setBrokenCallback(boost::function<void(void)>());
         // erase (and break) bond
         bond_map_.erase(name);
@@ -194,6 +226,7 @@ struct ManagedNodelet : boost::noncopyable
 
   ~ManagedNodelet()
   {
+    nodelet->requestStop();
     callback_manager->removeQueue(st_queue);
     callback_manager->removeQueue(mt_queue);
   }
@@ -201,14 +234,14 @@ struct ManagedNodelet : boost::noncopyable
 
 struct Loader::Impl
 {
-  boost::shared_ptr<LoaderROS> services_;
-
   boost::function<boost::shared_ptr<Nodelet> (const std::string& lookup_name)> create_instance_;
   boost::function<void ()> refresh_classes_;
   boost::shared_ptr<detail::CallbackQueueManager> callback_manager_; // Must outlive nodelets_
 
   typedef boost::ptr_map<std::string, ManagedNodelet> M_stringToNodelet;
   M_stringToNodelet nodelets_; ///<! A map of name to currently constructed nodelets
+
+  boost::shared_ptr<LoaderROS> services_;  // Must be destroyed before nodelets_
 
   Impl()
   {

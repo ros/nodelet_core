@@ -19,4 +19,9 @@
       A node that creates public and private nodehandles.
     </description>
   </class>
+  <class name="test_nodelet/RequestStop" type="test_nodelet::RequestStop" base_class_type="nodelet::Nodelet">
+    <description>
+      A node that indefinitely waits until requested to stop.
+    </description>
+  </class>
 </library>

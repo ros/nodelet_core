@@ -1,0 +1,14 @@
+<launch>
+<!--    <node pkg="nodelet" type="nodelet" name="manager" args="manager" output="screen" launch-prefix="xterm -e gdb -ex run &#45;&#45;args"/>-->
+    <node pkg="nodelet" type="nodelet" name="manager" args="manager" output="screen"/>
+    <node pkg="nodelet" type="nodelet" name="nodelet" args="load test_nodelet/RequestStop manager">
+        <param name="manager_name" value="manager" />
+        <param name="wait_for_bond" value="true" />
+    </node>
+
+    <test test-name="request_stop_test" pkg="test_nodelet" type="test_request_stop.py">
+        <param name="stop_method" value="kill_manager" />
+        <param name="manager_name" value="manager" />
+        <param name="wait_for_bond" value="true" />
+    </test>
+</launch>
