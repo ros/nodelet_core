@@ -86,6 +86,13 @@ private:
 
   void callback(const boost::shared_ptr<const M>& cloud)
   {
+    if (last_update_ > ros::Time::now())
+    {
+      // This is normal if playing back from a bag with loop
+      NODELET_WARN("time moved backwards, resetting");
+      last_update_ = ros::Time::now();
+    }
+
     if (max_update_rate_ > 0.0)
     {
       NODELET_DEBUG("update set to %f", max_update_rate_);
