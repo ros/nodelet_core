@@ -337,7 +337,8 @@ int
   }
   else if (command == "load")
   {
-    ros::init (argc, argv, arg_parser.getDefaultName (), ros::init_options::NoSigintHandler);
+    // NoSimTime option reduces CPU load when running with Gazebo with a fast clock topic.
+    ros::init (argc, argv, arg_parser.getDefaultName (), ros::init_options::NoSigintHandler | ros::init_options::NoSimTime);
     NodeletInterface ni;
     ros::NodeHandle nh;
     std::string name = ros::this_node::getName ();
