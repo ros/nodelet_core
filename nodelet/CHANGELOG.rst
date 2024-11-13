@@ -2,8 +2,8 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.11.1 (2024-11-13)
+-------------------
 * Do not subscribe to `/clock`` from `nodelet load` (`#120 <https://github.com/ros/nodelet_core/issues/120>`_)
 * Contributors: Martin Pecka
 
