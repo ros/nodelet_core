@@ -2,6 +2,11 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Do not subscribe to `/clock`` from `nodelet load` (`#120 <https://github.com/ros/nodelet_core/issues/120>`_)
+* Contributors: Martin Pecka
+
 1.11.0 (2024-01-09)
 -------------------
 * Don't install version.h.in (`#113 <https://github.com/ros/nodelet_core/issues/113>`_)

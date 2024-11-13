@@ -2,6 +2,9 @@
 Changelog for package test_nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.11.0 (2024-01-09)
 -------------------
 * Fix use-after-free when a nodelet throws on initialization (`#122 <https://github.com/ros/nodelet_core/issues/122>`_)

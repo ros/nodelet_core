@@ -2,6 +2,9 @@
 Changelog for package nodelet_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.11.0 (2024-01-09)
 -------------------
 * Update package maintainers (`#114 <https://github.com/ros/nodelet_core/issues/114>`_)
