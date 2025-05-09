@@ -2,6 +2,12 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix un-initialized value (`#89 <https://github.com/ros/nodelet_core/issues/89>`_)
+  ---------
+* Contributors: Jeremie Deray
+
 1.11.1 (2024-11-13)
 -------------------
 * Do not subscribe to `/clock`` from `nodelet load` (`#120 <https://github.com/ros/nodelet_core/issues/120>`_)
