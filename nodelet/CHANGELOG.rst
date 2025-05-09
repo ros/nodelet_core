@@ -2,8 +2,8 @@
 Changelog for package nodelet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.11.2 (2025-05-09)
+-------------------
 * fix un-initialized value (`#89 <https://github.com/ros/nodelet_core/issues/89>`_)
 * Contributors: Jeremie Deray
 
